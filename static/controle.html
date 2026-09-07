@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="Controleer de structuur en integriteit van een ScenarioDossier.">
+    <title>Dossier controleren · ScenarioDossier</title>
+    <link rel="icon" href="/provincie-utrecht-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/app-layout.css">
+    <link rel="stylesheet" href="/province.css">
+    <link rel="stylesheet" href="/controle.css">
+</head>
+<body class="control-page">
+<a class="skip" href="#controlContent">Naar inhoud</a>
+<header>
+    <div class="header-main">
+        <a class="brand" href="/" aria-label="Provincie Utrecht, ScenarioDossier">
+            <img class="province-logo" src="/provincie-utrecht-logo.svg" alt="Provincie Utrecht">
+        </a>
+        <div class="utilities">
+            <a href="/">Dossier maken</a>
+            <a href="/werkinstructie">Werkinstructie</a>
+        </div>
+    </div>
+</header>
+
+<main id="controlContent" class="control-shell">
+    <section class="control-intro">
+        <div>
+            <p class="eyebrow">Onafhankelijke controle</p>
+            <h1>Is het dossier nog compleet en betrouwbaar?</h1>
+            <p>
+                Controleer een geëxporteerd ZIP-dossier zonder Tygron. Het bestand wordt tijdelijk
+                geopend en niet bewaard.
+            </p>
+        </div>
+    </section>
+
+    <section class="control-work" aria-live="polite">
+        <div class="control-primary">
+            <div class="control-heading">
+                <p class="eyebrow">ZIP-dossier</p>
+                <h2>Selecteer een bestand</h2>
+                <p>Maximaal 200 MB. De controle wijzigt het oorspronkelijke dossier niet.</p>
+            </div>
+
+            <label class="drop-zone" id="dropZone" for="archiveInput">
+                <input id="archiveInput" type="file" accept=".zip,application/zip">
+                <span class="file-mark">ZIP</span>
+                <strong id="dropTitle">Kies een dossier of sleep het hierheen</strong>
+                <small id="dropDetail">Alle verwerking vindt lokaal op deze server plaats.</small>
+            </label>
+
+            <button class="primary control-button" id="validateButton" type="button" disabled>
+                Dossier controleren
+            </button>
+        </div>
+
+        <aside class="control-explanation">
+            <p class="eyebrow">Dit controleren we</p>
+            <h2>Drie technische controles</h2>
+            <ol>
+                <li><b>Structuur</b><span>Metadata, bronbestanden en GIS-tabellen</span></li>
+                <li><b>Inhoud</b><span>Aantallen en leesbaarheid van het GeoPackage</span></li>
+                <li><b>Integriteit</b><span>SHA-256-controle van ieder dossierbestand</span></li>
+            </ol>
+            <p class="privacy-note">
+                Het bestand wordt alleen tijdelijk uitgepakt voor de controle en daarna verwijderd.
+            </p>
+        </aside>
+
+        <section class="validation-result hidden" id="validationResult">
+            <div class="result-head">
+                <span class="result-mark" id="resultMark"></span>
+                <div>
+                    <p class="eyebrow" id="resultLabel"></p>
+                    <h2 id="resultTitle"></h2>
+                    <p id="resultContext"></p>
+                </div>
+            </div>
+            <div class="result-counts" id="resultCounts"></div>
+            <div class="check-list" id="checkList"></div>
+        </section>
+    </section>
+</main>
+
+<div class="toast" id="toast" role="alert"></div>
+<script src="/controle.js"></script>
+</body>
+</html>

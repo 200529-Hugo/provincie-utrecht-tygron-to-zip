@@ -1,0 +1,775 @@
+{
+  "projects": [
+    {
+      "id": "merwedekanaalzone",
+      "name": "Merwedekanaalzone",
+      "scenarios": [
+        {
+          "id": "groen-gezond-2040",
+          "name": "Groen & Gezond 2040",
+          "description": "Meer groen, schaduw en langzaam verkeer voor een gezonde leefomgeving.",
+          "data": {
+            "overlays": [
+              {
+                "id": 11,
+                "name": "Hittestress gevoelstemperatuur",
+                "type": "HEAT",
+                "status": "berekend",
+                "unit": "°C",
+                "minValue": 28.4,
+                "maxValue": 39.1,
+                "visible": true,
+                "legend": [
+                  {
+                    "value": 30,
+                    "label": "koel"
+                  },
+                  {
+                    "value": 38,
+                    "label": "warm"
+                  }
+                ]
+              },
+              {
+                "id": 12,
+                "name": "Groen op loopafstand",
+                "type": "DISTANCE",
+                "status": "berekend",
+                "unit": "m",
+                "minValue": 0,
+                "maxValue": 620,
+                "visible": true
+              },
+              {
+                "id": 14,
+                "name": "Geluidbelasting wegverkeer",
+                "type": "NOISE",
+                "status": "berekend",
+                "unit": "dB Lden",
+                "minValue": 48.2,
+                "maxValue": 67.4,
+                "visible": false
+              },
+              {
+                "id": 15,
+                "name": "Waterdiepte extreme bui",
+                "type": "WATER_STRESS",
+                "status": "berekend",
+                "unit": "m",
+                "minValue": 0,
+                "maxValue": 0.42,
+                "visible": false
+              },
+              {
+                "id": 16,
+                "name": "Jaargemiddelde NO2",
+                "type": "AIR_QUALITY",
+                "status": "berekend",
+                "unit": "µg/m³",
+                "minValue": 17.2,
+                "maxValue": 25.8,
+                "visible": false
+              }
+            ],
+            "indicators": [
+              {
+                "id": 21,
+                "name": "Inwoners binnen 300 m van groen",
+                "value": 84.2,
+                "unit": "%",
+                "status": "doelwaarde behaald",
+                "target": 75,
+                "description": "Aandeel toekomstige inwoners met groen nabij."
+              },
+              {
+                "id": 22,
+                "name": "Gezonde mobiliteit",
+                "value": 71,
+                "unit": "%",
+                "status": "aandachtspunt",
+                "target": 80,
+                "description": "Aandeel verplaatsingen per fiets of te voet."
+              },
+              {
+                "id": 24,
+                "name": "Boomkroonbedekking",
+                "value": 31.6,
+                "unit": "%",
+                "status": "doelwaarde behaald",
+                "target": 30,
+                "description": "Aandeel van de openbare ruimte onder boomkronen."
+              },
+              {
+                "id": 25,
+                "name": "Koele verblijfsplekken",
+                "value": 78,
+                "unit": "%",
+                "status": "aandachtspunt",
+                "target": 90,
+                "description": "Aandeel woningen binnen 300 meter van een koele verblijfsplek."
+              },
+              {
+                "id": 26,
+                "name": "Woningen met geluidluwe zijde",
+                "value": 88,
+                "unit": "%",
+                "status": "doelwaarde behaald",
+                "target": 85,
+                "description": "Aandeel woningen met minimaal één geluidluwe gevel."
+              },
+              {
+                "id": 27,
+                "name": "Waterbergend vermogen",
+                "value": 7800,
+                "unit": "m³",
+                "status": "doelwaarde behaald",
+                "target": 7000,
+                "description": "Tijdelijke berging binnen het plangebied bij piekbuien."
+              }
+            ],
+            "measures": [
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "Polygon",
+                  "coordinates": [
+                    [
+                      [
+                        5.1028,
+                        52.0830
+                      ],
+                      [
+                        5.1080,
+                        52.0830
+                      ],
+                      [
+                        5.1080,
+                        52.0861
+                      ],
+                      [
+                        5.1028,
+                        52.0861
+                      ],
+                      [
+                        5.1028,
+                        52.0830
+                      ]
+                    ]
+                  ]
+                },
+                "properties": {
+                  "id": 31,
+                  "name": "Parklint langs kanaal",
+                  "status": "voorkeursmaatregel",
+                  "cost": 3200000,
+                  "description": "Aaneengesloten parkzone met bomen en verblijfsplekken."
+                }
+              },
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "LineString",
+                  "coordinates": [
+                    [
+                      5.0998,
+                      52.0818
+                    ],
+                    [
+                      5.1054,
+                      52.0842
+                    ],
+                    [
+                      5.1112,
+                      52.0870
+                    ]
+                  ]
+                },
+                "properties": {
+                  "id": 32,
+                  "name": "Doorfietsroute",
+                  "status": "voorkeursmaatregel",
+                  "cost": 1450000,
+                  "description": "Autovrije fietsverbinding door het plangebied."
+                }
+              },
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": [
+                    5.1072,
+                    52.0853
+                  ]
+                },
+                "properties": {
+                  "id": 33,
+                  "name": "Buurtzorgpunt",
+                  "status": "nader onderzoeken",
+                  "cost": 480000,
+                  "description": "Kleinschalige zorg- en ontmoetingsvoorziening."
+                }
+              },
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "Polygon",
+                  "coordinates": [[[5.1042, 52.0819], [5.1061, 52.0819], [5.1061, 52.0830], [5.1042, 52.0830], [5.1042, 52.0819]]]
+                },
+                "properties": {
+                  "id": 34,
+                  "name": "Waterplein",
+                  "status": "voorkeursmaatregel",
+                  "cost": 920000,
+                  "planning": "2031-2033",
+                  "description": "Verblijfsplein dat bij extreme neerslag tijdelijk water opvangt."
+                }
+              },
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "LineString",
+                  "coordinates": [[5.1010, 52.0860], [5.1051, 52.0872], [5.1098, 52.0881]]
+                },
+                "properties": {
+                  "id": 35,
+                  "name": "Schaduwrijke bomenlaan",
+                  "status": "voorkeursmaatregel",
+                  "cost": 680000,
+                  "planning": "2029-2032",
+                  "description": "Doorlopende bomenstructuur langs de belangrijkste wandelroute."
+                }
+              },
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": [5.1018, 52.0848]
+                },
+                "properties": {
+                  "id": 36,
+                  "name": "Mobiliteitshub",
+                  "status": "nader onderzoeken",
+                  "cost": 2100000,
+                  "planning": "2032-2035",
+                  "description": "Overstappunt voor deelmobiliteit aan de rand van de autoluwe wijk."
+                }
+              }
+            ],
+            "alerts": [
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": [
+                    5.1102,
+                    52.0838
+                  ]
+                },
+                "properties": {
+                  "id": 41,
+                  "name": "Hittestress bij schoolplein",
+                  "severity": "hoog",
+                  "status": "open",
+                  "description": "PET overschrijdt 38 °C op zomerse middag."
+                }
+              },
+              {
+                "id": 42,
+                "name": "Mobiliteitsdoel niet behaald",
+                "severity": "middel",
+                "status": "open",
+                "description": "Indicator blijft 9 procentpunt onder de doelwaarde."
+              },
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": [5.1054, 52.0824]
+                },
+                "properties": {
+                  "id": 44,
+                  "name": "Risico op wateroverlast bij parkeerkelder",
+                  "severity": "middel",
+                  "status": "open",
+                  "description": "Drempelhoogte moet in het uitvoeringsontwerp worden gecontroleerd."
+                }
+              },
+              {
+                "id": 45,
+                "name": "Capaciteit buurtzorgpunt onzeker",
+                "severity": "laag",
+                "status": "in onderzoek",
+                "description": "Beoogde capaciteit is nog niet afgestemd op de bevolkingsprognose."
+              }
+            ]
+          }
+        },
+        {
+          "id": "referentie-2030",
+          "name": "Referentie 2030",
+          "description": "Autonome ontwikkeling zonder aanvullend groenprogramma.",
+          "data": {
+            "overlays": [
+              {
+                "id": 13,
+                "name": "Hittestress gevoelstemperatuur",
+                "type": "HEAT",
+                "status": "berekend",
+                "unit": "°C",
+                "minValue": 29.8,
+                "maxValue": 42.3
+              },
+              {
+                "id": 17,
+                "name": "Geluidbelasting wegverkeer",
+                "type": "NOISE",
+                "status": "berekend",
+                "unit": "dB Lden",
+                "minValue": 51.6,
+                "maxValue": 71.2
+              },
+              {
+                "id": 18,
+                "name": "Waterdiepte extreme bui",
+                "type": "WATER_STRESS",
+                "status": "berekend",
+                "unit": "m",
+                "minValue": 0,
+                "maxValue": 0.68
+              },
+              {
+                "id": 19,
+                "name": "Groen op loopafstand",
+                "type": "DISTANCE",
+                "status": "berekend",
+                "unit": "m",
+                "minValue": 0,
+                "maxValue": 940
+              }
+            ],
+            "indicators": [
+              {
+                "id": 23,
+                "name": "Inwoners binnen 300 m van groen",
+                "value": 61.5,
+                "unit": "%",
+                "status": "doelwaarde niet behaald",
+                "target": 75,
+                "description": "Aandeel toekomstige inwoners met groen nabij."
+              },
+              {
+                "id": 28,
+                "name": "Gezonde mobiliteit",
+                "value": 54,
+                "unit": "%",
+                "status": "doelwaarde niet behaald",
+                "target": 80,
+                "description": "Aandeel verplaatsingen per fiets of te voet."
+              },
+              {
+                "id": 29,
+                "name": "Boomkroonbedekking",
+                "value": 17.8,
+                "unit": "%",
+                "status": "doelwaarde niet behaald",
+                "target": 30,
+                "description": "Aandeel van de openbare ruimte onder boomkronen."
+              },
+              {
+                "id": 30,
+                "name": "Koele verblijfsplekken",
+                "value": 49,
+                "unit": "%",
+                "status": "doelwaarde niet behaald",
+                "target": 90,
+                "description": "Aandeel woningen binnen 300 meter van een koele verblijfsplek."
+              }
+            ],
+            "measures": [
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "Polygon",
+                  "coordinates": [[[5.1028, 52.0830], [5.1044, 52.0830], [5.1044, 52.0840], [5.1028, 52.0840], [5.1028, 52.0830]]]
+                },
+                "properties": {
+                  "id": 37,
+                  "name": "Bestaande groenstrook behouden",
+                  "status": "autonome ontwikkeling",
+                  "cost": 160000,
+                  "description": "Alleen de bestaande groenstrook blijft behouden."
+                }
+              }
+            ],
+            "alerts": [
+              {
+                "id": 43,
+                "name": "Groendoel niet behaald",
+                "severity": "hoog",
+                "status": "open",
+                "description": "13,5 procentpunt onder de doelwaarde."
+              },
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": [5.1094, 52.0841]
+                },
+                "properties": {
+                  "id": 46,
+                  "name": "Ernstig hitte-eilandeffect",
+                  "severity": "hoog",
+                  "status": "open",
+                  "description": "De gevoelstemperatuur overschrijdt lokaal 42 °C."
+                }
+              },
+              {
+                "id": 47,
+                "name": "Waterberging ontoereikend",
+                "severity": "middel",
+                "status": "open",
+                "description": "Bij een bui van 70 mm ontstaat schade aan kwetsbare functies."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "stationsgebied",
+      "name": "Stationsgebied Utrecht",
+      "scenarios": [
+        {
+          "id": "luwe-stad",
+          "name": "Luwe stad",
+          "description": "Autoluw stationsgebied met schonere lucht, veilige looproutes en meer verblijfskwaliteit.",
+          "data": {
+            "overlays": [
+              {
+                "id": 61,
+                "name": "Jaargemiddelde NO2",
+                "type": "AIR_QUALITY",
+                "status": "berekend",
+                "unit": "µg/m³",
+                "minValue": 18.1,
+                "maxValue": 27.6
+              },
+              {
+                "id": 62,
+                "name": "Geluidbelasting",
+                "type": "NOISE",
+                "status": "berekend",
+                "unit": "dB Lden",
+                "minValue": 46.8,
+                "maxValue": 64.9
+              },
+              {
+                "id": 63,
+                "name": "Loopafstand tot openbaar vervoer",
+                "type": "DISTANCE",
+                "status": "berekend",
+                "unit": "m",
+                "minValue": 0,
+                "maxValue": 510
+              }
+            ],
+            "indicators": [
+              {
+                "id": 51,
+                "name": "NO₂-reductie",
+                "value": 12.4,
+                "unit": "%",
+                "status": "doelwaarde behaald",
+                "target": 10,
+                "description": "Reductie ten opzichte van de verkeersreferentie."
+              },
+              {
+                "id": 52,
+                "name": "Verplaatsingen te voet",
+                "value": 38,
+                "unit": "%",
+                "status": "doelwaarde behaald",
+                "target": 35,
+                "description": "Aandeel verplaatsingen binnen het stationsgebied."
+              },
+              {
+                "id": 53,
+                "name": "Ervaren verkeersveiligheid",
+                "value": 7.6,
+                "unit": "rapportcijfer",
+                "status": "aandachtspunt",
+                "target": 8,
+                "description": "Modelmatige vertaling van oversteekbaarheid en verkeersdruk."
+              },
+              {
+                "id": 54,
+                "name": "Woningen met geluidluwe zijde",
+                "value": 91,
+                "unit": "%",
+                "status": "doelwaarde behaald",
+                "target": 85,
+                "description": "Aandeel nieuwe woningen met minimaal één geluidluwe gevel."
+              }
+            ],
+            "measures": [
+              {
+                "type": "Feature",
+                "geometry": {"type": "LineString", "coordinates": [[5.1082, 52.0889], [5.1108, 52.0898], [5.1137, 52.0905]]},
+                "properties": {
+                  "id": 71,
+                  "name": "Autovrije stationsas",
+                  "status": "voorkeursmaatregel",
+                  "cost": 4600000,
+                  "description": "Doorgaande voetgangersroute tussen station en centrum."
+                }
+              },
+              {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [5.1106, 52.0896]},
+                "properties": {
+                  "id": 72,
+                  "name": "Fietsenstalling oostzijde",
+                  "status": "voorkeursmaatregel",
+                  "cost": 2800000,
+                  "description": "Extra capaciteit voor 3500 fietsen."
+                }
+              },
+              {
+                "type": "Feature",
+                "geometry": {"type": "Polygon", "coordinates": [[[5.1114, 52.0891], [5.1125, 52.0891], [5.1125, 52.0898], [5.1114, 52.0898], [5.1114, 52.0891]]]},
+                "properties": {
+                  "id": 73,
+                  "name": "Groen stationsplein",
+                  "status": "nader uitwerken",
+                  "cost": 1750000,
+                  "description": "Schaduwrijk verblijfsplein met infiltratievakken."
+                }
+              },
+              {
+                "type": "Feature",
+                "geometry": {"type": "LineString", "coordinates": [[5.1079, 52.0901], [5.1105, 52.0907], [5.1130, 52.0911]]},
+                "properties": {
+                  "id": 74,
+                  "name": "Snelfietsverbinding",
+                  "status": "voorkeursmaatregel",
+                  "cost": 1200000,
+                  "description": "Conflictarm tracé langs de noordzijde van het station."
+                }
+              }
+            ],
+            "alerts": [
+              {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [5.1099, 52.0893]},
+                "properties": {
+                  "id": 81,
+                  "name": "Druk kruispunt tijdens spits",
+                  "severity": "middel",
+                  "status": "open",
+                  "description": "Voetgangerswachttijd blijft op piekmomenten boven de doelwaarde."
+                }
+              },
+              {
+                "id": 82,
+                "name": "Veiligheidsdoel bijna behaald",
+                "severity": "laag",
+                "status": "in onderzoek",
+                "description": "Aanvullende maatregelen bij twee oversteeklocaties zijn nodig."
+              }
+            ]
+          }
+        },
+        {
+          "id": "verkeersreferentie-2035",
+          "name": "Verkeersreferentie 2035",
+          "description": "Referentiesituatie met autonome verkeersgroei en beperkte herinrichting.",
+          "data": {
+            "overlays": [
+              {"id": 64, "name": "Jaargemiddelde NO2", "type": "AIR_QUALITY", "status": "berekend", "unit": "µg/m³", "minValue": 21.4, "maxValue": 33.8},
+              {"id": 65, "name": "Geluidbelasting", "type": "NOISE", "status": "berekend", "unit": "dB Lden", "minValue": 49.2, "maxValue": 70.1}
+            ],
+            "indicators": [
+              {"id": 55, "name": "Verplaatsingen te voet", "value": 24, "unit": "%", "status": "doelwaarde niet behaald", "target": 35, "description": "Aandeel verplaatsingen binnen het stationsgebied."},
+              {"id": 56, "name": "Ervaren verkeersveiligheid", "value": 6.1, "unit": "rapportcijfer", "status": "doelwaarde niet behaald", "target": 8, "description": "Modelmatige vertaling van oversteekbaarheid en verkeersdruk."}
+            ],
+            "measures": [
+              {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [5.1106, 52.0896]},
+                "properties": {"id": 75, "name": "Onderhoud stationsplein", "status": "autonome ontwikkeling", "cost": 350000, "description": "Technisch onderhoud zonder functiewijziging."}
+              }
+            ],
+            "alerts": [
+              {"id": 83, "name": "NO2-doel niet behaald", "severity": "hoog", "status": "open", "description": "Concentratie blijft op meerdere locaties boven de projectdoelstelling."},
+              {"id": 84, "name": "Onvoldoende oversteekbaarheid", "severity": "hoog", "status": "open", "description": "De verkeersstroom vormt een barrière tussen station en centrum."}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "kromme-rijngebied",
+      "name": "Kromme Rijngebied",
+      "scenarios": [
+        {
+          "id": "gezond-landschap-2040",
+          "name": "Gezond landschap 2040",
+          "description": "Natuurinclusief scenario met recreatieve verbindingen, waterberging en minder hittestress.",
+          "data": {
+            "overlays": [
+              {
+                "id": 101,
+                "name": "Afstand tot recreatief groen",
+                "type": "DISTANCE",
+                "status": "berekend",
+                "unit": "m",
+                "minValue": 0,
+                "maxValue": 1850
+              },
+              {
+                "id": 102,
+                "name": "Waterberging landschap",
+                "type": "WATER_STORAGE",
+                "status": "berekend",
+                "unit": "mm",
+                "minValue": 12,
+                "maxValue": 84
+              },
+              {
+                "id": 103,
+                "name": "Hittestress gevoelstemperatuur",
+                "type": "HEAT",
+                "status": "berekend",
+                "unit": "°C",
+                "minValue": 25.8,
+                "maxValue": 36.7
+              }
+            ],
+            "indicators": [
+              {
+                "id": 111,
+                "name": "Inwoners binnen 10 minuten fietsen van groen",
+                "value": 92,
+                "unit": "%",
+                "status": "doelwaarde behaald",
+                "target": 90,
+                "description": "Bereikbaarheid van grotere recreatie- en natuurgebieden."
+              },
+              {
+                "id": 112,
+                "name": "Aaneengesloten wandelnetwerk",
+                "value": 46.5,
+                "unit": "km",
+                "status": "doelwaarde behaald",
+                "target": 40,
+                "description": "Lengte van het onderling verbonden wandelnetwerk."
+              },
+              {
+                "id": 113,
+                "name": "Klimaatbestendige landbouwgrond",
+                "value": 68,
+                "unit": "%",
+                "status": "aandachtspunt",
+                "target": 75,
+                "description": "Aandeel landbouwgrond met maatregelen voor bodem en water."
+              },
+              {
+                "id": 114,
+                "name": "Waterbergend vermogen",
+                "value": 124000,
+                "unit": "m³",
+                "status": "doelwaarde behaald",
+                "target": 110000,
+                "description": "Tijdelijke bergingscapaciteit in het gebied."
+              }
+            ],
+            "measures": [
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "MultiPolygon",
+                  "coordinates": [
+                    [[[5.184, 52.052], [5.192, 52.052], [5.192, 52.057], [5.184, 52.057], [5.184, 52.052]]],
+                    [[[5.202, 52.060], [5.209, 52.060], [5.209, 52.065], [5.202, 52.065], [5.202, 52.060]]]
+                  ]
+                },
+                "properties": {
+                  "id": 121,
+                  "name": "Natte natuurzones",
+                  "status": "voorkeursmaatregel",
+                  "cost": 3400000,
+                  "description": "Twee zones voor waterberging, biodiversiteit en verkoeling."
+                }
+              },
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "LineString",
+                  "coordinates": [[5.176, 52.050], [5.188, 52.056], [5.201, 52.061], [5.215, 52.066]]
+                },
+                "properties": {
+                  "id": 122,
+                  "name": "Doorfietsroute Kromme Rijn",
+                  "status": "voorkeursmaatregel",
+                  "cost": 2300000,
+                  "description": "Veilige regionale fietsverbinding tussen kernen en recreatiegebieden."
+                }
+              },
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "LineString",
+                  "coordinates": [[5.181, 52.064], [5.191, 52.060], [5.204, 52.055]]
+                },
+                "properties": {
+                  "id": 123,
+                  "name": "Landschappelijke wandelverbinding",
+                  "status": "nader uitwerken",
+                  "cost": 740000,
+                  "description": "Nieuwe wandelverbinding langs boomgaarden en watergangen."
+                }
+              },
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": [5.196, 52.059]
+                },
+                "properties": {
+                  "id": 124,
+                  "name": "Gezondheids- en recreatieknooppunt",
+                  "status": "pilot",
+                  "cost": 390000,
+                  "description": "Rustpunt met watertappunt, fietsservice en toegankelijke beweegroute."
+                }
+              }
+            ],
+            "alerts": [
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": [5.207, 52.063]
+                },
+                "properties": {
+                  "id": 131,
+                  "name": "Ontbrekende veilige oversteek",
+                  "severity": "middel",
+                  "status": "open",
+                  "description": "De recreatieve route kruist een provinciale weg zonder veilige voorziening."
+                }
+              },
+              {
+                "id": 132,
+                "name": "Landbouwdoel nog niet behaald",
+                "severity": "middel",
+                "status": "in onderzoek",
+                "description": "Zeven procentpunt extra deelname is nodig voor de doelwaarde."
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

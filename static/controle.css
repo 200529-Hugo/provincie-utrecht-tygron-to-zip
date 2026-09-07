@@ -1,0 +1,435 @@
+.control-page {
+    min-height: 100vh;
+    overflow: auto;
+    background: var(--bg);
+}
+
+.control-shell {
+    display: block;
+    width: 100%;
+    min-height: calc(100vh - 74px);
+    margin: 0;
+    padding: 0 0 52px;
+}
+
+.control-intro {
+    min-height: 286px;
+    padding: 48px max(32px, calc((100vw - 1120px) / 2));
+    color: #fff;
+    background:
+        linear-gradient(90deg, #231b1b 0%, #231b1bf7 47%, #231b1b99 72%, #231b1b33 100%),
+        url("images/stap-3-dossier.jpg") right 38% / 58% auto no-repeat,
+        var(--black);
+}
+
+.control-intro > div {
+    width: min(650px, 64vw);
+}
+
+.control-intro .eyebrow {
+    color: var(--rose-strong);
+}
+
+.control-intro h1 {
+    margin: 9px 0 16px;
+    font-size: clamp(38px, 4.2vw, 56px);
+    line-height: 1.03;
+    letter-spacing: -.04em;
+}
+
+.control-intro p:last-child {
+    max-width: 580px;
+    margin: 0;
+    color: #eee;
+    font-size: 16px;
+}
+
+.control-work {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(300px, .7fr);
+    width: min(1120px, calc(100% - 48px));
+    margin: -44px auto 0;
+    border-top: 8px solid var(--red);
+    background: #fff;
+    box-shadow: 0 12px 34px #231b1b18;
+}
+
+.control-primary {
+    min-width: 0;
+    padding: 36px 40px 38px;
+}
+
+.control-heading {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 28px;
+    align-items: end;
+}
+
+.control-heading .eyebrow,
+.control-heading h2 {
+    grid-column: 1;
+}
+
+.control-heading > p:last-child {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    max-width: 230px;
+    margin: 0 0 4px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.control-heading h2,
+.control-explanation h2,
+.result-head h2 {
+    margin: 4px 0 0;
+    line-height: 1.1;
+}
+
+.control-heading h2 {
+    font-size: clamp(29px, 3vw, 39px);
+}
+
+.drop-zone {
+    position: relative;
+    display: grid;
+    grid-template-columns: 66px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    column-gap: 20px;
+    align-items: center;
+    min-height: 128px;
+    margin: 27px 0 18px;
+    padding: 22px 26px;
+    border: 2px dashed #aaa4a1;
+    background: var(--soft);
+    cursor: pointer;
+    text-align: left;
+}
+
+.drop-zone:hover,
+.drop-zone.dragging,
+.drop-zone.has-file {
+    border-color: var(--red);
+    background: var(--rose);
+}
+
+.drop-zone input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.file-mark {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    display: grid;
+    place-items: center;
+    width: 58px;
+    height: 66px;
+    color: #fff;
+    background: var(--red);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.drop-zone strong {
+    align-self: end;
+    overflow-wrap: anywhere;
+    font-size: 17px;
+}
+
+.drop-zone small {
+    align-self: start;
+    margin-top: 3px;
+    color: var(--muted);
+}
+
+.control-button {
+    display: block;
+    width: 250px;
+    margin-left: auto;
+}
+
+.control-button:disabled {
+    cursor: not-allowed;
+    opacity: .42;
+}
+
+.control-explanation {
+    padding: 36px 34px;
+    border-left: 1px solid var(--line);
+    background: var(--soft);
+}
+
+.control-explanation h2 {
+    max-width: 240px;
+    font-size: 24px;
+}
+
+.control-explanation ol {
+    counter-reset: control-step;
+    display: grid;
+    gap: 0;
+    margin: 24px 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+}
+
+.control-explanation li {
+    counter-increment: control-step;
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.control-explanation li::before {
+    content: counter(control-step, decimal-leading-zero);
+    grid-column: 1;
+    grid-row: 1 / 3;
+    color: var(--red);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.control-explanation li b,
+.control-explanation li span {
+    grid-column: 2;
+}
+
+.control-explanation li span {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.privacy-note {
+    margin: 0;
+    padding: 13px 14px;
+    border-left: 5px solid var(--red);
+    background: #fff;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.validation-result {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 38px 40px 46px;
+    border-top: 1px solid var(--line);
+    scroll-margin-top: 28px;
+}
+
+.validation-result.hidden {
+    display: none;
+}
+
+.result-head {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+.result-head h2 {
+    font-size: clamp(27px, 3vw, 37px);
+}
+
+.result-head p:last-child {
+    margin: 7px 0 0;
+    color: var(--muted);
+}
+
+.result-mark {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    color: #fff;
+    background: var(--green);
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.rejected .result-mark {
+    background: var(--red);
+}
+
+.result-counts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin: 28px 0;
+    border: 1px solid var(--line);
+}
+
+.result-count {
+    padding: 14px 16px;
+    border-right: 1px solid var(--line);
+}
+
+.result-count:last-child {
+    border-right: 0;
+}
+
+.result-count b,
+.result-count span {
+    display: block;
+}
+
+.result-count b {
+    color: var(--red);
+    font-size: 25px;
+}
+
+.result-count span {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.check-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 28px;
+    border-top: 1px solid var(--line);
+}
+
+.check-row {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.check-state {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    color: #fff;
+    background: var(--green);
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.check-row.fout .check-state {
+    background: var(--red);
+}
+
+.check-row b,
+.check-row small {
+    display: block;
+}
+
+.check-row small {
+    margin-top: 2px;
+    color: var(--muted);
+}
+
+@media (max-width: 900px) {
+    .control-intro {
+        min-height: 250px;
+        padding: 42px 28px 66px;
+        background-position: right center;
+        background-size: auto 100%;
+    }
+
+    .control-intro > div {
+        width: min(620px, 82vw);
+    }
+
+    .control-work {
+        grid-template-columns: 1fr;
+        width: min(720px, calc(100% - 32px));
+    }
+
+    .control-explanation {
+        grid-row: 2;
+        border-top: 1px solid var(--line);
+        border-left: 0;
+    }
+
+    .control-explanation ol {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .control-explanation li {
+        padding-right: 16px;
+        border-right: 1px solid var(--line);
+    }
+
+    .validation-result {
+        grid-row: 3;
+    }
+}
+
+@media (max-width: 600px) {
+    .control-intro {
+        min-height: 270px;
+        padding: 36px 20px 68px;
+        background:
+            linear-gradient(90deg, #231b1bf7, #231b1bd9),
+            url("images/stap-3-dossier.jpg") center / cover no-repeat;
+    }
+
+    .control-intro > div {
+        width: 100%;
+    }
+
+    .control-intro h1 {
+        font-size: 37px;
+    }
+
+    .control-primary,
+    .control-explanation,
+    .validation-result {
+        padding: 28px 20px;
+    }
+
+    .control-heading {
+        display: block;
+    }
+
+    .control-heading > p:last-child {
+        max-width: none;
+        margin-top: 10px;
+    }
+
+    .drop-zone {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        padding: 24px 18px;
+        text-align: center;
+    }
+
+    .file-mark {
+        grid-column: 1;
+        grid-row: auto;
+        margin-bottom: 10px;
+    }
+
+    .control-button {
+        width: 100%;
+    }
+
+    .control-explanation ol,
+    .check-list {
+        grid-template-columns: 1fr;
+    }
+
+    .control-explanation li {
+        border-right: 0;
+    }
+
+    .result-counts {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .result-count:nth-child(2) {
+        border-right: 0;
+    }
+}

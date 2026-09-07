@@ -1,0 +1,1759 @@
+/* Taakgerichte toepassing in de huisstijl van Provincie Utrecht. */
+:root {
+    --red: #ec0000;
+    --red-dark: #c90000;
+    --black: #231b1b;
+    --ink: #231b1b;
+    --muted: #6c6868;
+    --line: #dedbd9;
+    --paper: #fff;
+    --bg: #f4f2f1;
+    --rose: #fde9eb;
+    --rose-strong: #f8c7d0;
+    --soft: #f7f6f5;
+    --green: #1c7c3b;
+    --blue: #ec0000;
+    --blue-dark: #c90000;
+    --blue-light: #fde9eb;
+    --yellow: #f8c7d0;
+    --workflow-block-height: clamp(520px, calc(100vh - 236px), 600px);
+    --step-card-width: 305px;
+    --step-card-height: 292px;
+}
+
+* {
+    border-radius: 0;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+    font-family: Inter, Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: var(--bg);
+    color: var(--ink);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid var(--black);
+    outline-offset: 3px;
+}
+
+header {
+    position: relative;
+    height: 74px;
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+}
+
+.header-main {
+    position: relative;
+    height: 74px;
+    justify-content: center;
+    padding: 12px 34px;
+}
+
+.brand {
+    padding: 0;
+}
+
+.province-logo {
+    display: block;
+    width: 218px;
+    height: auto;
+}
+
+.utilities {
+    position: absolute;
+    right: 34px;
+    top: 50%;
+    display: flex;
+    gap: 20px;
+    transform: translateY(-50%);
+}
+
+.utilities a,
+.back-link {
+    color: var(--black);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration-color: var(--red);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
+}
+
+main {
+    width: 100%;
+    height: calc(100vh - 75px);
+    min-height: 620px;
+    background: var(--bg);
+}
+
+.workspace {
+    display: grid;
+    grid-template: 64px minmax(0, 1fr) / 1fr;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    background: var(--bg);
+}
+
+.steps {
+    grid-row: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+}
+
+.steps-title {
+    display: none;
+}
+
+.steps button {
+    position: relative;
+    width: min(230px, 28vw);
+    min-height: 64px;
+    padding: 10px 22px;
+    border: 0;
+    border-left: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink);
+}
+
+.steps button:last-child {
+    border-right: 1px solid var(--line);
+}
+
+.steps button::after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 5px;
+    content: "";
+    background: transparent;
+}
+
+.steps button b {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #aaa;
+    color: var(--ink);
+}
+
+.steps button span {
+    font-size: 14px;
+}
+
+.steps button small {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.steps button.active {
+    background: var(--rose);
+    color: var(--ink);
+}
+
+.steps button.active::after {
+    background: var(--red);
+}
+
+.steps button.active b {
+    border-color: var(--red);
+    background: var(--red);
+    color: #fff;
+}
+
+.steps button.active small {
+    color: var(--muted);
+}
+
+.panel {
+    grid-row: 2;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: auto;
+    border: 0;
+    background: var(--bg);
+}
+
+.panel.active {
+    display: block;
+}
+
+/* Stap 1: één sterke contextkolom en één rustige werkkaart. */
+#step1.active {
+    display: grid;
+    grid-template-columns: minmax(380px, 470px) minmax(480px, 700px);
+    grid-template-rows: auto 1fr auto;
+    justify-content: center;
+    align-content: start;
+    gap: 0;
+    padding: clamp(32px, 5vh, 54px) clamp(24px, 5vw, 72px);
+}
+
+#step1 .panel-head {
+    grid-column: 1;
+    grid-row: 1 / 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 540px;
+    margin: 0;
+    padding: 38px;
+    background:
+        linear-gradient(180deg, #00000008, #0000002e),
+        url("images/stap-1-bron.jpg") center / cover no-repeat;
+    color: #fff;
+}
+
+#step1 .panel-head > div {
+    width: min(290px, 100%);
+    padding: 30px 28px 32px;
+    background: var(--red);
+}
+
+#step1 .panel-head .eyebrow,
+#step1 .panel-head p:last-child {
+    color: #fff;
+}
+
+#step1 .panel-head .eyebrow {
+    opacity: .78;
+}
+
+#step1 .panel-head h2 {
+    max-width: 240px;
+    margin-top: 10px;
+    color: #fff;
+    font-size: clamp(32px, 3.2vw, 44px);
+    letter-spacing: -.035em;
+}
+
+#step1 .panel-head p:last-child {
+    max-width: 235px;
+    margin-top: 18px;
+    opacity: .88;
+}
+
+#step1 .source-tabs {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    padding: 22px 28px 0;
+    border: 0;
+    border-bottom: 1px solid var(--black);
+    background: #fff;
+}
+
+.source-tabs button {
+    min-height: 46px;
+    padding: 12px 18px;
+    border: 0;
+    border-right: 1px solid #fff;
+    background: #efeded;
+    color: var(--ink);
+    font-family: inherit;
+}
+
+.source-tabs button.active {
+    background: var(--black);
+    color: #fff;
+}
+
+#step1 > .fields {
+    grid-column: 2;
+    grid-row: 2;
+    align-content: start;
+    padding: 28px;
+    background: #fff;
+}
+
+.fields {
+    gap: 20px;
+}
+
+.fields label,
+.notes {
+    color: var(--ink);
+}
+
+.fields input,
+.fields select,
+textarea {
+    border: 1px solid #9b9896;
+    background: #fff;
+    font-family: inherit;
+}
+
+.fields input:focus,
+.fields select:focus,
+textarea:focus {
+    border-color: var(--red);
+    box-shadow: inset 0 0 0 1px var(--red);
+}
+
+.scenario-note,
+.hint {
+    margin: 2px 0 0;
+    border: 0;
+    border-left: 6px solid var(--red);
+    background: var(--rose);
+}
+
+#step1 > .actions {
+    grid-column: 2;
+    grid-row: 3;
+    margin: 0;
+    padding: 22px 28px 28px;
+    border: 0;
+    background: #fff;
+}
+
+.primary,
+.secondary {
+    min-height: 48px;
+    padding: 14px 22px;
+    border-radius: 0;
+    font-family: inherit;
+}
+
+.primary {
+    border: 1px solid var(--red);
+    background: var(--red);
+    color: #fff;
+}
+
+.primary:hover {
+    background: var(--red-dark);
+}
+
+.secondary {
+    border: 1px solid var(--black);
+    background: #fff;
+    color: var(--black);
+}
+
+.secondary:hover {
+    background: var(--soft);
+}
+
+/* Stap 2: compacte analysetafel. */
+#step2.active {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 30px 32px 60px;
+}
+
+#step2 .panel-head {
+    margin: 0 0 18px;
+    padding: 23px 26px;
+    border-left: 8px solid var(--red);
+    background: #fff;
+}
+
+.eyebrow {
+    color: var(--red);
+    letter-spacing: .12em;
+}
+
+.panel h2 {
+    font-size: clamp(30px, 3.2vw, 43px);
+    letter-spacing: -.03em;
+}
+
+.summary {
+    gap: 10px;
+}
+
+.stat {
+    position: relative;
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-top: 6px solid var(--black);
+    background: #fff;
+    color: var(--ink);
+}
+
+.stat:first-child {
+    border-top-color: var(--red);
+}
+
+.stat b {
+    color: var(--ink);
+}
+
+.stat:first-child b {
+    color: var(--red);
+}
+
+.stat::after {
+    display: none;
+}
+
+.map-card,
+.notes,
+fieldset {
+    border: 1px solid var(--line);
+    background: #fff;
+}
+
+.map-head {
+    border-bottom: 1px solid var(--line);
+    background: var(--rose);
+}
+
+.map-water {
+    fill: #dfe8ea;
+}
+
+.map-land {
+    fill: #f6f2e9;
+}
+
+.map-poly {
+    fill: #f8c7d0aa;
+    stroke: var(--red);
+}
+
+.notes {
+    padding: 18px;
+}
+
+fieldset {
+    padding: 17px 18px;
+}
+
+.check {
+    border-color: #aaa;
+    background: #fff;
+}
+
+#step2 > .actions {
+    margin-top: 18px;
+}
+
+/* Stap 3: rustige afronding. */
+#step3.active {
+    max-width: 760px;
+    height: auto;
+    min-height: 520px;
+    margin: 38px auto;
+    padding: 54px 60px;
+    border-top: 10px solid var(--red);
+    background: #fff;
+}
+
+.seal {
+    border: 0;
+    background: var(--red);
+}
+
+.package {
+    border: 1px solid var(--line);
+    border-left: 6px solid var(--red);
+    background: var(--rose);
+}
+
+.toast {
+    border-left-color: var(--red);
+    background: var(--black);
+}
+
+/* Werkinstructie */
+.manual-page header {
+    height: 74px;
+}
+
+.manual-shell {
+    grid-template-columns: 290px minmax(0, 1fr);
+    height: calc(100vh - 74px);
+}
+
+.manual-nav {
+    background: var(--black);
+}
+
+.manual-nav-head {
+    border-top-color: var(--red);
+}
+
+.manual-nav nav a:hover,
+.manual-nav nav a.active {
+    border-left-color: var(--red);
+    background: var(--rose);
+    color: var(--ink);
+}
+
+.manual-nav nav a.sub.active {
+    color: var(--ink);
+}
+
+.manual-back {
+    background: #161111;
+}
+
+.manual-content {
+    background: var(--bg);
+}
+
+.manual-toolbar button {
+    border: 1px solid var(--red);
+    background: #fff;
+    color: var(--red);
+}
+
+.markdown-body {
+    max-width: 940px;
+    background: #fff;
+}
+
+.markdown-body h1 {
+    border-bottom-color: var(--red);
+}
+
+.markdown-body h2 {
+    border: 0;
+    border-top: 7px solid var(--red);
+    background: var(--rose);
+}
+
+.markdown-body h3 {
+    color: var(--ink);
+}
+
+.markdown-body blockquote {
+    border-left-color: var(--red);
+    background: var(--rose);
+}
+
+.markdown-body pre {
+    border-left-color: var(--red);
+}
+
+.markdown-body .diagram {
+    border-color: var(--line);
+    border-bottom-color: var(--red);
+    background: var(--soft);
+}
+
+@media (max-width: 900px) {
+    #step1.active {
+        grid-template-columns: minmax(320px, 390px) minmax(430px, 1fr);
+        padding: 28px 24px;
+    }
+
+    #step1 .panel-head {
+        padding: 28px;
+    }
+
+    .utilities {
+        right: 20px;
+    }
+}
+
+@media (max-width: 780px) {
+    header,
+    .header-main {
+        height: 62px;
+        min-height: 62px;
+    }
+
+    .header-main {
+        padding: 9px 16px;
+    }
+
+    .province-logo {
+        width: 186px;
+    }
+
+    .utilities {
+        display: none;
+    }
+
+    main {
+        height: auto;
+        min-height: calc(100vh - 63px);
+    }
+
+    .workspace {
+        display: grid;
+        grid-template-rows: 56px minmax(0, 1fr);
+        min-height: calc(100vh - 63px);
+    }
+
+    .steps {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        height: 56px;
+        padding: 0;
+    }
+
+    .steps button {
+        width: 33.333%;
+        min-height: 56px;
+        justify-content: center;
+        padding: 8px;
+    }
+
+    .steps button span {
+        display: none;
+    }
+
+    .steps button b {
+        width: 34px;
+        height: 34px;
+    }
+
+    .panel {
+        height: auto;
+        min-height: calc(100vh - 119px);
+        overflow: visible;
+    }
+
+    #step1.active {
+        display: block;
+        padding: 20px 16px 34px;
+    }
+
+    #step1 .panel-head {
+        display: block;
+        min-height: 315px;
+        padding: 22px;
+        background-position: center;
+    }
+
+    #step1 .panel-head > div {
+        width: 260px;
+        padding: 22px;
+    }
+
+    #step1 .panel-head h2 {
+        font-size: 32px;
+    }
+
+    #step1 .panel-head p:last-child {
+        max-width: none;
+        margin: 10px 0 0;
+        font-size: 14px;
+    }
+
+    #step1 .source-tabs {
+        display: flex;
+        margin-top: 12px;
+        padding: 12px 12px 0;
+    }
+
+    .source-tabs button {
+        flex: 1;
+        padding: 10px 6px;
+        font-size: 12px;
+    }
+
+    #step1 > .fields {
+        padding: 22px 18px;
+    }
+
+    #step1 > .actions {
+        padding: 16px 18px 22px;
+    }
+
+    .fields.two,
+    .summary {
+        grid-template-columns: 1fr;
+    }
+
+    #step2.active {
+        padding: 20px 16px 42px;
+    }
+
+    #step2 .panel-head {
+        padding: 20px;
+    }
+
+    #step3.active {
+        min-height: 0;
+        margin: 20px 16px;
+        padding: 38px 22px;
+    }
+
+    .manual-page header {
+        height: 62px;
+    }
+
+    .manual-shell {
+        height: auto;
+    }
+
+    .manual-nav nav a.active {
+        border-bottom-color: var(--red);
+    }
+
+    .manual-toolbar {
+        top: 49px;
+    }
+}
+
+@media print {
+    .markdown-body h2 {
+        border-top: 4px solid #000;
+    }
+}
+
+/* Eén blijvende paginastructuur voor alle drie workflowstappen. */
+.panel.active,
+#step1.active,
+#step2.active,
+#step3.active {
+    display: grid;
+    grid-template: minmax(540px, auto) / minmax(380px, 470px) minmax(480px, 700px);
+    justify-content: center;
+    align-content: start;
+    gap: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    padding: clamp(32px, 5vh, 54px) clamp(24px, 5vw, 72px);
+    border: 0;
+    background: var(--bg);
+    text-align: left;
+}
+
+.panel .panel-head {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 540px;
+    margin: 0;
+    padding: 38px;
+    border: 0;
+    background:
+        linear-gradient(180deg, #00000008, #0000002e),
+        url("images/stap-1-bron.jpg") center / cover no-repeat;
+    color: #fff;
+    text-align: left;
+}
+
+/* Iedere stap krijgt een eigen provinciale contextfoto. */
+#step1 .panel-head {
+    background-image:
+        linear-gradient(180deg, #00000008, #0000002e),
+        url("images/stap-1-bron.jpg");
+}
+
+#step2 .panel-head {
+    background-image:
+        linear-gradient(180deg, #00000008, #0000002e),
+        url("images/stap-2-controle.jpg");
+}
+
+#step3 .panel-head {
+    background-image:
+        linear-gradient(180deg, #00000008, #0000002e),
+        url("images/stap-3-dossier.jpg");
+}
+
+#step2 .panel-head,
+#step3 .panel-head {
+    min-height: 540px;
+    margin: 0;
+    padding: 38px;
+    border: 0;
+}
+
+.panel .panel-head > div {
+    width: min(305px, 100%);
+    padding: 30px 28px 32px;
+    background: var(--red);
+}
+
+#step2 .panel-head > div,
+#step3 .panel-head > div {
+    width: min(305px, 100%);
+    padding: 30px 28px 32px;
+    background: var(--red);
+}
+
+.panel .panel-head .eyebrow,
+.panel .panel-head p,
+.panel .panel-head h2 {
+    color: #fff;
+}
+
+.panel .panel-head .eyebrow {
+    opacity: .78;
+}
+
+.panel .panel-head h2 {
+    margin: 10px 0 0;
+    font-size: clamp(31px, 3vw, 43px);
+    line-height: 1.08;
+    letter-spacing: -.035em;
+}
+
+.panel .panel-head p:last-child {
+    max-width: 245px;
+    margin: 18px 0 0;
+    opacity: .9;
+}
+
+.panel-work {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    min-height: 540px;
+    background: #fff;
+}
+
+#step1 .panel-work {
+    display: flex;
+    flex-direction: column;
+}
+
+#step1 .source-tabs {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 22px 28px 0;
+    border: 0;
+    border-bottom: 1px solid var(--black);
+    background: #fff;
+}
+
+#step1 .panel-work > .fields {
+    align-content: start;
+    padding: 28px;
+    background: #fff;
+}
+
+#step1 .panel-work > .actions {
+    margin: auto 0 0;
+    padding: 22px 28px 28px;
+    border: 0;
+    background: #fff;
+}
+
+#step2 .panel-work {
+    max-height: calc(100vh - 185px);
+    overflow: auto;
+    padding: 24px 26px 28px;
+}
+
+#step2 .summary {
+    margin-bottom: 16px;
+}
+
+#step2 .actions {
+    margin-top: 18px;
+}
+
+#step3 .panel-work {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 42px 48px;
+    text-align: center;
+}
+
+#step3 .panel-head {
+    text-align: left;
+}
+
+#step3 .seal {
+    margin-top: 0;
+}
+
+@media (max-width: 900px) and (min-width: 781px) {
+    .panel.active,
+    #step1.active,
+    #step2.active,
+    #step3.active {
+        grid-template-columns: minmax(310px, 370px) minmax(410px, 1fr);
+        padding: 28px 24px;
+    }
+
+    .panel .panel-head {
+        padding: 28px;
+    }
+
+    #step2 .panel-head,
+    #step3 .panel-head {
+        min-height: 315px;
+        padding: 22px;
+        border: 0;
+        background-position: center;
+    }
+}
+
+@media (max-width: 780px) {
+    .panel.active,
+    #step1.active,
+    #step2.active,
+    #step3.active {
+        display: block;
+        width: 100%;
+        height: auto;
+        min-height: calc(100vh - 119px);
+        margin: 0;
+        padding: 20px 16px 34px;
+        overflow: visible;
+    }
+
+    .panel .panel-head {
+        display: block;
+        min-height: 315px;
+        padding: 22px;
+        background-position: center;
+    }
+
+    .panel .panel-head > div {
+        width: min(270px, 100%);
+        padding: 22px;
+    }
+
+    .panel .panel-head h2 {
+        font-size: 31px;
+    }
+
+    .panel .panel-head p:last-child {
+        max-width: none;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+
+    .panel-work {
+        min-height: 0;
+        margin-top: 12px;
+    }
+
+    #step1 .source-tabs {
+        margin: 0;
+    }
+
+    #step1 .panel-work > .fields {
+        padding: 22px 18px;
+    }
+
+    #step1 .panel-work > .actions {
+        padding: 16px 18px 22px;
+    }
+
+    #step2 .panel-work {
+        max-height: none;
+        overflow: visible;
+        padding: 18px;
+    }
+
+    #step3 .panel-work {
+        padding: 36px 22px;
+    }
+}
+
+/* Stap 2: grote kaart links, compacte context en dossierselectie rechts. */
+#step2.active {
+    grid-template:
+        142px minmax(0, 1fr) /
+        minmax(380px, 470px) minmax(480px, 700px);
+}
+
+#step2 > .panel-head {
+    grid-column: 2;
+    grid-row: 1;
+    min-height: 0;
+    padding: 18px 24px;
+    background-position: center 44%;
+}
+
+#step2 > .panel-head > div {
+    display: flex;
+    width: auto;
+    min-width: 0;
+    max-width: 430px;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    flex-wrap: wrap;
+    align-content: center;
+    column-gap: 12px;
+    padding: 14px 18px;
+}
+
+#step2 > .panel-head .eyebrow {
+    flex: 0 0 100%;
+    margin: 0 0 3px;
+    font-size: 10px;
+}
+
+#step2 > .panel-head h2 {
+    flex: 0 0 100%;
+    margin: 0;
+    font-size: 25px;
+    line-height: 1.05;
+}
+
+#step2 > .panel-head p:last-child {
+    flex: 0 0 100%;
+    max-width: none;
+    margin: 7px 0 0;
+    overflow: hidden;
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#step2 > .map-card {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    flex-direction: column;
+    margin: 0;
+    border: 0;
+    border-right: 1px solid var(--line);
+    background: #fff;
+}
+
+#step2 .panel-work {
+    display: grid;
+    grid-column: 2;
+    grid-row: 2;
+    grid-template: auto minmax(0, 1fr) / minmax(0, 1fr);
+    gap: 12px;
+    min-height: 0;
+    max-height: none;
+    overflow: hidden;
+    padding: 16px 24px 20px;
+}
+
+#step2 .summary {
+    grid-column: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin: 0;
+    border: 1px solid var(--line);
+    background: var(--soft);
+}
+
+#step2 .stat,
+#step2 .stat:first-child {
+    min-width: 0;
+    padding: 11px 14px 12px;
+    border: 0;
+    border-right: 1px solid var(--line);
+    background: transparent;
+}
+
+#step2 .stat:last-child {
+    border-right: 0;
+}
+
+#step2 .stat b {
+    display: inline;
+    margin-right: 6px;
+    color: var(--ink);
+    font-size: 23px;
+}
+
+#step2 .stat:first-child b {
+    color: var(--red);
+}
+
+#step2 .stat span {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+#step2 .map-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin: 0;
+}
+
+#step2 .map-head {
+    flex: 0 0 auto;
+}
+
+#step2 .map-frame {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+}
+
+#step2 #map {
+    height: 100%;
+    min-height: 420px;
+}
+
+.map-state {
+    text-align: right;
+}
+
+.map-state span,
+.map-state small {
+    display: block;
+}
+
+.map-state span {
+    color: var(--ink);
+    font-size: 12px;
+}
+
+.map-state small {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.map-state small.available {
+    color: var(--green);
+    font-weight: 700;
+}
+
+.map-legend {
+    position: absolute;
+    z-index: 3;
+    left: 10px;
+    bottom: 28px;
+    display: flex;
+    gap: 1px;
+    padding: 1px;
+    background: #fff;
+    box-shadow: 0 2px 9px #231b1b2e;
+}
+
+.map-legend button {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 9px;
+    border: 0;
+    background: #fff;
+    color: var(--ink);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.map-legend button[aria-pressed="false"] {
+    color: var(--muted);
+    opacity: .6;
+}
+
+.map-legend i {
+    display: block;
+    width: 12px;
+    height: 12px;
+}
+
+.measure-symbol {
+    border: 3px solid var(--black);
+    background: var(--rose);
+}
+
+.alert-symbol {
+    border: 2px solid #fff;
+    outline: 1px solid var(--red);
+    background: var(--red);
+    border-radius: 50%;
+}
+
+#map.map-empty {
+    display: grid;
+    place-items: center;
+    padding: 28px;
+    color: var(--muted);
+    background: #e9ece6;
+    text-align: center;
+}
+
+#map .maplibregl-ctrl-group {
+    border-radius: 0;
+    box-shadow: 0 1px 6px #231b1b33;
+}
+
+#map .maplibregl-ctrl button {
+    border-radius: 0;
+}
+
+#map .maplibregl-popup-content {
+    padding: 0;
+    border-top: 5px solid var(--red);
+    border-radius: 0;
+    box-shadow: 0 5px 18px #231b1b3b;
+}
+
+#map .maplibregl-popup-close-button {
+    width: 27px;
+    height: 27px;
+    color: var(--ink);
+    font-size: 20px;
+}
+
+.scenario-popup {
+    display: grid;
+    gap: 5px;
+    min-width: 210px;
+    padding: 16px 18px;
+}
+
+.scenario-popup small {
+    color: var(--red);
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+}
+
+.scenario-popup strong {
+    padding-right: 16px;
+    font-size: 15px;
+}
+
+.scenario-popup span {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.scenario-popup p {
+    margin: 4px 0 0;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.review-controls {
+    grid-column: 1;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.item-selector {
+    display: flex;
+    flex: 1 1 300px;
+    flex-direction: column;
+    min-height: 190px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: #fff;
+}
+
+.item-selector-head {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    background: var(--soft);
+}
+
+.item-selector-head > div:first-child {
+    min-width: 0;
+}
+
+.item-selector-head b,
+.item-selector-head small {
+    display: block;
+}
+
+.item-selector-head b {
+    font-size: 13px;
+}
+
+.item-selector-head small {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.selection-actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 4px;
+}
+
+.selection-actions button {
+    padding: 4px 7px;
+    border: 1px solid #aaa5a2;
+    background: #fff;
+    color: var(--ink);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.selection-actions button:hover {
+    border-color: var(--red);
+    color: var(--red);
+}
+
+.item-search {
+    flex: 0 0 auto;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+}
+
+.item-search input {
+    width: 100%;
+    padding: 7px 9px;
+    border: 1px solid #aaa5a2;
+    background: #fff;
+    color: var(--ink);
+    font-size: 11px;
+}
+
+.item-groups {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-color: #aaa5a2 transparent;
+}
+
+.item-group + .item-group {
+    border-top: 1px solid var(--line);
+}
+
+.item-group-head {
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    background: var(--rose);
+    cursor: pointer;
+}
+
+.item-group-head strong {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .045em;
+}
+
+.item-group-head small {
+    color: var(--muted);
+    font-size: 9px;
+}
+
+.item-list {
+    display: grid;
+}
+
+.item-row {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    padding: 4px 7px;
+    border-top: 1px solid #ece9e7;
+    transition: background-color 160ms ease;
+}
+
+.item-row:first-child {
+    border-top: 0;
+}
+
+.item-toggle {
+    display: grid;
+    width: 22px;
+    height: 32px;
+    place-items: center;
+    cursor: pointer;
+}
+
+.item-row input,
+.item-group-head input {
+    width: 14px;
+    height: 14px;
+    margin: 1px 0 0;
+    accent-color: var(--red);
+}
+
+.item-copy {
+    display: block;
+    min-width: 0;
+    text-align: left;
+}
+
+.item-copy strong,
+.item-copy small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.item-copy strong {
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.item-copy small {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 9px;
+}
+
+.item-jump {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 5px 4px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+
+.item-jump:hover .item-copy strong,
+.item-jump:focus-visible .item-copy strong {
+    color: var(--red);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.item-jump:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 1px;
+}
+
+.jump-cue {
+    color: var(--red);
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .045em;
+}
+
+.item-row.is-focused {
+    background: var(--rose);
+    box-shadow: inset 3px 0 0 var(--red);
+}
+
+.item-row.non-spatial .item-copy {
+    padding: 5px 4px;
+}
+
+.review-controls .notes,
+.review-controls fieldset {
+    margin: 0;
+    padding: 14px;
+}
+
+.decision-details .notes {
+    display: block;
+    padding: 10px 14px 14px;
+    border-top: 1px solid var(--line);
+}
+
+.review-controls textarea {
+    height: 48px;
+    min-height: 48px;
+    padding: 10px;
+    font-size: 13px;
+}
+
+.review-controls .checks {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 5px;
+}
+
+.review-controls .check {
+    padding: 5px 7px;
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+#step2 .review-controls .actions {
+    margin: auto 0 0;
+    padding-top: 4px;
+}
+
+#step2 .review-controls .actions button {
+    padding-right: 14px;
+    padding-left: 14px;
+    font-size: 13px;
+}
+
+.dossier-details {
+    flex: 0 0 auto;
+    border: 1px solid var(--line);
+    background: var(--soft);
+}
+
+.dossier-details summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 12px 14px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    list-style: none;
+}
+
+.dossier-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.dossier-details summary::after {
+    content: "+";
+    color: var(--red);
+    font-size: 18px;
+    line-height: 1;
+}
+
+.dossier-details[open] summary::after {
+    content: "−";
+}
+
+.dossier-details summary small {
+    margin-left: auto;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 400;
+}
+
+.passport-fields {
+    display: grid;
+    gap: 10px;
+    padding: 0 14px 14px;
+    border-top: 1px solid var(--line);
+}
+
+.passport-fields label {
+    padding-top: 10px;
+    color: var(--ink);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.passport-fields input,
+.passport-fields select,
+.passport-fields textarea {
+    width: 100%;
+    margin-top: 5px;
+    padding: 8px 9px;
+    border: 1px solid #8b8683;
+    background: #fff;
+    color: var(--ink);
+    font: 12px Inter, Arial, sans-serif;
+}
+
+.passport-fields textarea {
+    min-height: 58px;
+    resize: vertical;
+}
+
+@media (max-width: 1050px) and (min-width: 781px) {
+    #step2 .panel-work {
+        display: block;
+        overflow: auto;
+    }
+
+    #step2 .map-card {
+        min-height: 330px;
+        margin: 14px 0;
+    }
+
+    .review-controls {
+        display: block;
+    }
+
+    .review-controls > * {
+        margin-bottom: 12px !important;
+    }
+
+    .review-controls .checks {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 780px) {
+    #step2 .panel-work {
+        display: block;
+        padding: 18px;
+        overflow: visible;
+    }
+
+    #step2 .summary {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    #step2 .stat:nth-child(2) {
+        border-right: 0;
+    }
+
+    #step2 .stat:nth-child(-n + 2) {
+        border-bottom: 1px solid var(--line);
+    }
+
+    #step2 .map-card {
+        min-height: 330px;
+        margin: 14px 0;
+    }
+
+    #step2 #map {
+        min-height: 260px;
+    }
+
+    .review-controls .checks {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Gelijke blokhoogte voor Bron, Controle en Dossier. */
+@media (min-width: 781px) {
+    .panel.active,
+    #step1.active,
+    #step2.active,
+    #step3.active {
+        grid-template-rows: var(--workflow-block-height);
+    }
+
+    .panel .panel-head,
+    #step1 .panel-head,
+    #step2 .panel-head,
+    #step3 .panel-head,
+    .panel-work {
+        height: var(--workflow-block-height);
+        min-height: var(--workflow-block-height);
+        max-height: var(--workflow-block-height);
+    }
+
+    .panel-work {
+        overflow: auto;
+    }
+
+    #step2 .panel-work {
+        overflow: hidden;
+    }
+
+    /* Houd de rode titelkaart in iedere stap exact even groot. */
+    #step1 .panel-head > div,
+    #step2 .panel-head > div,
+    #step3 .panel-head > div {
+        box-sizing: border-box;
+        width: var(--step-card-width);
+        min-width: var(--step-card-width);
+        max-width: var(--step-card-width);
+        height: var(--step-card-height);
+        min-height: var(--step-card-height);
+        max-height: var(--step-card-height);
+        overflow: hidden;
+    }
+
+    #step2.active {
+        grid-template-rows: 142px calc(var(--workflow-block-height) - 142px);
+    }
+
+    #step2 > .panel-head {
+        grid-column: 2;
+        grid-row: 1;
+        height: 142px;
+        min-height: 142px;
+        max-height: 142px;
+    }
+
+    #step2 > .panel-head > div {
+        width: min(430px, 100%);
+        min-width: 0;
+        max-width: 430px;
+        height: auto;
+        min-height: 0;
+        max-height: none;
+    }
+
+    #step2 > .map-card {
+        height: var(--workflow-block-height);
+        min-height: var(--workflow-block-height);
+        max-height: var(--workflow-block-height);
+        margin: 0;
+    }
+
+    #step2 > .panel-work {
+        display: grid;
+        height: calc(var(--workflow-block-height) - 142px);
+        min-height: 0;
+        max-height: calc(var(--workflow-block-height) - 142px);
+        margin: 0;
+    }
+}
+
+@media (max-width: 780px) {
+    #step1 .panel-head > div,
+    #step2 .panel-head > div,
+    #step3 .panel-head > div {
+        box-sizing: border-box;
+        width: min(var(--step-card-width), 100%);
+        height: var(--step-card-height);
+        min-height: var(--step-card-height);
+        max-height: var(--step-card-height);
+        overflow: hidden;
+    }
+
+    #step2 > .panel-head {
+        min-height: 170px;
+        padding: 18px;
+    }
+
+    #step2 > .panel-head > div {
+        width: min(430px, 100%);
+        height: auto;
+        min-height: 0;
+        max-height: none;
+        padding: 14px 18px;
+    }
+
+    #step2 > .map-card {
+        min-height: 440px;
+        margin: 12px 0;
+    }
+
+    #step2 #map {
+        min-height: 370px;
+    }
+}

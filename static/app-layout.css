@@ -1,0 +1,144 @@
+html, body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0
+}
+
+body {
+    background: #fff
+}
+
+header {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    border-bottom: 1px solid var(--line)
+}
+
+.header-main {
+    height: 82px;
+    padding: 10px 28px
+}
+
+.mark {
+    width: 48px;
+    height: 48px;
+    font-size: 16px
+}
+
+.utrecht-logo {
+    display: block;
+    width: auto;
+    height: 55px;
+    object-fit: contain
+}
+
+.product-name {
+    padding-left: 17px;
+    border-left: 1px solid #ccc;
+    white-space: nowrap
+}
+
+main {
+    width: 100%;
+    max-width: none;
+    height: calc(100vh - 83px);
+    min-height: 620px;
+    margin: 0;
+    padding: 0
+}
+
+.workspace {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    grid-template-columns:250px minmax(0, 1fr)
+}
+
+.panel {
+    height: 100%;
+    overflow: auto;
+    border: 0;
+    padding: clamp(28px, 4vw, 58px) clamp(32px, 6vw, 88px)
+}
+
+.success-panel {
+    padding-top: max(60px, 10vh)
+}
+
+.project-loader {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 14px
+}
+
+.project-loader span {
+    color: var(--muted);
+    font-size: 13px
+}
+
+@media (max-width: 780px) {
+    .header-main {
+        height: 72px;
+        min-height: 0;
+        padding: 8px 16px
+    }
+
+    .brand {
+        font-size: 18px;
+        padding-left: 17px
+    }
+
+    .brand small {
+        font-size: 9px
+    }
+
+    .mark {
+        width: 42px;
+        height: 42px
+    }
+
+    .utrecht-logo {
+        height: 43px
+    }
+
+    .product-name {
+        padding-left: 10px
+    }
+
+    .utilities {
+        display: none
+    }
+
+    main {
+        height: auto;
+        min-height: calc(100vh - 73px)
+    }
+
+    .workspace {
+        display: block;
+        min-height: calc(100vh - 73px);
+        margin: 0
+    }
+
+    .steps {
+        height: 58px;
+        position: sticky;
+        top: 0;
+        z-index: 5
+    }
+
+    .steps button {
+        justify-content: center
+    }
+
+    .panel {
+        height: auto;
+        min-height: calc(100vh - 130px);
+        overflow: visible;
+        border: 0;
+        padding: 27px 20px
+    }
+}

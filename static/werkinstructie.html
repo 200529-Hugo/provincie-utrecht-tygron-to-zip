@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta
+            name="description"
+            content="Werkinstructie voor het maken en gebruiken van een ScenarioDossier."
+    >
+    <title>Werkinstructie · ScenarioDossier</title>
+    <link rel="icon" href="/provincie-utrecht-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/app-layout.css">
+    <link rel="stylesheet" href="/werkinstructie.css">
+    <link rel="stylesheet" href="/mermaid.css">
+    <link rel="stylesheet" href="/province.css">
+</head>
+<body class="manual-page">
+<a class="skip" href="#manual">
+    Naar inhoud
+</a>
+
+<header>
+    <div class="header-main">
+        <a class="brand" href="/" aria-label="Provincie Utrecht, ScenarioDossier">
+            <img
+                    class="province-logo"
+                    src="/provincie-utrecht-logo.svg"
+                    alt="Provincie Utrecht"
+            >
+        </a>
+        <div class="utilities">
+            <a class="back-link" href="/controle">
+                Dossier controleren
+            </a>
+            <a class="back-link" href="/">
+                Terug naar dossier
+            </a>
+        </div>
+    </div>
+</header>
+
+<main class="manual-shell" id="manual">
+    <aside class="manual-nav" aria-label="Inhoudsopgave">
+        <div class="manual-nav-head">
+            <span>
+                Werkinstructie
+            </span>
+            <small>
+                ScenarioDossier
+            </small>
+        </div>
+
+        <nav id="toc">
+            <span class="loading-line">
+                Inhoud laden…
+            </span>
+        </nav>
+
+        <a class="manual-back" href="/">
+            Dossier maken
+        </a>
+    </aside>
+
+    <article class="manual-content" aria-live="polite">
+        <div class="manual-toolbar">
+            <div>
+                <span class="section-label">
+                    Handleiding
+                </span>
+                <span id="readTime"></span>
+            </div>
+            <button id="print" type="button">
+                Afdrukken
+            </button>
+        </div>
+
+        <div id="markdown" class="markdown-body">
+            <div class="loading">
+                <span></span>
+                <p>
+                    Werkinstructie wordt geladen…
+                </p>
+            </div>
+        </div>
+    </article>
+</main>
+
+<div class="toast" id="toast" role="alert"></div>
+<script type="module" src="/werkinstructie.js"></script>
+</body>
+</html>

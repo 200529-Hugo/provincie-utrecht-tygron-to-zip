@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="Exporteer Tygron-scenario's naar duurzame GIS-dossiers.">
+    <title>ScenarioDossier</title>
+    <link rel="icon" href="/provincie-utrecht-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/app-layout.css">
+    <link rel="stylesheet" href="/vendor/maplibre-gl.css">
+    <link rel="stylesheet" href="/province.css">
+</head>
+<body>
+<a class="skip" href="#content">
+    Naar inhoud
+</a>
+<header>
+    <div class="header-main">
+        <a class="brand" href="/" aria-label="Provincie Utrecht, ScenarioDossier">
+            <img
+                    class="province-logo"
+                    src="/provincie-utrecht-logo.svg"
+                    alt="Provincie Utrecht"
+            >
+        </a>
+        <div class="utilities">
+            <a href="/controle">Dossier controleren</a>
+            <a href="/werkinstructie">Werkinstructie</a>
+        </div>
+    </div>
+</header>
+<main id="content">
+    <section class="workspace">
+        <nav class="steps" aria-label="Voortgang">
+            <div class="steps-title">
+                <strong>ScenarioDossier</strong>
+                <span>Tygron-export</span>
+            </div>
+            <button class="active" data-step="1">
+                <b>1</b>
+                <span>
+                    Bron
+                    <small>
+                        Kies de omgeving
+                    </small>
+                </span>
+            </button>
+            <button data-step="2">
+                <b>2</b>
+                <span>
+                    Controle
+                    <small>
+                        Bekijk de inhoud
+                    </small>
+                </span>
+            </button>
+            <button data-step="3">
+                <b>3</b>
+                <span>
+                    Dossier
+                    <small>
+                        Archiveer & download
+                    </small>
+                </span>
+            </button>
+        </nav>
+
+        <div class="panel active" id="step1">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Stap 1</p>
+                    <h2>Selecteer de bron</h2>
+                    <p>
+                        Kies de demonstratie of verbind met een actieve Tygron-sessie.
+                    </p>
+                </div>
+            </div>
+            <div class="panel-work">
+                <div class="source-tabs">
+                    <button class="active" data-source="demo">
+                        Demonstratie
+                    </button>
+                    <button data-source="tygron">
+                        Actieve sessie
+                    </button>
+                    <button data-source="tygron_project">
+                        Tygron-project
+                    </button>
+                </div>
+                <div id="demoFields" class="fields two">
+                    <label>
+                        Project
+                        <select id="project"></select>
+                    </label>
+                    <label>
+                        Scenario
+                        <select id="scenario"></select>
+                    </label>
+                    <div class="scenario-note" id="scenarioNote"></div>
+                </div>
+                <div id="tygronFields" class="fields two hidden">
+                    <label>
+                        Sessie-URL
+                        <input id="baseUrl" value="https://engine.tygron.com" autocomplete="url">
+                    </label>
+                    <label>
+                        API-token
+                        <input id="token"
+                               type="password"
+                               placeholder="Uit Tools > API Overview"
+                               autocomplete="off"
+                        >
+                    </label>
+                    <label>
+                        Projectnaam
+                        <input id="projectName" placeholder="Bijv. Stationsgebied">
+                    </label>
+                    <label>
+                        Scenarionaam
+                        <input id="scenarioName" placeholder="Bijv. Groen 2040">
+                    </label>
+                    <p class="hint">
+                        De koppeling leest alleen de actieve sessie. Het token wordt uitsluitend in het
+                        werkgeheugen gebruikt.
+                    </p>
+                </div>
+                <div id="tygronProjectFields" class="fields two hidden">
+                    <label>
+                        Tygron-URL
+                        <input id="rootBaseUrl" value="https://engine.tygron.com" autocomplete="url">
+                    </label>
+                    <label>
+                        Domein
+                        <input id="domain" placeholder="Wordt anders uit het account gelezen">
+                    </label>
+                    <label>
+                        Gebruikersnaam
+                        <input id="username" autocomplete="username">
+                    </label>
+                    <label>
+                        Login key
+                        <input
+                                id="loginKey"
+                                type="password"
+                                autocomplete="off"
+                                placeholder="Gebruik een login key, geen wachtwoord"
+                        >
+                    </label>
+                    <div class="project-loader">
+                        <button class="secondary" id="loadProjects" type="button">
+                            Projecten laden
+                        </button>
+                        <span id="projectLoadStatus"></span>
+                    </div>
+                    <label>
+                        Project
+                        <select id="liveProject" disabled></select>
+                    </label>
+                    <label>
+                        Scenario of projectversie
+                        <select id="liveScenario" disabled></select>
+                    </label>
+                    <p class="hint">
+                        De toepassing start het gekozen project tijdelijk, exporteert de actieve versie
+                        en sluit de sessie daarna automatisch. Accountgegevens worden niet opgeslagen.
+                    </p>
+                </div>
+                <div class="actions">
+                    <span></span>
+                    <button class="primary" id="inspect">
+                        Verbinding controleren
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" id="step2">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Stap 2</p>
+                    <h2>Controleer het scenario</h2>
+                    <p id="selectionTitle"></p>
+                </div>
+            </div>
+
+            <div class="map-card">
+                <div class="map-head">
+                    <div>
+                        <b>Ruimtelijke preview</b>
+                        <small>
+                            Measures en alerts · EPSG:4326
+                        </small>
+                    </div>
+                    <div class="map-state">
+                        <span id="spatialCount"></span>
+                        <small id="basemapStatus">Kaart voorbereiden</small>
+                    </div>
+                </div>
+                <div class="map-frame">
+                    <div id="map" role="application" aria-label="Interactieve kaart met maatregelen en alerts"></div>
+                    <div class="map-legend" aria-label="Kaartlagen">
+                        <button type="button" data-map-layer="measures" aria-pressed="true">
+                            <i class="measure-symbol"></i>
+                            Maatregelen
+                        </button>
+                        <button type="button" data-map-layer="alerts" aria-pressed="true">
+                            <i class="alert-symbol"></i>
+                            Alerts
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-work">
+                <div class="summary" id="summary"></div>
+
+                <div class="review-controls">
+                    <section class="item-selector" aria-labelledby="itemSelectorTitle">
+                        <div class="item-selector-head">
+                            <div>
+                                <b id="itemSelectorTitle">Onderdelen in dossier</b>
+                                <small id="selectionCount"></small>
+                            </div>
+                            <div class="selection-actions">
+                                <button type="button" id="selectAll">Alles</button>
+                                <button type="button" id="selectNone">Geen</button>
+                            </div>
+                        </div>
+                        <label class="item-search">
+                            <span class="sr-only">Zoek onderdelen</span>
+                            <input id="itemSearch" type="search" placeholder="Zoek op naam, type of status">
+                        </label>
+                        <div class="item-groups" id="itemGroups"></div>
+                    </section>
+
+                    <details class="dossier-details decision-details">
+                        <summary>
+                            <span>Toelichting en afwegingen</span>
+                            <small>Onderbouwing van de selectie</small>
+                        </summary>
+                        <label class="notes">
+                            <span class="sr-only">Toelichting en gemaakte afwegingen</span>
+                            <textarea
+                                    id="notes"
+                                    placeholder="Leg vast waarom dit scenario is gekozen, welke alternatieven zijn afgevallen en door wie het besluit is genomen."
+                            ></textarea>
+                        </label>
+                    </details>
+
+                    <details class="dossier-details">
+                        <summary>
+                            <span>Dossierpaspoort</span>
+                            <small>Metadata voor overdracht</small>
+                        </summary>
+                        <div class="passport-fields">
+                            <label>
+                                Zaak- of projectreferentie
+                                <input id="recordReference" placeholder="Bijv. PU-2026-0142">
+                            </label>
+                            <label>
+                                Dossiereigenaar
+                                <input id="recordOwner" placeholder="Team of organisatieonderdeel">
+                            </label>
+                            <label>
+                                Opsteller
+                                <input id="recordAuthor" placeholder="Naam of functie">
+                            </label>
+                            <label>
+                                Besluitdatum
+                                <input id="decisionDate" type="date">
+                            </label>
+                            <label>
+                                Besluitstatus
+                                <select id="decisionStatus">
+                                    <option>Concept</option>
+                                    <option selected>Voorgenomen</option>
+                                    <option>Vastgesteld</option>
+                                </select>
+                            </label>
+                            <label>
+                                Classificatie
+                                <select id="classification">
+                                    <option selected>Intern</option>
+                                    <option>Openbaar</option>
+                                    <option>Vertrouwelijk</option>
+                                </select>
+                            </label>
+                            <label>
+                                Bewaartermijn
+                                <input id="retentionPeriod" value="Volgens provinciale selectielijst">
+                            </label>
+                            <label>
+                                Andere overwogen alternatieven
+                                <textarea id="alternatives" rows="2"
+                                          placeholder="Noem de varianten die niet zijn gekozen."></textarea>
+                            </label>
+                        </div>
+                    </details>
+
+                    <div class="actions">
+                        <button class="secondary back">
+                            Terug
+                        </button>
+                        <button class="primary" id="export">
+                            Dossier maken
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel success-panel" id="step3">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Stap 3</p>
+                    <h2>Dossier gereed</h2>
+                    <p>
+                        Download het dossier en draag het over aan de afgesproken archieflocatie.
+                    </p>
+                </div>
+            </div>
+            <div class="panel-work success-content">
+                <p class="eyebrow">
+                    Export voltooid
+                </p>
+                <h2>
+                    Het dossier is duurzaam verpakt.
+                </h2>
+                <p id="doneText"></p>
+                <div class="package" id="package"></div>
+                <a class="primary download" id="download" href="#">
+                    Download ZIP-dossier
+                </a>
+                <button class="link" id="again">
+                    Nog een scenario exporteren
+                </button>
+            </div>
+        </div>
+    </section>
+</main>
+<div class="toast" id="toast" role="alert"></div>
+<script type="module" src="/app.js"></script>
+</body>
+</html>
