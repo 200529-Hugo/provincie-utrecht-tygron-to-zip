@@ -13,23 +13,30 @@ from .exporter import build_archive, load_demo
 from .tygron import TygronClient, TygronError, TygronRootClient
 from .validation import validate_archive
 
+'''
+This module implements a simple HTTP server that serves the ScenarioDossier web application and its API.
+'''
+
 ROOT = Path(__file__).parent.parent
 STATIC = ROOT / "static"
 EXPORTS = ROOT / "exports"
 COMPONENTS = ("overlays", "indicators", "measures", "alerts")
 
 
+# Gets the properties of an item, handling both Feature and non-Feature types.
 def _properties(item):
     if item.get("type") == "Feature":
         return item.get("properties") or {}
     return item
 
 
+# Generates a unique key for an item based on its ID or index.
 def _item_key(item, index):
     item_id = _properties(item).get("id")
     return f"id:{item_id}" if item_id is not None else f"index:{index}"
 
 
+# Creates an inventory of items from the data, including details and spatial information.
 def _item_inventory(data):
     inventory = []
     for component in COMPONENTS:
@@ -55,6 +62,7 @@ def _item_inventory(data):
     return inventory
 
 
+# Filters the data based on selected components and items, returning only the relevant parts.
 def _select_data(data, selected_components=None, selected_items=None):
     components = selected_components if isinstance(selected_components, list) else list(COMPONENTS)
     item_selection = selected_items if isinstance(selected_items, dict) else None
@@ -71,6 +79,7 @@ def _select_data(data, selected_components=None, selected_items=None):
     return result
 
 
+# Retrieves a demo project and scenario based on their IDs, raising an error if not found.
 def _demo_scenario(project_id: str, scenario_id: str):
     for project in load_demo()["projects"]:
         if project["id"] == project_id:
@@ -80,6 +89,7 @@ def _demo_scenario(project_id: str, scenario_id: str):
     raise ValueError("Project of scenario niet gevonden.")
 
 
+# Resolves the project and scenario information based on the provided parameters, handling different data sources.
 def _resolve(p):
     source = p.get("source", "demo")
     if source == "demo":
@@ -114,13 +124,16 @@ def _resolve(p):
     return project, scenario, data, warnings, client, session
 
 
+# HTTP request handler for the ScenarioDossier web application and API.
 class Handler(BaseHTTPRequestHandler):
     server_version = "ScenarioDossier/1.0"
 
+    # Override the log_message method to avoid logging request bodies or tokens for security reasons.
     def log_message(self, fmt, *args):
         # Bewust geen request bodies of tokens loggen.
         print(f"{self.address_string()} - {fmt % args}")
 
+    # Sends a JSON response with the given object and HTTP status code.
     def _json(self, obj, status=200):
         body = json.dumps(obj, ensure_ascii=False).encode()
         self.send_response(status)
@@ -130,14 +143,17 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    # Reads and parses the JSON body of a POST request, enforcing a maximum size limit.
     def _body(self):
         length = int(self.headers.get("Content-Length", 0))
         if length > 1_000_000:
             raise ValueError("Verzoek is te groot.")
         return json.loads(self.rfile.read(length) or b"{}")
 
+    # Handles GET requests, serving static files, API endpoints, and special routes for the ScenarioDossier application.
     def do_GET(self):
         path = urlparse(self.path).path
+        # Serve the work instruction markdown file for the /api/werkinstructie endpoint.
         if path == "/api/werkinstructie":
             file = ROOT / "docs" / "WERKINSTRUCTIE.md"
             body = file.read_bytes()
@@ -147,10 +163,12 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Cache-Control", "no-cache")
             self.end_headers()
             return self.wfile.write(body)
+        # Redirect certain paths to their corresponding HTML files for the web application.
         if path in ("/werkinstructie", "/werkinstructie/"):
             path = "/werkinstructie.html"
         if path in ("/controle", "/controle/"):
             path = "/controle.html"
+        # Handle the /api/demo endpoint, returning a simplified view of the demo projects and scenarios.
         if path == "/api/demo":
             demo = load_demo()
             public = {"projects": [
@@ -165,6 +183,7 @@ class Handler(BaseHTTPRequestHandler):
                 } for p in demo["projects"]
             ]}
             return self._json(public)
+        # Handle the /api/map-config endpoint, returning the map style URL from the environment or a default value.
         if path == "/api/map-config":
             return self._json({
                 "style_url": os.environ.get(
@@ -172,6 +191,7 @@ class Handler(BaseHTTPRequestHandler):
                     "http://127.0.0.1:8081/styles/OSM%20OpenMapTiles/style.json",
                 )
             })
+        # Handle the /api/download endpoint, serving exported ZIP files for download.
         if path.startswith("/api/download/"):
             name = Path(unquote(path.split("/api/download/", 1)[1])).name
             file = EXPORTS / name
@@ -186,6 +206,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.wfile.write(body)
         if path == "/":
             path = "/index.html"
+        # Serve static files from the STATIC directory, ensuring that the requested file is within the allowed directory and exists.
         file = (STATIC / path.lstrip("/")).resolve()
         if STATIC.resolve() not in file.parents or not file.is_file():
             return self._json({"error": "Niet gevonden."}, 404)
@@ -197,9 +218,11 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
         return None
 
+    # Handles POST requests, routing them to the appropriate API endpoint based on the request path and handling errors gracefully.
     def do_POST(self):
         try:
             path = urlparse(self.path).path
+            # Route the request to the appropriate API endpoint based on the request path.
             if path == "/api/validate":
                 return self._validate_archive()
             payload = self._body()
@@ -210,14 +233,18 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/tygron/projects":
                 return self._tygron_projects(payload)
             return self._json({"error": "Niet gevonden."}, 404)
+        # Handle specific exceptions related to value errors and Tygron API errors, returning a 400 Bad Request response with the error message.
         except (ValueError, TygronError) as exc:
             return self._json({"error": str(exc)}, 400)
+        # Handle any other unexpected exceptions, logging the error and returning a 500 Internal Server Error response with a generic error message.
         except Exception as exc:
             print(f"Interne fout: {type(exc).__name__}: {exc}")
             return self._json({"error": "De bewerking is onverwacht mislukt."}, 500)
 
+    # Validates the uploaded ZIP archive, checking its size and completeness, and returns the validation result as JSON.
     def _validate_archive(self):
         length = int(self.headers.get("Content-Length", 0))
+        # Check if the uploaded ZIP archive is valid, ensuring that it is not empty, does not exceed 200 MB, and has been fully received.
         if length <= 0:
             raise ValueError("Selecteer een ZIP-dossier om te controleren.")
         if length > 200_000_000:
@@ -230,6 +257,7 @@ class Handler(BaseHTTPRequestHandler):
             archive.write_bytes(body)
             return self._json(validate_archive(archive))
 
+    # Retrieves the list of Tygron projects for the given parameters, returning a simplified view of the projects and their active versions as JSON.
     def _tygron_projects(self, p):
         root = TygronRootClient(
             p.get("base_url", ""),
@@ -238,14 +266,17 @@ class Handler(BaseHTTPRequestHandler):
         )
         projects = root.list_projects(p.get("domain", ""))
         public = []
+        # Simplify the project information for public consumption, including the file name, display name, and active version.
         for project in projects:
             file_name = project.get("fileName") or project.get("filename") or project.get("name")
             name = project.get("name") or project.get("displayName") or file_name
             versions = project.get("versions") or ["Actieve versie"]
+            # Determine the active version index, defaulting to 0 if not specified or invalid, and retrieve the corresponding version name.
             try:
                 active_version = int(project.get("activeVersion", 0))
             except (TypeError, ValueError):
                 active_version = 0
+            # Get the name of the active version, ensuring it is within the valid range of versions, and default to "Actieve versie" if not.
             active_name = versions[active_version] if 0 <= active_version < len(versions) else "Actieve versie"
             public.append({
                 "file_name": file_name,
@@ -255,13 +286,18 @@ class Handler(BaseHTTPRequestHandler):
                 "versions": [active_name],
                 "active_version": 0,
             })
+        # Return the simplified list of projects as a JSON response.
         return self._json({"projects": public})
 
+    # Inspects the project and scenario data, returning counts, spatial information, warnings, and a preview of items as JSON.
     def _inspect(self, p):
         project, scenario, data, warnings, _, session = _resolve(p)
         try:
+            # Count the number of spatial items in the data by checking for the presence of geometry in each item across all components.
             spatial = sum(1 for group in data.values() for item in group if item.get("geometry"))
+
             preview = []
+            # Create a preview of spatial items for the "measures" and "alerts" components, including their component name, unique key, and feature data.
             for name in ("measures", "alerts"):
                 for index, item in enumerate(data.get(name, [])):
                     if item.get("geometry"):
@@ -270,6 +306,8 @@ class Handler(BaseHTTPRequestHandler):
                             "key": _item_key(item, index),
                             "feature": item,
                         })
+
+            # Return the inspection results as a JSON response, including project and scenario names, counts of items per component, spatial item count, warnings, preview of spatial items, and an inventory of all items.
             return self._json({
                 "project": project,
                 "scenario": scenario,
@@ -282,14 +320,18 @@ class Handler(BaseHTTPRequestHandler):
                 "preview": preview,
                 "items": _item_inventory(data),
             })
+        # Ensure that the session is closed after the inspection is complete, regardless of whether an exception occurred or not.
         finally:
             if session:
                 session.close()
 
+    # Exports the selected project and scenario data, creating a ZIP archive and returning the filename, download link, and summary as JSON.
     def _export(self, p):
         project, scenario, data, warnings, client, session = _resolve(p)
         try:
+            # Filter the data based on the selected components and items specified in the request parameters, returning only the relevant parts for export.
             data = _select_data(data, p.get("components"), p.get("selected_items"))
+            # Build the export archive using the filtered data, project and scenario names, notes, source, warnings, and optional raster fetching function if applicable.
             archive, summary = build_archive(
                 EXPORTS,
                 project,
@@ -301,6 +343,7 @@ class Handler(BaseHTTPRequestHandler):
                 client.fetch_overlay_geotiff if client and p.get("rasters", True) else None,
                 p.get("dossier", {}),
             )
+            # Return the export result as a JSON response, including the filename of the created archive, a download link, and a summary of the export process.
             return self._json(
                 {
                     "ok": True,
@@ -310,12 +353,15 @@ class Handler(BaseHTTPRequestHandler):
                 },
                 HTTPStatus.CREATED,
             )
+        # Ensure that the session is closed after the export is complete, regardless of whether an exception occurred or not.
         finally:
             if session:
                 session.close()
 
 
+# Starts the ScenarioDossier HTTP server on the specified host and port, serving the web application and API endpoints.
 def serve(host="127.0.0.1", port=8080):
     print(f"ScenarioDossier draait op http://{host}:{port}")
     print("Stoppen: Ctrl+C")
+    # Use ThreadingHTTPServer to handle requests in separate threads for better concurrency.
     ThreadingHTTPServer((host, port), Handler).serve_forever()
