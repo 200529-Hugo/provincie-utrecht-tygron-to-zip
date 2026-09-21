@@ -101,7 +101,7 @@ In stap 2 kan onder **Dossierpaspoort** gestructureerde overdrachtsmetadata word
 
 De pagina **Dossier controleren** accepteert een eerder geëxporteerd ZIP-bestand van maximaal 200 MB. De server pakt dit tijdelijk en padveilig uit, controleert de dossierstructuur, het GeoPackage, recordaantallen, rapport en iedere SHA-256-hash en verwijdert de tijdelijke inhoud daarna. Het oorspronkelijke ZIP-bestand wordt niet gewijzigd of opgeslagen.
 
-Zie [docs/WERKINSTRUCTIE.md](docs/WERKINSTRUCTIE.md) voor QGIS/ArcGIS-gebruik, [docs/ZIP_PROCES.md](docs/ZIP_PROCES.md) voor de technische opbouw van het ZIP-dossier, [docs/ONTWERP.md](docs/ONTWERP.md) voor ontwerpkeuzes en [docs/ACCEPTATIETEST.md](docs/ACCEPTATIETEST.md) voor de formele opleverproef met een echt Tygron-project.
+Zie [docs/WERKINSTRUCTIE.md](docs/WERKINSTRUCTIE.md) voor QGIS/ArcGIS-gebruik, [docs/ZIP_PROCES.md](docs/ZIP_PROCES.md) voor de technische opbouw van het ZIP-dossier, [docs/BPMN.md](docs/BPMN.md) voor het BPMN-procesmodel, [docs/ONTWERP.md](docs/ONTWERP.md) voor ontwerpkeuzes en [docs/ACCEPTATIETEST.md](docs/ACCEPTATIETEST.md) voor de formele opleverproef met een echt Tygron-project.
 
 ## Privacy en beheer
 
