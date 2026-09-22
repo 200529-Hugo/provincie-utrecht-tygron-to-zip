@@ -176,11 +176,11 @@ def create_geopackage(path: Path, data: dict[str, list[dict[str, Any]]]) -> None
         ]
         if spatial:
             columns.append("geom BLOB")
-            con.execute(f'CREATE TABLE "{name}" ({", ".join(columns)})')
-            con.execute(
-                "INSERT INTO gpkg_contents(table_name,data_type,identifier,description,srs_id) VALUES (?,?,?,?,?)",
-                (name, "features" if spatial else "attributes", name, f"Tygron {name}", 4326 if spatial else None)
-            )
+        con.execute(f'CREATE TABLE "{name}" ({", ".join(columns)})')
+        con.execute(
+            "INSERT INTO gpkg_contents(table_name,data_type,identifier,description,srs_id) VALUES (?,?,?,?,?)",
+            (name, "features" if spatial else "attributes", name, f"Tygron {name}", 4326 if spatial else None)
+        )
         if spatial:
             con.execute(
                 "INSERT INTO gpkg_geometry_columns VALUES (?,?,?,?,?,?)",
