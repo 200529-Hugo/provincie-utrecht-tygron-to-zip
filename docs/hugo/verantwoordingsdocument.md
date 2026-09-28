@@ -519,14 +519,14 @@ Beoogd bewijs voor iteratie 4:
 
 ### 6.1 Reviewplanning en status
 
-Voor gilde 2 zijn minimaal twee peerreviews verplicht. Op het moment van schrijven zijn nog geen namen of ontvangen
-reacties aangeleverd. Ik neem daarom geen fictieve reviewers of feedback op. Het document is pas inleverklaar nadat
-beide reviewregels en de verwerkingsbesluiten zijn ingevuld.
+Voor gilde 2 zijn minimaal twee peerreviews verplicht. De feedback van Noa Dronkers en Jasper van Es is ontvangen en
+hieronder vastgelegd. Deze feedback is nog niet verwerkt. De verwerkingsbesluiten moeten nog worden toegevoegd voordat
+het document inleverklaar is.
 
 | Reviewer          | Afspraak/verzenddatum | Reactiedeadline  | Gevraagde focus                                       | Status                     |
 |-------------------|-----------------------|------------------|-------------------------------------------------------|----------------------------|
-| [Naam reviewer 1] | [datum invullen]      | [datum invullen] | Criteria, gewichten en scores van MCDA 1 en 2         | Nog te versturen/ontvangen |
-| [Naam reviewer 2] | [datum invullen]      | [datum invullen] | Stakeholderconflicten, gevoeligheid en deep-divekeuze | Nog te versturen/ontvangen |
+| Noa Dronkers      | 21 september 2026     | 23 september 2026 | Probleemschets, MCDA, conclusies en stakeholders       | Feedback ontvangen        |
+| Jasper van Es     | 21 september 2026     | 23 september 2026 | Technische keuzes, stakeholders, risico's en deep-dive | Feedback ontvangen        |
 
 Ik stuur reviewers niet alleen het bestand, maar ook deze concrete vragen:
 
@@ -538,21 +538,80 @@ Ik stuur reviewers niet alleen het bestand, maar ook deze concrete vragen:
 
 ### 6.2 Ontvangen feedback en verwerking
 
-#### Reviewer 1 – [naam invullen]
+#### Reviewer 1 – Noa Dronkers
 
-**Feedback op hoofdstuk/sectie:** [invullen]  
-**Feitelijke constatering van reviewer:** [invullen]  
-**Suggestie of vraag:** [invullen]  
-**Mijn reactie:** [overnemen / gedeeltelijk overnemen / niet overnemen, met argument]  
-**Concrete wijziging en vindplaats:** [invullen]
+**Gevraagde feedback:**
 
-#### Reviewer 2 – [naam invullen]
+1. Is de projectsituatie en het probleem duidelijk uitgelegd?
+2. Zijn de criteria, gewichten en scores van de MCDA logisch onderbouwd?
+3. Volgen de conclusies logisch uit de analyses?
+4. Houd ik voldoende rekening met de verschillende stakeholders?
+5. Zijn er onderdelen die onduidelijk, te technisch of onvoldoende onderbouwd zijn?
 
-**Feedback op hoofdstuk/sectie:** [invullen]  
-**Feitelijke constatering van reviewer:** [invullen]  
-**Suggestie of vraag:** [invullen]  
-**Mijn reactie:** [overnemen / gedeeltelijk overnemen / niet overnemen, met argument]  
-**Concrete wijziging en vindplaats:** [invullen]
+**Ontvangen feedback:**
+
+- In 2.2 wordt het (kern)probleem duidelijk geschetst met daarbij ook 5 deelproblemen, die helpen het (kern)probleem
+  behapbaar te maken.
+- De gewenste oplossing wordt in 2.3 met behulp van een plaatje weergegeven, dit is op zichzelf al duidelijk, maar hier
+  zou een "praatje bij het plaatje" kunnen worden overwogen.
+- In 3.1 benoem wordt kort de gebruikte berekening en wat de scores betekenen, met daarbij een korte uitleg. Dit geeft
+  een beter beeld bij de keuzes van de cijfers en wat ze betekenen.
+- In 3.2 worden de stakeholders nogmaals benoemd, de zwaarwegende belangen en de mogelijke conflicten geven
+  onderbouwing aan de later gekozen gewichten van de criteria. Het stukje "Bij de formaatkeuze... een publieke
+  kaartdienst." zou ter verduidelijking nog los bij iedere keuze kunnen worden geplaatst - waar van toepassing.
+- In 3.3, 3.4 en 3.5 gaat het over de gemaakte keuzes, de criteria met daarbij de gewichten zijn logisch en houden
+  voldoende rekening met de verschillende stakeholders. Het toevoegen van het advies bij de conclusie voor 3.3 en
+  3.5 is erg waardevol, dit laat zien dat er is gekeken naar de huidige situatie en dat hier bij productie nogmaals een
+  overweging gemaakt moet worden (dit wordt later nog een keer benoemd in 3.7). De conclusies in het algemeen zijn
+  duidelijk vanuit de analyse met als ondersteuning de tabel.
+
+**Verwerkingsstatus:** Nog niet verwerkt.
+
+**Mijn reactie:** Wordt na bespreking van de feedback ingevuld.
+
+**Concrete wijziging en vindplaats:** Nog niet van toepassing.
+
+#### Reviewer 2 – Jasper van Es
+
+**Gevraagde feedback:**
+
+1. De keuze tussen Python, FME en een hybride oplossing.
+2. De keuze voor GeoPackage als primair GIS-formaat.
+3. De keuze voor een lokale basiskaart.
+4. De belangen van gebruikers, GIS-specialisten, informatiebeheer en IT-beheer.
+5. De risico's en openstaande verbeterpunten.
+6. Mijn gekozen onderwerp voor de deep-dive.
+
+**Ontvangen feedback:**
+
+- De keuze tussen pythem,fme en hybybride oplossing ziet er goed en helder uit.
+- De keuze voor GeoPackage als primair GIS-formaat is goed onderbouwd en de combinatie met JSON, CSV en GeoJSON zorgt
+  voor extra flexibiliteit. Wel vraag ik mij af of het gebruik van meerdere formaten ook nadelen met zich meebrengt,
+  zoals extra beheer, meer opslagruimte of het risico dat informatie tussen de verschillende bestanden niet volledig
+  synchroon blijft.
+- De afweging tussen privacy, offline beschikbaarheid en gebruiksgemak is helder. Mogelijk kan nog worden toegelicht
+  hoeveel extra beheer of opslag een lokale kaartoplossing vraagt ten opzichte van een externe kaartdienst.
+- De verschillende stakeholderbelangen zijn goed in kaart gebracht. Ik mis  alleen nog een toelichting op hoe
+  conflicterende belangen worden afgewogen. Bijvoorbeeld wanneer een keuze gunstig is voor GIS-specialisten, maar
+  minder goed aansluit bij de wensen van informatiebeheer of eindgebruikers. Het zou interessant zijn om te beschrijven
+  hoe in zulke situaties tot een definitief besluit wordt gekomen.
+- De risicoanalyse is sterk doordat ook eigen technische fouten worden benoemd. Een mogelijke aanvulling is het opnemen
+  van risico's die afhankelijk zijn van externe partijen, zoals beperkte beschikbaarheid van stakeholders voor
+  validatie.
+- De deelvragen sluiten goed aan bij het onderwerp. Ik vraag mij af of alle vier de deelvragen voldoende diep behandeld
+  kunnen worden binnen de beschikbare presentatietijd. Mogelijk kan één deelvraag verder worden afgebakend. (voor de
+  deepdive hebben we 30 minuten dus ongeveer 5-10 minuten voor de intro, context en conclusie en dan zou je nog 5
+  minuten over hebben voor alle deelvragen dus dan is de vraag of je voldoende diepgang kan tonen met 5 minuten per
+  deelvraag.)
+- Het document bevat veel technische termen en afkortingen zoals ETL, MCDA, CRS en OGC. Voor lezers die minder bekend
+  zijn met deze onderwerpen kan het helpen om belangrijke begrippen kort toe te lichten of een begrippenlijst op te
+  nemen. Hierdoor wordt het document toegankelijker voor een bredere doelgroep.
+
+**Verwerkingsstatus:** Nog niet verwerkt.
+
+**Mijn reactie:** Wordt na bespreking van de feedback ingevuld.
+
+**Concrete wijziging en vindplaats:** Nog niet van toepassing.
 
 ### 6.3 Omgaan met tegengestelde feedback
 
