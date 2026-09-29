@@ -29,7 +29,7 @@ De centrale functie is `build_archive()` in [`scenario_dossier/exporter.py`](../
 
 ## 2. Start van de export
 
-Wanneer de gebruiker in stap 2 op **Dossier maken** klikt, bouwt [`../scenario_dossier/views/static`](../scenario_dossier/views/static/app.js) een JSON-verzoek
+Wanneer de gebruiker in stap 2 op **Dossier maken** klikt, bouwt [`../static`](../static/app.js) een JSON-verzoek
 voor `POST /api/export`.
 
 Dit verzoek bevat:

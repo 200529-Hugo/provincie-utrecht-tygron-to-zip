@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="nl">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="description" content="{{ description }}">
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="icon" href="/provincie-utrecht-mark.svg" type="image/svg+xml">
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='app-layout.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='province.css') }}">
+        {% block links %}{% endblock %}
+    </head>
+    <body>
+        <nav>
+            <div class="header-main">
+                <a class="brand" href="/static" aria-label="Provincie Utrecht, ScenarioDossier">
+                    <img
+                            class="province-logo"
+                            src="{{ url_for('static', filename='provincie-utrecht-logo.svg') }}"
+                            alt="Provincie Utrecht"
+                    >
+                </a>
+                <div class="utilities">
+                    <a href="/">Dossier maken</a>
+                    <a href="/controle">Dossier controleren</a>
+                    <a href="/werkinstructie">Werkinstructie</a>
+                </div>
+            </div>
+        </nav>
+        <section class="content">
+            {% block content %}{% endblock %}
+        </section>
+    </body>
+</html>

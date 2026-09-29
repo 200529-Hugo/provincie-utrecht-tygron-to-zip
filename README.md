@@ -20,7 +20,7 @@ python3 -m unittest discover -s tests -v
 
 ## Interactieve kaart en OpenMapTiles
 
-Stap 2 toont ruimtelijke measures en alerts op een interactieve kaart. De kaart zoomt naar de geselecteerde objecten, biedt afzonderlijke laagknoppen en toont broninformatie in een popup. Een doorzoekbare lijst laat ieder overlay-, indicator-, measure- en alertrecord afzonderlijk opnemen of uitsluiten; de kaart en ZIP-export volgen dezelfde selectie. MapLibre en alle bijbehorende browserbestanden staan lokaal in `scenario_dossier/views/static`; de scenario-objecten blijven daarom ook zonder internet of actieve basiskaart zichtbaar.
+Stap 2 toont ruimtelijke measures en alerts op een interactieve kaart. De kaart zoomt naar de geselecteerde objecten, biedt afzonderlijke laagknoppen en toont broninformatie in een popup. Een doorzoekbare lijst laat ieder overlay-, indicator-, measure- en alertrecord afzonderlijk opnemen of uitsluiten; de kaart en ZIP-export volgen dezelfde selectie. MapLibre en alle bijbehorende browserbestanden staan lokaal in `static`; de scenario-objecten blijven daarom ook zonder internet of actieve basiskaart zichtbaar.
 
 OpenMapTiles is optioneel en wordt niet samen met ScenarioDossier geïnstalleerd. Voor een nieuwe installatie zijn Docker, Docker Compose, Git, Make en voldoende schijfruimte nodig. De volledige installatie vanaf een schone computer, inclusief een compacte Utrecht-extract, staat in [docs/WERKINSTRUCTIE.md](docs/WERKINSTRUCTIE.md#lokale-openmaptiles-basiskaart-installeren).
 
