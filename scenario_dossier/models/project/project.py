@@ -26,6 +26,9 @@ class Project:
                 return scenario
         raise LookupError("Scenario niet gevonden.")
 
+    def get_scenarios(self) -> list[Scenario]:
+        return self.scenarios
+
     def to_public_dict(self) -> dict[str, Any]:
         return {
             "id": self.id,

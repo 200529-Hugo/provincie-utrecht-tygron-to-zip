@@ -23,5 +23,8 @@ class DemoService:
     def get_scenario(self, project_id: str, scenario_id: str) -> Scenario:
         return self.get_project(project_id).get_scenario(scenario_id)
 
+    def get_scenarios(self, project_id: str) -> list[Scenario]:
+        return self.get_project(project_id).get_scenarios()
+
     def public_catalog(self) -> dict[str, list[dict]]:
         return {"projects": [project.to_public_dict() for project in self.list_projects()]}

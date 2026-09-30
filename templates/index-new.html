@@ -66,11 +66,21 @@
                     <div id="demoFields" class="fields two">
                         <label>
                             Project
-                            <select id="project"></select>
+                            <select id="project">
+                                {% for project in projects %}
+                                	<option value="{{ project.id }}" {% if project.id == selected_project_id %}selected{% endif %} >
+                                        {{ project.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
                         </label>
                         <label>
                             Scenario
-                            <select id="scenario"></select>
+                            <select id="scenario">
+                                {% for scenario in scenarios %}
+                                    <option value="{{ scenario.id }}">{{ scenario.name }}</option>
+                                {% endfor %}
+                            </select>
                         </label>
                         <div class="scenario-note" id="scenarioNote"></div>
                     </div>

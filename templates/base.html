@@ -13,22 +13,24 @@
         {% block links %}{% endblock %}
     </head>
     <body>
-        <nav>
-            <div class="header-main">
-                <a class="brand" href="/static" aria-label="Provincie Utrecht, ScenarioDossier">
-                    <img
-                            class="province-logo"
-                            src="{{ url_for('static', filename='provincie-utrecht-logo.svg') }}"
-                            alt="Provincie Utrecht"
-                    >
-                </a>
-                <div class="utilities">
-                    <a href="/">Dossier maken</a>
-                    <a href="/controle">Dossier controleren</a>
-                    <a href="/werkinstructie">Werkinstructie</a>
+        <header>
+            <nav>
+                <div class="header-main">
+                    <a class="brand" href="/" aria-label="Provincie Utrecht, ScenarioDossier">
+                        <img
+                                class="province-logo"
+                                src="{{ url_for('static', filename='provincie-utrecht-logo.svg') }}"
+                                alt="Provincie Utrecht"
+                        >
+                    </a>
+                    <div class="utilities">
+                        <a href="/">Dossier maken</a>
+                        <a href="/controle">Dossier controleren</a>
+                        <a href="/werkinstructie">Werkinstructie</a>
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
+        </header>
         <section class="content">
             {% block content %}{% endblock %}
         </section>
