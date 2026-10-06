@@ -1,18 +1,20 @@
 # Verantwoordingsdocument
 
-**Gilde:** Iteratie 2 – Verantwoording keuzes  
+**Gilde:** Iteratie 2 - Verantwoording keuzes  
 **Student:** Hugo de Heus  
 **Studentnummer:** 1852688  
 **Project:** Dossiervorming Digitale Scenario's vanuit Digital Twin  
 **Opdrachtgever:** Provincie Utrecht  
-**Documentstatus:** Reviewconcept voor gilde 2 – feedback van twee reviewers nog toevoegen  
-**Datum:** 21 september 2026
+**Documentstatus:** Peerreview en docentfeedback verwerkt
+
+**Datum:** 6 oktober 2026
 
 ## Inhoudsopgave
 
 * [1. Inleiding](#1-inleiding)
     * [1.1 Leeswijzer](#11-leeswijzer)
     * [1.2 Versiebeheer](#12-versiebeheer)
+    * [1.3 Begrippenlijst](#13-begrippenlijst)
 * [2. Projectoriëntatie](#2-projectoriëntatie)
     * [2.1 Organisatorische context en situatie](#21-organisatorische-context-en-situatie)
     * [2.2 Van situatie naar probleem](#22-van-situatie-naar-probleem)
@@ -23,9 +25,9 @@
 * [3. Verantwoording van gemaakte keuzes met MCDA](#3-verantwoording-van-gemaakte-keuzes-met-mcda)
     * [3.1 Werkwijze en rekenregel](#31-werkwijze-en-rekenregel)
     * [3.2 Stakeholderbelangen achter de gewichten](#32-stakeholderbelangen-achter-de-gewichten)
-    * [3.3 MCDA 1 – ETL-technologie](#33-mcda-1--etl-technologie)
-    * [3.4 MCDA 2 – Primair dossierformaat](#34-mcda-2--primair-dossierformaat)
-    * [3.5 MCDA 3 – Basiskaart voor de ruimtelijke controle](#35-mcda-3--basiskaart-voor-de-ruimtelijke-controle)
+    * [3.3 MCDA 1 - ETL-technologie](#33-mcda-1---etl-technologie)
+    * [3.4 MCDA 2 - Primair dossierformaat](#34-mcda-2---primair-dossierformaat)
+    * [3.5 MCDA 3 - Basiskaart voor de ruimtelijke controle](#35-mcda-3---basiskaart-voor-de-ruimtelijke-controle)
     * [3.6 Nadelen, onverwachte uitkomst en verantwoordelijkheid](#36-nadelen-onverwachte-uitkomst-en-verantwoordelijkheid)
     * [3.7 Mitigatie en besluitstatus](#37-mitigatie-en-besluitstatus)
 * [4. Verantwoording van opgeleverd werk](#4-verantwoording-van-opgeleverd-werk)
@@ -40,8 +42,9 @@
 * [6. Peerreview en voorbereiding op gilde 2](#6-peerreview-en-voorbereiding-op-gilde-2)
     * [6.1 Reviewplanning en status](#61-reviewplanning-en-status)
     * [6.2 Ontvangen feedback en verwerking](#62-ontvangen-feedback-en-verwerking)
-        * [Reviewer 1 – [naam invullen]](#reviewer-1--naam-invullen)
-        * [Reviewer 2 – [naam invullen]](#reviewer-2--naam-invullen)
+        * [Reviewer 1 - Noa Dronkers](#reviewer-1---noa-dronkers)
+        * [Reviewer 2 - Jasper van Es](#reviewer-2---jasper-van-es)
+        * [Docentobservaties](#docentobservaties)
     * [6.3 Omgaan met tegengestelde feedback](#63-omgaan-met-tegengestelde-feedback)
     * [6.4 Inbreng voor de discussie](#64-inbreng-voor-de-discussie)
     * [6.5 Gewenst professioneel gedrag](#65-gewenst-professioneel-gedrag)
@@ -78,9 +81,25 @@ mijn deep-divekeuze voor iteratie 4 vast.
 |--------|------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | 0.1    | 21-09-2026 | Gilde 1  | Eerste versie met projectoriëntatie, SDG-koppeling, keuzeverantwoording, beroepsproducten, deep-dive en actuele kwaliteitsbevinding                             |
 | 0.2    | 21-09-2026 | Gilde 2  | Gewogen MCDA voor ETL, dossierformaten en basiskaart. Stakeholderconflicten, gevoeligheidsanalyse, bronnenregister, deep-diveplan en reviewformulier toegevoegd |
+| 0.3    | 06-10-2026 | Gilde 2  | Feedback van Noa Dronkers en Jasper van Es verwerkt en de deep-dive verder afgebakend                                                                           |
+| 0.4    | 06-10-2026 | Gilde 2  | Docentfeedback verwerkt door scoreherleidbaarheid toe te voegen en een direct leesbare PDF als inlevervorm te kiezen                                             |
 
 Het project zelf gebruikt Git. De repository bevat commits vanaf 7 september 2026. Dit document wordt vanaf deze versie
 meegeleverd als projectbewijs.
+
+### 1.3 Begrippenlijst
+
+| Begrip  | Betekenis binnen dit project                                                                 |
+|---------|----------------------------------------------------------------------------------------------|
+| API     | Technische koppeling waarmee de applicatie gegevens uit Tygron opvraagt                      |
+| CRS     | Coördinatenreferentiesysteem dat bepaalt hoe geografische coördinaten worden geïnterpreteerd |
+| DMS     | Documentmanagementsysteem voor het beheren en terugvinden van documenten en dossiers         |
+| ETL     | Extract, Transform, Load. Het ophalen, omzetten en opslaan van gegevens                      |
+| FME     | Commerciële software voor het transformeren en uitwisselen van data, waaronder GIS-data      |
+| GIS     | Geografisch informatiesysteem voor het beheren, analyseren en tonen van ruimtelijke gegevens |
+| MCDA    | Methode om alternatieven met meerdere gewogen criteria te vergelijken                        |
+| OGC     | Internationale organisatie die open standaarden voor geografische informatie beheert         |
+| SHA-256 | Hashfunctie waarmee kan worden gecontroleerd of een bestand na export is gewijzigd           |
 
 ## 2. Projectoriëntatie
 
@@ -134,6 +153,12 @@ flowchart LR
     C --> D["Valideren en ZIP-dossier maken"]
     D --> E["Openen in GIS, DMS of archief"]
 ```
+
+De gebruiker begint met het kiezen van een gegevensbron en controleert daarna welk scenario en welke onderdelen relevant
+zijn. Vervolgens legt de gebruiker de dossiercontext en gemaakte afweging vast. De applicatie valideert de geselecteerde
+gegevens, maakt het ZIP-dossier en biedt dit aan voor gebruik in GIS-software of overdracht naar een beheerde
+archiefvoorziening. De technische export ondersteunt het proces, maar vervangt niet de inhoudelijke beoordeling of de
+formele opname in een DMS of e-depot.
 
 Het beoogde dossier bevat open en breed ondersteunde formaten: GeoPackage, GeoJSON, CSV, JSON, optioneel GeoTIFF en een
 zelfstandig HTML-rapport. Metadata, een validatierapport en SHA-256-hashes maken de overdracht controleerbaar.
@@ -226,7 +251,7 @@ De scores betekenen:
 |     4 | Voldoet goed                                      |
 |     5 | Voldoet zeer goed en is met bewijs onderbouwd     |
 
-De cijfers zijn gebaseerd op de opdracht, officiële standaarden en documentatie, project evidence en mijn voorlopige
+De cijfers zijn gebaseerd op de opdracht, officiële standaarden en documentatie, projectbewijs en mijn voorlopige
 stakeholderanalyse. Waar nog geen stakeholderbevestiging bestaat, benoem ik dit als aanname. Daarmee voorkom ik dat een
 exact getal meer zekerheid suggereert dan de beschikbare informatie toelaat.
 
@@ -247,9 +272,20 @@ technische GIS-capaciteit zwaar, maar krijgen licentie-onafhankelijkheid, beheer
 gewicht. Bij de kaartkeuze wegen privacy en offline beschikbaarheid samen 50%, omdat scenario-informatie niet
 afhankelijk moet worden van een publieke kaartdienst.
 
-### 3.3 MCDA 1 – ETL-technologie
+Bij conflicterende belangen gebruik ik eerst harde randvoorwaarden. Security, wettelijke eisen en aantoonbare
+integriteit mogen niet worden ingeruild voor gebruiksgemak. Daarna gebruik ik de gewogen MCDA om de resterende belangen
+zichtbaar te vergelijken. Ik leg afwijkende belangen en aannames vast en geef een onderbouwd advies. De opdrachtgever
+neemt het definitieve productbesluit na toetsing door de relevante gebruiker, GIS-specialist, informatiebeheerder en
+IT-beheerder. Wanneer die toetsing nog niet heeft plaatsgevonden, blijft de keuze voor productie voorlopig.
+
+### 3.3 MCDA 1 - ETL-technologie
 
 **Beslissing:** waarmee worden extractie, transformatie, validatie en verpakking gerealiseerd?
+
+**Belangen bij deze keuze.** GIS-specialisten hebben belang bij krachtige transformaties, terwijl IT-beheer vooral let
+op onderhoud, security en aansluiting op ondersteunde technologie. Voor het prototype weegt daarnaast mee dat ik de
+werking zonder aanvullende licentie moet kunnen demonstreren. Daarom zijn GIS-capaciteit, onafhankelijkheid,
+beheerbaarheid en testbaarheid als afzonderlijke criteria opgenomen.
 
 | Criterium                                         | Gewicht | Motivering                                                                         |
 |---------------------------------------------------|--------:|------------------------------------------------------------------------------------|
@@ -266,6 +302,18 @@ afhankelijk moet worden van een publieke kaartdienst.
 | FME-workspace            |       5 |                 2 |          5 |            4 |            4 |           4 |         **81** |
 | Hybride Python en FME    |       5 |                 3 |          4 |            2 |            5 |           4 |         **78** |
 
+**Herleidbaarheid van de scores.** De scorevolgorde in de tabel hieronder is GIS, onafhankelijkheid, beheer,
+snelheid, testbaarheid en security.
+
+| Alternatief | Scores | Onderbouwing en bron | Resterende aanname |
+|-------------|--------|----------------------|--------------------|
+| Python met open broncode | 4, 5, 3, 5, 5, 4 | De werkende Python-code en geautomatiseerde projecttests tonen snelle prototyping en directe testbaarheid. Python vraagt geen FME-licentie. De huidige GeoPackage-regressie onderbouwt waarom GIS en beheer geen 5 krijgen. | Beheerbaarheid door provinciaal IT-beheer is nog niet met die stakeholder gevalideerd. |
+| FME-workspace | 5, 2, 5, 4, 4, 4 | De FME-documentatie in het bronnenregister toont brede GIS-reader- en writerondersteuning. De licentievoorwaarden onderbouwen de lagere onafhankelijkheid. | De beheerscore van 5 veronderstelt dat de Provincie FME structureel ondersteunt. Dit moet nog worden bevestigd. |
+| Hybride Python en FME | 5, 3, 4, 2, 5, 4 | De combinatie kan de GIS-capaciteit van FME en de tests van Python benutten. Twee runtimes, een licentie en een extra overdrachtsgrens verhogen aantoonbaar de implementatieomvang. | De snelheidsscore is een projectinschatting. Er is nog geen hybride proefimplementatie gemeten. |
+
+De bronnen onderbouwen producteigenschappen en projectbevindingen. De vertaling daarvan naar een score blijft mijn
+beargumenteerde beoordeling en is dus geen rechtstreeks door de bron gegeven cijfer.
+
 **Analyse.** FME scoort sterk op GIS-transformaties en visueel beheer. De officiële FME-documentatie toont brede
 reader/writer-ondersteuning, maar FME is software waarvoor licentievoorwaarden gelden. Python is in dit
 prototype volledig in Git vast te leggen, zonder FME-runtime uit te voeren en rechtstreeks met geautomatiseerde tests te
@@ -278,9 +326,14 @@ Python-implementatie beter aansluit op het beheerlandschap.
 **Gevoeligheid.** Als beheerbaarheid voor de Provincie zwaarder wordt dan licentie-onafhankelijkheid en snelle
 prototyping, kan FME de voorkeursoptie worden. De uitkomst is dus afhankelijk van de nog te valideren beheerstrategie.
 
-### 3.4 MCDA 2 – Primair dossierformaat
+### 3.4 MCDA 2 - Primair dossierformaat
 
 **Beslissing:** in welke vorm worden ruimtelijke en niet-ruimtelijke scenarioresultaten duurzaam overgedragen?
+
+**Belangen bij deze keuze.** GIS-specialisten hebben een volledig bruikbaar ruimtelijk formaat nodig.
+Informatiebeheerders hebben daarnaast behoefte aan openheid, context, integriteitscontrole en herstelbaarheid.
+Beleidsmedewerkers en gemeenten moeten de kern ook zonder specialistische GIS-kennis kunnen begrijpen. Daarom combineert
+de beoordeling GIS-interoperabiliteit met duurzame toegankelijkheid en transparantie.
 
 Het [Nationaal Archief](https://www.nationaalarchief.nl/archiveren/kennisbank/geo-data) noemt GPKG en GeoJSON
 voorkeursformaten voor geodata en File Geodatabase acceptabel. Het [OGC](https://www.geopackage.org/) beschrijft
@@ -304,12 +357,31 @@ normatieve standaard beheert.
 | GML met JSON/CSV                             |            5 |       4 |                 4 |             2 |               4 |              2 |         **78** |
 | Esri File Geodatabase                        |            3 |       5 |                 5 |             3 |               2 |              3 |         **74** |
 
+**Herleidbaarheid van de scores.** De scorevolgorde is duurzaamheid, GIS-interoperabiliteit, gemengde data,
+draagbaarheid, transparantie en implementatie-inspanning.
+
+| Alternatief | Scores | Onderbouwing en bron | Resterende aanname |
+|-------------|--------|----------------------|--------------------|
+| GeoPackage met aanvullende formaten | 5, 5, 5, 5, 4, 4 | Het Nationaal Archief noemt GPKG een voorkeursformaat voor geodata. De OGC-specificatie beschrijft de open container voor ruimtelijke data en attributen. De prototype-export en tests leveren projectbewijs voor de implementatie. | Praktische interoperabiliteit in de beheerde versies van QGIS en ArcGIS Pro moet nog worden getest. |
+| Alleen GeoJSON en CSV | 5, 4, 3, 2, 5, 5 | Het Nationaal Archief noemt GeoJSON een voorkeursformaat. Beide formaten zijn tekstueel inspecteerbaar en worden al door het prototype gemaakt. De lagere scores volgen uit de verdeling over meerdere bestanden en de beperktere samenhang tussen ruimtelijke en niet-ruimtelijke gegevens. | De schaalbaarheid voor grote echte Tygron-projecten is nog niet gemeten. |
+| GML met JSON en CSV | 5, 4, 4, 2, 4, 2 | GML is een open GIS-uitwisselformaat, maar vraagt in dit prototype een extra implementatie naast JSON en CSV. Er is geen werkende GML-export aanwezig. | De inspanningsscore is een ontwikkelinschatting en nog niet met een proefexport gemeten. |
+| Esri File Geodatabase | 3, 5, 5, 3, 2, 3 | Het Nationaal Archief noemt File Geodatabase acceptabel en de opdracht noemt Esri als doelomgeving. De lagere openheid en transparantie volgen uit de keuze voor een leveranciersgebonden formaat in plaats van een tekstueel of OGC-formaat. | De score kan veranderen wanneer de provinciale beheeromgeving uitsluitend Esri gebruikt. |
+
+Ook hier zijn de cijfers mijn interpretatie van bronnen, projectevidence en eisen. De bronnen zelf kennen geen MCDA-score
+toe.
+
 **Analyse.** GeoPackage combineert features en gewone attributentabellen in een bestand. De bron-JSON en eenvoudige
 formaten blijven nodig, omdat een genormaliseerd schema mogelijk niet alle Tygron-eigenschappen behoudt. De Library
 of Congress beschrijft GeoPackage eveneens als platformonafhankelijk en gericht op interoperabiliteit, maar de binaire
 SQLite-structuur is minder direct leesbaar dan tekstformaten. Het Nationaal Archief merkt bovendien op dat validatie van
 GeoPackage niet breed wordt ondersteund. Daarom bevat het prototype een eigen structuurcontrole en moet voor productie
 een officiële conformiteitstest worden overwogen.
+
+Meerdere formaten hebben ook nadelen. Ze vragen extra opslag, vergroten het aantal te beheren bestanden en kunnen
+onderling afwijken wanneer bestanden los worden gewijzigd. In het prototype worden alle representaties daarom tijdens
+dezelfde export uit dezelfde geselecteerde brondata gemaakt. De aantallen worden automatisch vergeleken, de bron-JSON
+blijft beschikbaar voor reconstructie en het SHA-256-manifest detecteert wijzigingen na export. Dit beperkt het risico,
+maar maakt formeel versiebeheer en een aangewezen gezaghebbende representatie voor productie nog steeds noodzakelijk.
 
 **Conclusie en advies.** Ik kies GeoPackage als primaire GIS-container, aangevuld met bron-JSON, CSV, GeoJSON en waar
 beschikbaar GeoTIFF. Deze combinatie wint niet omdat ieder formaat afzonderlijk perfect is, maar omdat de formaten
@@ -319,10 +391,15 @@ elkaars zwakke punten afdekken.
 organisatie uitsluitend Esri gebruikt, stijgt File Geodatabase. Door de expliciete eis van duurzame,
 software-onafhankelijke raadpleegbaarheid blijven open formaten noodzakelijk.
 
-### 3.5 MCDA 3 – Basiskaart voor de ruimtelijke controle
+### 3.5 MCDA 3 - Basiskaart voor de ruimtelijke controle
 
 **Beslissing:** hoe krijgt de gebruiker ruimtelijke context zonder de archieffunctie afhankelijk te maken van een
 externe kaartdienst?
+
+**Belangen bij deze keuze.** Gebruikers en GIS-specialisten willen herkenbare ruimtelijke context. Informatiebeheer en
+IT-beheer willen voorkomen dat vertrouwelijke projectlocaties onnodig met derden worden gedeeld en dat een dossier later
+afhankelijk blijkt van een verdwenen kaartdienst. Daarom wegen privacy en offline beschikbaarheid samen zwaarder dan
+installatiegemak.
 
 | Criterium                  | Gewicht | Motivering                                                           |
 |----------------------------|--------:|----------------------------------------------------------------------|
@@ -338,10 +415,28 @@ externe kaartdienst?
 | Geen basiskaart, alleen scenario-objecten |           5 |           5 |           1 |               5 |          5 |         **84** |
 | Publieke externe tegelservice             |           2 |           2 |           5 |               5 |          5 |         **70** |
 
+**Herleidbaarheid van de scores.** De scorevolgorde is privacy, offline beschikbaarheid, ruimtelijke context,
+installatiegemak en operationele kosten.
+
+| Alternatief | Scores | Onderbouwing en bron | Resterende aanname |
+|-------------|--------|----------------------|--------------------|
+| Lokale OpenMapTiles met fallback | 5, 5, 5, 3, 3 | De lokale proefopstelling toont dat kaarttegels zonder externe requests kunnen worden geleverd. De installatie vraagt aantoonbaar een tileserver, kaartdata en configuratie naast de applicatie. | Opslag en beheer zijn nog niet gemeten voor een vastgesteld provinciaal gebied en zoomniveau. |
+| Geen basiskaart | 5, 5, 1, 5, 5 | Zonder basiskaart worden geen kaartrequests gedaan en is geen extra kaartvoorziening nodig. De ruimtelijke preview toont dan alleen scenario-objecten, waardoor herkenning van de omgeving beperkt is. | De contextscore moet nog met eindgebruikers worden gevalideerd. |
+| Publieke externe tegelservice | 2, 2, 5, 5, 5 | Een externe service geeft direct herkenbare kaartcontext en vraagt geen lokale tileserver. Iedere kaartweergave vereist wel netwerkverkeer naar een derde partij en werkt niet volledig offline. | De kosten- en privacyscore zijn kwalitatief. Er is nog geen specifieke leverancier met voorwaarden en tarieven geselecteerd. |
+
+De scores voor beheer en kosten zijn voorlopig zolang geen productiegebied en kaartleverancier zijn vastgesteld.
+
 **Analyse.** Geen basiskaart is privacyvriendelijk en eenvoudig, maar maakt ruimtelijke controle lastig. Een publieke
 service is gemakkelijk, maar introduceert netwerkafhankelijkheid en externe requests. Lokale OpenMapTiles kost opslag en
 beheer, maar biedt de beste combinatie van context en controle. Door altijd een neutrale fallback te behouden, blokkeert
 een defecte tileserver de dossierexport niet.
+
+De lokale oplossing vereist naast de applicatie ook kaarttegels, een stijlconfiguratie en beheer van een tileserver.
+De benodigde opslag groeit met het gekozen gebied en het aantal zoomniveaus en is daarom niet als vast getal te noemen.
+Een externe kaartdienst vraagt minder lokale opslag en installatie, maar introduceert netwerkverkeer,
+beschikbaarheidsrisico
+en mogelijke gebruiksvoorwaarden. Voor productie moet IT-beheer deze operationele lasten meten voor het werkelijke
+beheergebied voordat de definitieve kaartvoorziening wordt gekozen.
 
 **Conclusie en advies.** Voor de demonstratie kies ik lokale OpenMapTiles met fallback. Voor productie moet IT-beheer
 beslissen of lokaal gegenereerde tegels, een provinciale interne kaartservice of een andere beheerde voorziening het
@@ -358,6 +453,8 @@ nadelen:
 - EPSG:4326 is niet voor iedere Nederlandse analyse optimaal.
 - Een ZIP met hashes is geen formeel e-depot of digitale handtekening.
 - Lokale OpenMapTiles vraagt merkbaar meer opslag en installatiebeheer.
+- Meerdere uitvoerformaten vergroten opslag, beheer en het risico op onderlinge afwijkingen.
+- Validatie kan vertragen wanneer stakeholders of externe leveranciers niet tijdig beschikbaar zijn.
 
 Tijdens de controle voor versie 0.1 bleek de testsuite te falen met `sqlite3.OperationalError: no such table: overlays`.
 De oorzaak is geen externe factor: in `create_geopackage()` staat het aanmaken van een componenttabel momenteel ten
@@ -367,16 +464,19 @@ de implementatiescore en maakt aanvullende conformiteitstests noodzakelijk.
 
 ### 3.7 Mitigatie en besluitstatus
 
-| Risico                       | Maatregel                                                                       | Status                               |
-|------------------------------|---------------------------------------------------------------------------------|--------------------------------------|
-| GeoPackage-regressie         | Tabelaanmaak herstellen, regressietest toevoegen en volledige suite groen maken | Open                                 |
-| Onvolledige normalisatie     | Bron-JSON en `source_json` naast afgeleide velden bewaren                       | Geïmplementeerd                      |
-| Ongemerkt gewijzigd dossier  | SHA-256-manifest en onafhankelijke ZIP-controle                                 | Geïmplementeerd                      |
-| Onjuiste GIS-interpretatie   | Praktijktest in beheerde QGIS- en ArcGIS Pro-versies                            | Open                                 |
-| Onbevestigde beheerkeuze     | MCDA bespreken met GIS- en IT-beheer                                            | Open                                 |
-| Ontbrekende archiefeisen     | Metadata en bewaarbeleid laten toetsen door informatiebeheer                    | Open                                 |
-| Externe kaartafhankelijkheid | Lokale kaart plus neutrale fallback                                             | Geïmplementeerd                      |
-| Secrets in dossier of log    | Tokens alleen tijdelijk gebruiken en requestbody niet loggen                    | Geïmplementeerd, securityreview open |
+| Risico                       | Maatregel                                                                        | Status                               |
+|------------------------------|----------------------------------------------------------------------------------|--------------------------------------|
+| GeoPackage-regressie         | Tabelaanmaak herstellen, regressietest toevoegen en volledige suite groen maken  | Open                                 |
+| Onvolledige normalisatie     | Bron-JSON en `source_json` naast afgeleide velden bewaren                        | Geïmplementeerd                      |
+| Ongemerkt gewijzigd dossier  | SHA-256-manifest en onafhankelijke ZIP-controle                                  | Geïmplementeerd                      |
+| Onjuiste GIS-interpretatie   | Praktijktest in beheerde QGIS- en ArcGIS Pro-versies                             | Open                                 |
+| Onbevestigde beheerkeuze     | MCDA bespreken met GIS- en IT-beheer                                             | Open                                 |
+| Ontbrekende archiefeisen     | Metadata en bewaarbeleid laten toetsen door informatiebeheer                     | Open                                 |
+| Externe kaartafhankelijkheid | Lokale kaart plus neutrale fallback                                              | Geïmplementeerd                      |
+| Afwijkende uitvoerformaten   | Alle formaten uit één bron genereren, aantallen vergelijken en hashes vastleggen | Deels geïmplementeerd                |
+| Beheerlast lokale kaart      | Opslag, zoomniveaus en beheer voor het productiegebied laten meten               | Open                                 |
+| Beperkte stakeholdertoegang  | Interviews vroeg plannen en besluiten als voorlopige aannames registreren        | Open                                 |
+| Secrets in dossier of log    | Tokens alleen tijdelijk gebruiken en requestbody niet loggen                     | Geïmplementeerd, securityreview open |
 
 De keuzes zijn voor het **prototype vastgesteld**, maar voor productie nog **voorlopig**. Reviewfeedback of nieuwe
 stakeholdereisen kunnen de criteria, gewichten en uitkomst wijzigen. De technische uitwerking en de gevolgen van deze
@@ -500,12 +600,29 @@ De presentatie wordt opgebouwd rond een concrete measure en een niet-ruimtelijke
 hoe deze bronobjecten terugkomen in JSON, CSV, GeoJSON, GeoPackage, metadata en het rapport. Vervolgens wijzig ik
 gecontroleerd een bestand om te demonstreren wat een SHA-256-manifest wel en niet bewijst.
 
-De deep-dive moet antwoord geven op vier deelvragen:
+Op basis van de peerreview begrens ik de inhoud tot deze hoofdvraag:
 
-1. Welke informatie gaat verloren bij normalisatie en hoe wordt dat beperkt?
-2. Wanneer is een GeoPackage technisch geldig en praktisch interoperabel?
-3. Welke eigenschappen maken een formaat duurzaam toegankelijk?
-4. Wat is het verschil tussen technische integriteit, authenticiteit en inhoudelijke juistheid?
+> Hoe toon ik aan dat een geselecteerd Tygron-object met behoud van betekenis als controleerbaar en interoperabel
+> GeoPackage-object is overgedragen?
+
+Ik behandel daarbij twee deelvragen:
+
+1. Welke informatie kan bij normalisatie verloren gaan en hoe beperkt bron-JSON dit risico?
+2. Welke tests tonen aan dat het GeoPackage praktisch bruikbaar en na export niet ongemerkt gewijzigd is?
+
+Duurzame toegankelijkheid, authenticiteit en inhoudelijke juistheid blijven belangrijke begrenzingen, maar worden niet
+meer als afzonderlijke deelvragen uitgewerkt. Daarmee blijft er binnen dertig minuten voldoende tijd voor technische
+diepgang en een concrete demonstratie.
+
+De tijdsindeling is:
+
+| Onderdeel                                             |      Tijd |
+|-------------------------------------------------------|----------:|
+| Introductie en context                                | 5 minuten |
+| Transformatie van bronobject naar dossierobject       | 8 minuten |
+| Validatie en interoperabiliteit                       | 8 minuten |
+| Demonstratie van een geldige en gemanipuleerde export | 5 minuten |
+| Conclusie en vragen                                   | 4 minuten |
 
 Beoogd bewijs voor iteratie 4:
 
@@ -519,14 +636,15 @@ Beoogd bewijs voor iteratie 4:
 
 ### 6.1 Reviewplanning en status
 
-Voor gilde 2 zijn minimaal twee peerreviews verplicht. De feedback van Noa Dronkers en Jasper van Es is ontvangen en
-hieronder vastgelegd. Deze feedback is nog niet verwerkt. De verwerkingsbesluiten moeten nog worden toegevoegd voordat
-het document inleverklaar is.
+Voor gilde 2 zijn minimaal twee peerreviews verplicht. De feedback van Noa Dronkers en Jasper van Es is ontvangen,
+beoordeeld en verwerkt. De oorspronkelijke feedback blijft hieronder zichtbaar, gevolgd door mijn reactie en de
+vindplaats van de aanpassing.
 
-| Reviewer          | Afspraak/verzenddatum | Reactiedeadline  | Gevraagde focus                                       | Status                     |
-|-------------------|-----------------------|------------------|-------------------------------------------------------|----------------------------|
-| Noa Dronkers      | 21 september 2026     | 23 september 2026 | Probleemschets, MCDA, conclusies en stakeholders       | Feedback ontvangen        |
-| Jasper van Es     | 21 september 2026     | 23 september 2026 | Technische keuzes, stakeholders, risico's en deep-dive | Feedback ontvangen        |
+| Reviewer      | Afspraak/verzenddatum | Reactiedeadline   | Gevraagde focus                                        | Status            |
+|---------------|-----------------------|-------------------|--------------------------------------------------------|-------------------|
+| Noa Dronkers  | 21 september 2026     | 23 september 2026 | Probleemschets, MCDA, conclusies en stakeholders       | Feedback verwerkt |
+| Jasper van Es | 21 september 2026     | 23 september 2026 | Technische keuzes, stakeholders, risico's en deep-dive | Feedback verwerkt |
+| Docentobservatie | Niet van toepassing | Niet van toepassing | Leesbaarheid en herleidbaarheid van de MCDA           | Feedback verwerkt |
 
 Ik stuur reviewers niet alleen het bestand, maar ook deze concrete vragen:
 
@@ -538,7 +656,7 @@ Ik stuur reviewers niet alleen het bestand, maar ook deze concrete vragen:
 
 ### 6.2 Ontvangen feedback en verwerking
 
-#### Reviewer 1 – Noa Dronkers
+#### Reviewer 1 - Noa Dronkers
 
 **Gevraagde feedback:**
 
@@ -565,13 +683,16 @@ Ik stuur reviewers niet alleen het bestand, maar ook deze concrete vragen:
   overweging gemaakt moet worden (dit wordt later nog een keer benoemd in 3.7). De conclusies in het algemeen zijn
   duidelijk vanuit de analyse met als ondersteuning de tabel.
 
-**Verwerkingsstatus:** Nog niet verwerkt.
+**Verwerkingsstatus:** Verwerkt.
 
-**Mijn reactie:** Wordt na bespreking van de feedback ingevuld.
+**Mijn reactie:** De positieve bevindingen vragen geen inhoudelijke wijziging. De twee verbetersuggesties neem ik over.
+Ik voeg uitleg bij het procesdiagram toe en maak per MCDA-keuze zichtbaar welke stakeholderbelangen de criteria en
+gewichten beïnvloeden.
 
-**Concrete wijziging en vindplaats:** Nog niet van toepassing.
+**Concrete wijziging en vindplaats:** De uitleg bij het diagram staat in paragraaf 2.3. De belangen per keuze staan aan
+het begin van paragraaf 3.3, 3.4 en 3.5. De besluitroute bij conflicterende belangen staat in paragraaf 3.2.
 
-#### Reviewer 2 – Jasper van Es
+#### Reviewer 2 - Jasper van Es
 
 **Gevraagde feedback:**
 
@@ -591,7 +712,7 @@ Ik stuur reviewers niet alleen het bestand, maar ook deze concrete vragen:
   synchroon blijft.
 - De afweging tussen privacy, offline beschikbaarheid en gebruiksgemak is helder. Mogelijk kan nog worden toegelicht
   hoeveel extra beheer of opslag een lokale kaartoplossing vraagt ten opzichte van een externe kaartdienst.
-- De verschillende stakeholderbelangen zijn goed in kaart gebracht. Ik mis  alleen nog een toelichting op hoe
+- De verschillende stakeholderbelangen zijn goed in kaart gebracht. Ik mis alleen nog een toelichting op hoe
   conflicterende belangen worden afgewogen. Bijvoorbeeld wanneer een keuze gunstig is voor GIS-specialisten, maar
   minder goed aansluit bij de wensen van informatiebeheer of eindgebruikers. Het zou interessant zijn om te beschrijven
   hoe in zulke situaties tot een definitief besluit wordt gekomen.
@@ -607,11 +728,40 @@ Ik stuur reviewers niet alleen het bestand, maar ook deze concrete vragen:
   zijn met deze onderwerpen kan het helpen om belangrijke begrippen kort toe te lichten of een begrippenlijst op te
   nemen. Hierdoor wordt het document toegankelijker voor een bredere doelgroep.
 
-**Verwerkingsstatus:** Nog niet verwerkt.
+**Verwerkingsstatus:** Verwerkt.
 
-**Mijn reactie:** Wordt na bespreking van de feedback ingevuld.
+**Mijn reactie:** Ik neem de genoemde risico's, conflicterende belangen, toegankelijkheid en begrenzing van de deep-dive
+over. Ik neem geen vast opslagcijfer voor OpenMapTiles op, omdat dit zonder vastgesteld gebied en zoomniveau schijnzeker
+zou zijn. In plaats daarvan beschrijf ik de bronnen van beheerlast en leg ik vast dat deze voor productie moeten worden
+gemeten.
 
-**Concrete wijziging en vindplaats:** Nog niet van toepassing.
+**Concrete wijziging en vindplaats:** De nadelen van meerdere formaten staan in paragraaf 3.4. De beheerlast van de
+lokale kaart staat in paragraaf 3.5. De besluitroute bij conflicterende belangen staat in paragraaf 3.2. De aanvullende
+risico's staan in paragraaf 3.6 en 3.7. De deep-dive is teruggebracht naar een hoofdvraag en twee deelvragen in paragraaf
+5.4. Technische termen worden toegelicht in de begrippenlijst in paragraaf 1.3.
+
+#### Docentobservaties
+
+**Ontvangen feedback:**
+
+> Uit de observatie dat de student een markdown document heeft ingeleverd waardoor het niet direct leesbaar is, blijkt
+> dat de student bij zijn schriftelijke communicatie onvoldoende rekening houdt met de stakeholder en zijn boodschap
+> niet op passende wijze afstemt op de lezer.
+
+> Uit de observatie dat de student in het verantwoordingsdocument bij het gilde de bronnen van de waarden in de
+> MCDA-tabel niet heeft aangegeven, blijkt dat de student de verzamelde informatie niet op herleidbare wijze presenteert,
+> waardoor de onderbouwing van de gemaakte keuzes niet controleerbaar is.
+
+**Verwerkingsstatus:** Verwerkt.
+
+**Mijn reactie:** Beide observaties zijn terecht. Markdown blijft bruikbaar als bewerkbare bron, maar is niet geschikt
+als enige inlevervorm voor iedere lezer. Daarom lever ik een opgemaakte PDF in. Voor de MCDA was een algemene
+bronnenlijst niet voldoende, omdat daarmee niet zichtbaar was hoe de informatie tot afzonderlijke scores leidde. Ik
+maak daarom per alternatief expliciet welke bron, projectbevinding of aanname de scores ondersteunt.
+
+**Concrete wijziging en vindplaats:** Onder iedere MCDA-tabel in paragraaf 3.3, 3.4 en 3.5 staat nu een tabel met de
+scorevolgorde, onderbouwing, bronsoort en resterende aannames. Het document wordt naast de bewerkbare Markdown-versie als
+opgemaakte PDF aangeleverd.
 
 ### 6.3 Omgaan met tegengestelde feedback
 
@@ -646,27 +796,26 @@ De eerstvolgende acties zijn:
 1. de GeoPackage-tabelregressie herstellen en alle tests groen maken.
 2. een export opnieuw end-to-end controleren in de applicatie en via `/controle`.
 3. het GeoPackage openen in de beoogde QGIS- en ArcGIS Pro-versies.
-4. feedback van twee reviewers en de gildediscussie verwerken en versie 0.3 registreren.
-5. gewichten met minimaal een relevante projectstakeholder valideren.
-6. de stakeholder- en metadata-aannames laten valideren.
-7. bewijs verzamelen van een representatief echt Tygron-project zonder secrets vast te leggen.
+4. gewichten met minimaal een relevante projectstakeholder valideren.
+5. de stakeholder- en metadata-aannames laten valideren.
+6. bewijs verzamelen van een representatief echt Tygron-project zonder secrets vast te leggen.
 
 ## 8. Bronnen en betrouwbaarheid
 
-| Bron                                                                                                                                                                       | Type en betrouwbaarheid                                                 | Gebruik en beperking                                                         |
-|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------|------------------------------------------------------------------------------|
-| Projectopdracht zoals samengevat in hoofdstuk 2                                                                                                                            | Primaire projectbron, hoog voor scope en gewenste uitkomst              | Beschrijft nog niet alle productie- en archiefeisen                          |
-| [GOV.UK MCDA manual](https://www.gov.uk/government/publications/multi-criteria-analysis-manual-for-making-government-policy)                                               | Overheidsrichtlijn, hoog voor MCDA-proces                               | Publicatie is ouder en bepaalt niet mijn projectspecifieke scores            |
-| [OGC GeoPackage](https://www.geopackage.org/) en [normatieve specificatie](https://docs.ogc.org/is/12-128r17/12-128r17.html)                                               | Primaire standaardbeheerder, zeer hoog voor formaatvereisten            | Bewijst niet dat mijn implementatie automatisch conform is                   |
-| [Nationaal Archief – geo-data](https://www.nationaalarchief.nl/archiveren/kennisbank/geo-data)                                                                             | Nederlandse overheidsnorm, zeer relevant voor duurzame toegankelijkheid | Organisatiespecifiek informatiebeleid blijft daarnaast nodig                 |
-| [Nationaal Archief – selectiecriteria](https://www.nationaalarchief.nl/archiveren/kennisbank/selectiecriteria-voor-bestandsformaten)                                       | Overheidsbron gebaseerd op preservation practice                        | Criteria gaan over formaatkeuze, niet over inhoudelijke dossierkwaliteit     |
-| [Library of Congress – GeoPackage](https://www.loc.gov/preservation/digital/formats/fdd/fdd000520.shtml)                                                                   | Onafhankelijke preservation-analyse, hoog                               | Beschrijving heeft conceptstatus en is geen normatieve specificatie          |
-| [Safe Software – FME readers/writers](https://docs.safe.com/fme/2025.0/html/FME-Form-Documentation/FME-ReadersWriters/Home.htm) en [licentie](https://www.safe.com/legal/) | Primaire leveranciersbron, hoog voor producteigenschappen               | Commerciële leverancier heeft belang bij positieve productpresentatie        |
-| Tygron API-documentatie                                                                                                                                                    | Primaire leveranciersdocumentatie                                       | Beschrijft API-gedrag, niet de volledigheid van mijn exportadapter           |
-| Geautomatiseerde projecttests                                                                                                                                              | Direct empirisch bewijs voor de huidige codeversie                      | Dekking is beperkt. Mocks vervangen geen volledige praktijktest              |
-| Peerreviews                                                                                                                                                                | Ervarings- en kwaliteitsbron vanuit medestudenten                       | Nog toe te voegen. Geen vervanging voor specialistische stakeholdervalidatie |
+| Bron                                                                                                                                                                       | Type en betrouwbaarheid                                                 | Gebruik en beperking                                                                                  |
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| Projectopdracht zoals samengevat in hoofdstuk 2                                                                                                                            | Primaire projectbron, hoog voor scope en gewenste uitkomst              | Beschrijft nog niet alle productie- en archiefeisen                                                   |
+| [GOV.UK MCDA manual](https://www.gov.uk/government/publications/multi-criteria-analysis-manual-for-making-government-policy)                                               | Overheidsrichtlijn, hoog voor MCDA-proces                               | Publicatie is ouder en bepaalt niet mijn projectspecifieke scores                                     |
+| [OGC GeoPackage](https://www.geopackage.org/) en [normatieve specificatie](https://docs.ogc.org/is/12-128r17/12-128r17.html)                                               | Primaire standaardbeheerder, zeer hoog voor formaatvereisten            | Bewijst niet dat mijn implementatie automatisch conform is                                            |
+| [Nationaal Archief - geo-data](https://www.nationaalarchief.nl/archiveren/kennisbank/geo-data)                                                                             | Nederlandse overheidsnorm, zeer relevant voor duurzame toegankelijkheid | Organisatiespecifiek informatiebeleid blijft daarnaast nodig                                          |
+| [Nationaal Archief - selectiecriteria](https://www.nationaalarchief.nl/archiveren/kennisbank/selectiecriteria-voor-bestandsformaten)                                       | Overheidsbron gebaseerd op preservation practice                        | Criteria gaan over formaatkeuze, niet over inhoudelijke dossierkwaliteit                              |
+| [Library of Congress - GeoPackage](https://www.loc.gov/preservation/digital/formats/fdd/fdd000520.shtml)                                                                   | Onafhankelijke preservation-analyse, hoog                               | Beschrijving heeft conceptstatus en is geen normatieve specificatie                                   |
+| [Safe Software - FME readers/writers](https://docs.safe.com/fme/2025.0/html/FME-Form-Documentation/FME-ReadersWriters/Home.htm) en [licentie](https://www.safe.com/legal/) | Primaire leveranciersbron, hoog voor producteigenschappen               | Commerciële leverancier heeft belang bij positieve productpresentatie                                 |
+| Tygron API-documentatie                                                                                                                                                    | Primaire leveranciersdocumentatie                                       | Beschrijft API-gedrag, niet de volledigheid van mijn exportadapter                                    |
+| Geautomatiseerde projecttests                                                                                                                                              | Direct empirisch bewijs voor de huidige codeversie                      | Dekking is beperkt. Mocks vervangen geen volledige praktijktest                                       |
+| Peerreviews                                                                                                                                                                | Ervarings- en kwaliteitsbron vanuit medestudenten                       | Verwerkt voor leesbaarheid en onderbouwing. Geen vervanging voor specialistische stakeholdervalidatie |
 
-Ik heb leverancier sclaims waar mogelijk gecombineerd met onafhankelijke normen of uitvoerbare tests. Een score van 5
+Ik heb leveranciersclaims waar mogelijk gecombineerd met onafhankelijke normen of uitvoerbare tests. Een score van 5
 wordt niet alleen op basis van marketingtekst toegekend. De MCDA blijft herzienbaar wanneer interviews, praktijktests of
 nieuwe eisen andere informatie opleveren.
 
@@ -678,8 +827,10 @@ bestanden. De relevante onderbouwing is als volgt in het document verwerkt:
 | Onderdeel                                                | Vindplaats in dit document     |
 |----------------------------------------------------------|--------------------------------|
 | Opdrachtomschrijving en probleemanalyse                  | Hoofdstuk 2                    |
+| Begrippen en afkortingen                                 | Paragraaf 1.3                  |
 | Stakeholders, randvoorwaarden en SDG                     | Hoofdstuk 2                    |
 | MCDA-tabellen en conclusies                              | Hoofdstuk 3                    |
+| Herleidbaarheid van afzonderlijke MCDA-scores            | Paragraaf 3.3, 3.4 en 3.5      |
 | Risico's, technische realisatie en teststatus            | Hoofdstuk 3 en hoofdstuk 4     |
 | Procesdiagram en opbouw van het ZIP-dossier              | Hoofdstuk 5                    |
 | Keuze voor OpenMapTiles en alternatieven                 | Paragraaf 3.5                  |
