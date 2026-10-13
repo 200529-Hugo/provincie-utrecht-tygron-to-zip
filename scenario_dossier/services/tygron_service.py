@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Iterator
 from contextlib import contextmanager
 
+from scenario_dossier.tygron import TygronRootSession
 from ..models import (
     ActiveSessionCredentials,
     ProjectCredentials,
@@ -40,6 +41,14 @@ class TygronService:
             warnings=warnings,
             raster_fetcher=client.fetch_overlay_geotiff,
         )
+
+    def open_project_from_root(
+        self,
+        credentials: ProjectCredentials,
+        file_name: str
+    ) -> "TygronRootSession":
+        root = self._root_client(credentials)
+        return root.open_project(file_name)
 
     @contextmanager
     def project_connection(

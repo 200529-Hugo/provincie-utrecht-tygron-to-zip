@@ -8,7 +8,7 @@ const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
 
 let source = 'demo';
-let demo;
+let projects;
 let inspected;
 let liveProjects = [];
 
@@ -329,14 +329,14 @@ async function api(url, body) {
 }
 
 function updateScenarios() {
-    const project = demo.projects.find(item => item.id === $('#project').value);
+    const project = projects.find(item => item.id === $('#project').value);
 
     fillSelect($('#scenario'), project.scenarios, 'id', 'name');
     updateNote();
 }
 
 function updateNote() {
-    const project = demo.projects.find(item => item.id === $('#project').value);
+    const project = projects.find(item => item.id === $('#project').value);
     const scenario = project.scenarios.find(item => item.id === $('#scenario').value);
 
     $('#scenarioNote').textContent = scenario.description;
@@ -441,8 +441,9 @@ async function doExport() {
 async function init() {
     $('#decisionDate').value = new Intl.DateTimeFormat('sv-SE').format(new Date());
     try {
-        demo = await fetch('/api/demo').then(response => response.json());
-        fillSelect($('#project'), demo.projects, 'id', 'name');
+        projects = await fetch('/api/demo/projects').then(response => response.json()
+            .catch(error => toast(error.message)));
+        fillSelect($('#project'), projects, 'id', 'name');
         updateScenarios();
     } catch (error) {
         toast('Demonstratiedata kon niet worden geladen.');

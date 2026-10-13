@@ -1,0 +1,18 @@
+### Get all projects
+GET 127.0.0.1:5000/api/demo/projects
+
+### Get scenarios by project ID
+GET 127.0.0.1:5000/api/demo/scenarios/merwedekanaalzone
+
+### Get scenarios by project ID where ID doesn't exist
+GET 127.0.0.1:5000/api/demo/scenarios/merwedekanaalzon
+
+### Inspect for demo
+POST 127.0.0.1:5000/api/inspect
+Content-Type: application/json
+
+{
+  "source": "demo",
+  "project_id": "merwedekanaalzone",
+  "scenario_id": "groen-gezond-2040"
+}

@@ -5,7 +5,6 @@ from typing import Any, Iterable
 
 from .component_type import ComponentType
 
-
 @dataclass
 class ScenarioData:
     overlays: list[dict[str, Any]] = field(default_factory=list)
@@ -49,3 +48,12 @@ class ScenarioData:
             raise ValueError(f"Onbekend scenario-onderdeel: {name}")
         values[name] = list(items)
         return ScenarioData.from_dict(values)
+
+    def get_spatial(self):
+        spatial = 0
+        for group in [self.overlays, self.indicators, self.measures, self.alerts]:
+            for item in group:
+                if item.get("geometry"):
+                    spatial += 1
+        return spatial
+        # return sum(1 for group in data.values() for item in group if item.get("geometry"))

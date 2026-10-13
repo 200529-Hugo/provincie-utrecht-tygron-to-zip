@@ -90,10 +90,10 @@ def _demo_scenario(project_id: str, scenario_id: str):
 
 
 # Resolves the project and scenario information based on the provided parameters, handling different data sources.
-def _resolve(p):
-    source = p.get("source", "demo")
+def _resolve(payload):
+    source = payload.get("source", "demo")
     if source == "demo":
-        project, scenario = _demo_scenario(p.get("project_id", ""), p.get("scenario_id", ""))
+        project, scenario = _demo_scenario(payload.get("project_id", ""), payload.get("scenario_id", ""))
         return project["name"], scenario["name"], scenario["data"], [], None, None
     if source not in ("tygron", "tygron_project"):
         raise ValueError("Onbekende gegevensbron.")
@@ -101,22 +101,22 @@ def _resolve(p):
     session = None
     if source == "tygron_project":
         root = TygronRootClient(
-            p.get("base_url", ""),
-            p.get("username", ""),
-            p.get("login_key", ""),
+            payload.get("base_url", ""),
+            payload.get("username", ""),
+            payload.get("login_key", ""),
         )
-        session = root.open_project(p.get("project_file", ""))
+        session = root.open_project(payload.get("project_file", ""))
         client = session.client
     else:
-        client = TygronClient(p.get("base_url", ""), p.get("token", ""))
+        client = TygronClient(payload.get("base_url", ""), payload.get("token", ""))
     try:
         data, warnings = client.fetch_all()
     except Exception:
         if session:
             session.close()
         raise
-    project = p.get("project_name", "").strip()
-    scenario = p.get("scenario_name", "").strip()
+    project = payload.get("project_name", "").strip()
+    scenario = payload.get("scenario_name", "").strip()
     if not project or not scenario:
         if session:
             session.close()
@@ -290,8 +290,8 @@ class Handler(BaseHTTPRequestHandler):
         return self._json({"projects": public})
 
     # Inspects the project and scenario data, returning counts, spatial information, warnings, and a preview of items as JSON.
-    def _inspect(self, p):
-        project, scenario, data, warnings, _, session = _resolve(p)
+    def _inspect(self, payload):
+        project, scenario, data, warnings, _, session = _resolve(payload)
         try:
             # Count the number of spatial items in the data by checking for the presence of geometry in each item across all components.
             spatial = sum(1 for group in data.values() for item in group if item.get("geometry"))
@@ -306,6 +306,10 @@ class Handler(BaseHTTPRequestHandler):
                             "key": _item_key(item, index),
                             "feature": item,
                         })
+            iets = {
+                key: len(data.get(key, []))
+                for key in COMPONENTS
+            }
 
             # Return the inspection results as a JSON response, including project and scenario names, counts of items per component, spatial item count, warnings, preview of spatial items, and an inventory of all items.
             return self._json({
