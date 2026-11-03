@@ -23,3 +23,6 @@ class DemoController:
 
     def inspect(self, payload):
         return self.demo_service.inspect(payload)
+
+    def export(self, payload):
+        return self.demo_service.export(payload)

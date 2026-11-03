@@ -19,3 +19,9 @@ def inspect():
     data = request.get_json()
     inspected = demo_controller.inspect(data)
     return jsonify(inspected)
+
+@api.post("/export")
+def export():
+    data = request.get_json()
+    exported = demo_controller.export(data)
+    return jsonify(exported)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from http import HTTPStatus
 from pathlib import Path
 from typing import Any
 
@@ -9,7 +10,11 @@ from scenario_dossier.tygron import TygronClient, TygronRootSession
 
 from ..models import Project, Scenario, ActiveSessionCredentials, ProjectCredentials
 from .tygron_service import TygronService
+from ..exporter import build_archive
 
+ROOT = Path(__file__).parent.parent
+STATIC = ROOT / "static"
+EXPORTS = ROOT / "exports"
 COMPONENTS = ("overlays", "indicators", "measures", "alerts")
 
 def _item_inventory(data):
@@ -52,6 +57,22 @@ def _properties(item):
 def _item_key(item, index):
     item_id = _properties(item).get("id")
     return f"id:{item_id}" if item_id is not None else f"index:{index}"
+
+# Filters the data based on selected components and items, returning only the relevant parts.
+def _select_data(data, selected_components=None, selected_items=None):
+    components = selected_components if isinstance(selected_components, list) else list(COMPONENTS)
+    item_selection = selected_items if isinstance(selected_items, dict) else None
+    result = {}
+    for component in COMPONENTS:
+        items = data.get(component, []) if component in components else []
+        if item_selection is not None and component in item_selection:
+            wanted = {str(key) for key in item_selection[component]}
+            items = [
+                item for index, item in enumerate(items)
+                if _item_key(item, index) in wanted
+            ]
+        result[component] = items
+    return result
 
 class DemoService:
     def __init__(self, data_path: Path | None = None) -> None:
@@ -99,16 +120,6 @@ class DemoService:
             spatial = data.get_spatial()
 
             preview = []
-            # Create a preview of spatial items for the "measures" and "alerts" components, including their component name, unique key, and feature data.
-            # for name in ("measures", "alerts"):
-            #     for index, item in enumerate(data.get(name, [])):
-            #         if item.get("geometry"):
-            #             preview.append({
-            #                 "component": name,
-            #                 "key": _item_key(item, index),
-            #                 "feature": item,
-            #             })
-
             for index, item in enumerate(data.measures):
                 if item.get("geometry"):
                     preview.append({
@@ -143,6 +154,39 @@ class DemoService:
                 "items": _item_inventory(data),
             }
         # Ensure that the session is closed after the inspection is complete, regardless of whether an exception occurred or not.
+        finally:
+            if session:
+                session.close()
+
+    # Exports the selected project and scenario data, creating a ZIP archive and returning the filename, download link, and summary as JSON.
+    def export(self, p):
+        project, scenario, data, warnings, client, session = self._resolve(p)
+        try:
+            # Filter the data based on the selected components and items specified in the request parameters, returning only the relevant parts for export.
+            data = _select_data(data, p.get("components"), p.get("selected_items"))
+            # Build the export archive using the filtered data, project and scenario names, notes, source, warnings, and optional raster fetching function if applicable.
+            archive, summary = build_archive(
+                EXPORTS,
+                project,
+                scenario,
+                data,
+                str(p.get("notes", ""))[:4000],
+                p.get("source", "demo"),
+                warnings,
+                client.fetch_overlay_geotiff if client and p.get("rasters", True) else None,
+                p.get("dossier", {}),
+            )
+            # Return the export result as a JSON response, including the filename of the created archive, a download link, and a summary of the export process.
+            return self._json(
+                {
+                    "ok": True,
+                    "filename": archive.name,
+                    "download": f"/api/download/{archive.name}",
+                    "summary": summary,
+                },
+                HTTPStatus.CREATED,
+            )
+        # Ensure that the session is closed after the export is complete, regardless of whether an exception occurred or not.
         finally:
             if session:
                 session.close()
