@@ -60,18 +60,30 @@ def _item_key(item, index):
 
 # Filters the data based on selected components and items, returning only the relevant parts.
 def _select_data(data, selected_components=None, selected_items=None):
-    components = selected_components if isinstance(selected_components, list) else list(COMPONENTS)
+    all_components = {
+        "overlays": data.overlays,
+        "indicators": data.indicators,
+        "measures": data.measures,
+        "alerts": data.alerts
+    }
+    components = {}
+    if not selected_components is None:
+        components = all_components
+    else:
+        for key, value in all_components.items():
+            if key in selected_components:
+                components[key] = value
+
     item_selection = selected_items if isinstance(selected_items, dict) else None
     result = {}
-    for component in COMPONENTS:
-        items = data.get(component, []) if component in components else []
-        if item_selection is not None and component in item_selection:
-            wanted = {str(key) for key in item_selection[component]}
+    for component_name, items in components.items():
+        if item_selection is not None and component_name in item_selection:
+            wanted = {str(key) for key in item_selection[component_name]}
             items = [
                 item for index, item in enumerate(items)
                 if _item_key(item, index) in wanted
             ]
-        result[component] = items
+        result[component_name] = items
     return result
 
 class DemoService:
@@ -98,7 +110,6 @@ class DemoService:
             return project.get_scenarios()
         except:
             raise LookupError("Project niet gevonden.")
-
 
     def get_project_and_scenario_by_ids(self, project_id: str, scenario_id: str) -> tuple[Project, Scenario]:
         project = self.get_project(project_id)
@@ -177,15 +188,12 @@ class DemoService:
                 p.get("dossier", {}),
             )
             # Return the export result as a JSON response, including the filename of the created archive, a download link, and a summary of the export process.
-            return self._json(
-                {
-                    "ok": True,
-                    "filename": archive.name,
-                    "download": f"/api/download/{archive.name}",
-                    "summary": summary,
-                },
-                HTTPStatus.CREATED,
-            )
+            return {
+                "ok": True,
+                "filename": archive.name,
+                "download": f"/api/download/{archive.name}",
+                "summary": summary,
+            }
         # Ensure that the session is closed after the export is complete, regardless of whether an exception occurred or not.
         finally:
             if session:

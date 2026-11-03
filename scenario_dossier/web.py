@@ -306,10 +306,6 @@ class Handler(BaseHTTPRequestHandler):
                             "key": _item_key(item, index),
                             "feature": item,
                         })
-            iets = {
-                key: len(data.get(key, []))
-                for key in COMPONENTS
-            }
 
             # Return the inspection results as a JSON response, including project and scenario names, counts of items per component, spatial item count, warnings, preview of spatial items, and an inventory of all items.
             return self._json({
