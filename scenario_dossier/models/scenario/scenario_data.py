@@ -56,4 +56,3 @@ class ScenarioData:
                 if item.get("geometry"):
                     spatial += 1
         return spatial
-        # return sum(1 for group in data.values() for item in group if item.get("geometry"))

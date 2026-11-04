@@ -20,6 +20,21 @@ class ExporterTests(unittest.TestCase):
         self.assertEqual(slug("Groen & Gezond 2040!"), "groen-gezond-2040")
         self.assertEqual(slug(""), "scenario")
 
+    def test_report_templates_escape_user_and_tygron_text(self):
+        data = {'indicators': [{'id': 1, 'name': '<b>Indicator</b>', 'description': '<script>bron()</script>'}]}
+        with tempfile.TemporaryDirectory() as temporary:
+            archive, _ = build_archive(Path(temporary), '<script>project()</script>', 'Scenario', data,
+                                       notes='<img src=x onerror=alert(1)>',
+                                       dossier_fields={'owner': '<b>Eigenaar</b>'})
+            with zipfile.ZipFile(archive) as package:
+                report = package.read('rapport/dossierrapport.html').decode()
+            self.assertNotIn('<script>', report)
+            self.assertNotIn('<img src=x', report)
+            self.assertIn('&lt;script&gt;project()', report)
+            self.assertIn('&lt;b&gt;Indicator&lt;/b&gt;', report)
+            self.assertIn('&lt;b&gt;Eigenaar&lt;/b&gt;', report)
+            self.assertIn('Niet vastgelegd', report)
+
     def test_archive_is_complete_and_valid(self):
         with tempfile.TemporaryDirectory() as tmp:
             archive, metadata = build_archive(

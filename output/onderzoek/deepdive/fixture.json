@@ -1,0 +1,80 @@
+{
+  "context": {
+    "project": "merwedekanaalzone",
+    "scenario": "groen-gezond-2040",
+    "crs": "EPSG:4326",
+    "bron": "synthetische projectdemodata, geen echt Tygron-project"
+  },
+  "data": {
+    "overlays": [],
+    "indicators": [
+      {
+        "id": 21,
+        "name": "Inwoners binnen 300 m van groen",
+        "value": 84.2,
+        "unit": "%",
+        "status": "doelwaarde behaald",
+        "target": 75,
+        "description": "Aandeel toekomstige inwoners met groen nabij."
+      }
+    ],
+    "measures": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                5.1028,
+                52.083
+              ],
+              [
+                5.108,
+                52.083
+              ],
+              [
+                5.108,
+                52.0861
+              ],
+              [
+                5.1028,
+                52.0861
+              ],
+              [
+                5.1028,
+                52.083
+              ]
+            ]
+          ]
+        },
+        "properties": {
+          "id": 31,
+          "name": "Parklint langs kanaal",
+          "status": "voorkeursmaatregel",
+          "cost": 3200000,
+          "description": "Aaneengesloten parkzone met bomen en verblijfsplekken."
+        }
+      }
+    ],
+    "alerts": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            5.1102,
+            52.0838
+          ]
+        },
+        "properties": {
+          "id": 41,
+          "name": "Hittestress bij schoolplein",
+          "severity": "hoog",
+          "status": "open",
+          "description": "PET overschrijdt 38 °C op zomerse middag."
+        }
+      }
+    ]
+  }
+}

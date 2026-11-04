@@ -1,180 +1,76 @@
+import {t} from './i18n.js';
+import {createSourceForm} from './workflow/source-form.js';
+import {inspectScenario, exportDossier} from './api/workflow.js';
+import {createSelectionPanel} from './workflow/selection-panel.js';
+import {renderExportResult} from './workflow/export-result.js';
+import {readDossierFields, setDefaultReference} from './workflow/dossier-form.js';
 import {
     drawScenarioMap,
     focusScenarioItem,
-    setScenarioSelection
+    setScenarioSelection,
+    resizeScenarioMap
 } from './scenario-map.js';
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
 
-let source = 'demo';
-let projects;
+const parameters = new URLSearchParams(location.search);
+const mode = parameters.get('mode');
+const activeSessionMode = mode === 'tygron';
+const accountMode = mode === 'account';
+const demoSelection = mode === 'demo' && parameters.has('project_id');
+const overviewSelection = accountMode || demoSelection;
 let inspected;
-let liveProjects = [];
+let hasExport = false;
 
-const labels = {
-    overlays: 'overlays',
-    indicators: 'indicatoren',
-    measures: 'maatregelen',
-    alerts: 'alerts'
-};
-const componentOrder = ['overlays', 'indicators', 'measures', 'alerts'];
+let reviewTab = 'selection';
+let exporting = false;
+let mappedInspection;
+let mapTask = Promise.resolve();
+const reviewMap = $('#reviewMap');
+if (window.matchMedia('(max-width: 1000px)').matches) reviewMap.open = false;
 
-function itemCheckboxes() {
-    return $$('#itemGroups input[data-item-key]');
-}
+const selectionPanel = createSelectionPanel({
+    onChange: (count, keys) => {
+        setScenarioSelection(keys);
+        $('#export').disabled = exporting || !inspected || count === 0;
+    },
+    onShowOnMap: async key => {
+        reviewMap.open = true;
+        await ensureScenarioMap();
+        focusScenarioItem(key);
+        if (window.matchMedia('(max-width: 1000px)').matches) reviewMap.scrollIntoView({behavior: 'smooth', block: 'start'});
+    }
+});
+const updateItemSelection = () => selectionPanel.refresh();
+const sourceForm = createSourceForm({mode, parameters, onScenarioChanged: inspect, onError: toast});
 
-function selectedItems() {
-    const selection = Object.fromEntries(componentOrder.map(name => [name, []]));
-    itemCheckboxes().filter(input => input.checked).forEach(input => {
-        selection[input.dataset.component].push(input.dataset.itemKey);
+function setReviewTab(name, scroll = false) {
+    reviewTab = name;
+    $$('[data-review-tab]').forEach(button => {
+        const active = button.dataset.reviewTab === name;
+        button.setAttribute('aria-selected', String(active));
+        button.tabIndex = active ? 0 : -1;
     });
-    return selection;
+    $('#selectionPanel').hidden = name !== 'selection';
+    $('#detailsPanel').hidden = name !== 'details';
+    $('#reviewNext').textContent = t(name === 'selection' ? 'Verder: dossiergegevens' : 'Terug naar selectie');
+    if (scroll) $('.review-tabs').scrollIntoView({behavior: 'smooth', block: 'start'});
 }
 
-function updateItemSelection() {
-    const inputs = itemCheckboxes();
-    const checked = inputs.filter(input => input.checked);
-    const spatial = inputs.filter(input => input.dataset.spatial === 'true');
-    const selectedSpatial = checked.filter(input => input.dataset.spatial === 'true');
-
-    componentOrder.forEach(component => {
-        const group = $(`#itemGroups input[data-group="${component}"]`);
-        if (!group) {
-            return;
-        }
-        const children = inputs.filter(input => input.dataset.component === component);
-        const selected = children.filter(input => input.checked).length;
-        group.checked = selected === children.length && children.length > 0;
-        group.indeterminate = selected > 0 && selected < children.length;
-        const count = $(`#itemGroups [data-group-count="${component}"]`);
-        count.textContent = `${selected}/${children.length}`;
-    });
-
-    $('#selectionCount').textContent = `${checked.length} van ${inputs.length} geselecteerd`;
-    $('#spatialCount').textContent = `${selectedSpatial.length} van ${spatial.length} ruimtelijke objecten`;
-    $('#export').disabled = checked.length === 0;
-    setScenarioSelection(new Set(checked.map(input => input.dataset.itemKey)));
-}
-
-function filterItems() {
-    const query = $('#itemSearch').value.trim().toLocaleLowerCase('nl');
-    $$('.item-group').forEach(group => {
-        let visible = 0;
-        group.querySelectorAll('.item-row').forEach(row => {
-            const matches = !query || row.dataset.search.includes(query);
-            row.hidden = !matches;
-            visible += Number(matches);
+async function ensureScenarioMap() {
+    if (!inspected || !reviewMap.open) return;
+    if (mappedInspection !== inspected) {
+        const current = inspected;
+        mappedInspection = current;
+        mapTask = drawScenarioMap(current.preview).then(updateItemSelection).catch(error => {
+            mappedInspection = undefined;
+            $('#basemapStatus').textContent = t('De kaart kon niet worden geladen. Je kunt je selectie wel exporteren.');
+            toast(error.message);
         });
-        group.hidden = visible === 0;
-    });
-}
-
-function renderItemSelector(items) {
-    const container = $('#itemGroups');
-    container.replaceChildren();
-
-    componentOrder.forEach(component => {
-        const componentItems = items.filter(item => item.component === component);
-        if (!componentItems.length) {
-            return;
-        }
-
-        const group = document.createElement('section');
-        group.className = 'item-group';
-
-        const heading = document.createElement('label');
-        heading.className = 'item-group-head';
-        const groupCheck = document.createElement('input');
-        groupCheck.type = 'checkbox';
-        groupCheck.checked = true;
-        groupCheck.dataset.group = component;
-        const title = document.createElement('strong');
-        title.textContent = labels[component];
-        const count = document.createElement('small');
-        count.dataset.groupCount = component;
-        heading.append(groupCheck, title, count);
-        group.append(heading);
-
-        const list = document.createElement('div');
-        list.className = 'item-list';
-        componentItems.forEach(item => {
-            const row = document.createElement('div');
-            row.className = 'item-row';
-            row.dataset.search = `${item.name} ${item.detail} ${labels[component]}`
-                .toLocaleLowerCase('nl');
-
-            const toggle = document.createElement('label');
-            toggle.className = 'item-toggle';
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.checked = true;
-            checkbox.dataset.itemKey = item.key;
-            checkbox.dataset.component = component;
-            checkbox.dataset.spatial = String(item.spatial);
-            checkbox.setAttribute('aria-label', `${item.name} opnemen in het dossier`);
-            toggle.append(checkbox);
-
-            const copy = document.createElement('span');
-            copy.className = 'item-copy';
-            const name = document.createElement('strong');
-            name.textContent = item.name;
-            const detail = document.createElement('small');
-            detail.textContent = item.detail || (item.spatial ? item.geometry_type : 'Geen kaartgeometrie');
-            copy.append(name, detail);
-            row.append(toggle);
-
-            if (item.spatial) {
-                const jump = document.createElement('button');
-                jump.type = 'button';
-                jump.className = 'item-jump';
-                jump.setAttribute('aria-label', `${item.name} op de kaart tonen`);
-                const cue = document.createElement('span');
-                cue.className = 'jump-cue';
-                cue.textContent = 'Kaart';
-                jump.append(copy, cue);
-                jump.onclick = () => {
-                    if (!checkbox.checked) {
-                        checkbox.checked = true;
-                        updateItemSelection();
-                    }
-                    $$('.item-row.is-focused').forEach(itemRow => {
-                        itemRow.classList.remove('is-focused');
-                    });
-                    row.classList.add('is-focused');
-                    focusScenarioItem(item.key);
-                };
-                row.append(jump);
-            } else {
-                row.classList.add('non-spatial');
-                row.append(copy);
-            }
-            list.append(row);
-        });
-        group.append(list);
-        container.append(group);
-
-        groupCheck.onchange = () => {
-            itemCheckboxes()
-                .filter(input => input.dataset.component === component)
-                .forEach(input => { input.checked = groupCheck.checked; });
-            updateItemSelection();
-        };
-    });
-
-    itemCheckboxes().forEach(input => { input.onchange = updateItemSelection; });
-    $('#itemSearch').value = '';
-    updateItemSelection();
-}
-
-function fillSelect(select, items, valueKey, labelKey) {
-    select.replaceChildren(...items.map(item => {
-        const option = document.createElement('option');
-
-        option.value = typeof valueKey === 'function' ? valueKey(item) : item[valueKey];
-        option.textContent = typeof labelKey === 'function' ? labelKey(item) : item[labelKey];
-        return option;
-    }));
+    }
+    await mapTask;
+    requestAnimationFrame(resizeScenarioMap);
 }
 
 function toast(message) {
@@ -185,35 +81,17 @@ function toast(message) {
     setTimeout(() => element.classList.remove('show'), 4200);
 }
 
-function dossierPayload() {
-    return {
-        reference: $('#recordReference').value.trim(),
-        owner: $('#recordOwner').value.trim(),
-        author: $('#recordAuthor').value.trim(),
-        decision_date: $('#decisionDate').value,
-        decision_status: $('#decisionStatus').value,
-        alternatives: $('#alternatives').value.trim(),
-        classification: $('#classification').value,
-        retention_period: $('#retentionPeriod').value.trim()
-    };
-}
-
-function defaultReference(project, scenario) {
-    const normalized = `${project}-${scenario}`
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-zA-Z0-9]+/g, '-')
-        .replace(/^-|-$/g, '')
-        .toUpperCase();
-
-    return normalized.slice(0, 42);
-}
-
 function step(number) {
     $$('.panel').forEach(panel => panel.classList.remove('active'));
     $('#step' + number).classList.add('active');
     $$('.steps button').forEach(button => {
-        button.classList.toggle('active', +button.dataset.step === number);
+        const target = Number(button.dataset.step);
+        button.classList.toggle('active', target === number);
+        button.classList.toggle('completed', target < number);
+        if (target === number) button.setAttribute('aria-current', 'step');
+        else button.removeAttribute('aria-current');
+        if (target === 3) button.disabled = !inspected && number !== 3;
+        if (target === 4) button.disabled = !hasExport;
     });
     scrollTo({
         top: 0,
@@ -221,165 +99,49 @@ function step(number) {
     });
 }
 
-function payload() {
-    if (source === 'demo') {
-        return {
-            source,
-            project_id: $('#project').value,
-            scenario_id: $('#scenario').value
-        };
-    }
-
-    if (source === 'tygron_project') {
-        const project = liveProjects.find(
-            item => item.file_name === $('#liveProject').value
-        );
-
-        return {
-            source,
-            base_url: $('#rootBaseUrl').value.trim(),
-            domain: $('#domain').value.trim(),
-            username: $('#username').value.trim(),
-            login_key: $('#loginKey').value.trim(),
-            project_file: $('#liveProject').value,
-            project_name: project ? project.name : '',
-            scenario_name: $('#liveScenario').value
-        };
-    }
-
-    return {
-        source,
-        base_url: $('#baseUrl').value.trim(),
-        token: $('#token').value.trim(),
-        project_name: $('#projectName').value.trim(),
-        scenario_name: $('#scenarioName').value.trim()
-    };
-}
-
-function updateLiveScenarios() {
-    const project = liveProjects.find(
-        item => item.file_name === $('#liveProject').value
-    );
-    const scenarios = project ? project.versions : [];
-
-    fillSelect(
-        $('#liveScenario'),
-        scenarios.map((name, index) => ({
-            name,
-            label: name + (index === project.active_version ? ' (actief)' : '')
-        })),
-        'name',
-        'label'
-    );
-    $('#liveScenario').disabled = !scenarios.length;
-
-    if (project && scenarios[project.active_version]) {
-        $('#liveScenario').value = scenarios[project.active_version];
-    }
-}
-
-async function loadTygronProjects() {
-    const button = $('#loadProjects');
-    const status = $('#projectLoadStatus');
-
-    button.disabled = true;
-    status.textContent = 'Projecten ophalen…';
-
-    try {
-        const data = await api('/api/tygron/projects', {
-            base_url: $('#rootBaseUrl').value.trim(),
-            domain: $('#domain').value.trim(),
-            username: $('#username').value.trim(),
-            login_key: $('#loginKey').value.trim()
-        });
-
-        liveProjects = data.projects;
-        fillSelect($('#liveProject'), liveProjects, 'file_name', 'name');
-        $('#liveProject').disabled = !liveProjects.length;
-        status.textContent = `${liveProjects.length} projecten gevonden`;
-        updateLiveScenarios();
-    } catch (error) {
-        liveProjects = [];
-        $('#liveProject').innerHTML = '';
-        $('#liveProject').disabled = true;
-        $('#liveScenario').innerHTML = '';
-        $('#liveScenario').disabled = true;
-        status.textContent = '';
-        toast(error.message);
-    } finally {
-        button.disabled = false;
-    }
-}
-
-async function api(url, body) {
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-    });
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw Error(data.error || 'Onbekende fout');
-    }
-
-    return data;
-}
-
-function updateScenarios() {
-    const project = projects.find(item => item.id === $('#project').value);
-
-    fillSelect($('#scenario'), project.scenarios, 'id', 'name');
-    updateNote();
-}
-
-function updateNote() {
-    const project = projects.find(item => item.id === $('#project').value);
-    const scenario = project.scenarios.find(item => item.id === $('#scenario').value);
-
-    $('#scenarioNote').textContent = scenario.description;
-}
-
 async function inspect() {
     const button = $('#inspect');
+    const sessionForm = $('#activeSessionForm');
 
+    sessionForm?.setAttribute('aria-busy', 'true');
+    if (sessionForm) $('#sessionConnectionStatus').textContent = '';
     button.disabled = true;
-    button.textContent = 'Controleren…';
+    button.textContent = t('Controleren…');
+    $('#reviewScenario').disabled = true;
+    inspected = undefined;
+    hasExport = false;
+    $('#export').disabled = true;
+    $('#step3').setAttribute('aria-busy', 'true');
+    $('#inspectionStatus').textContent = t('Scenario laden…');
+    $('#retryInspect').classList.add('hidden');
 
     try {
-        inspected = await api('/api/inspect', payload());
+        inspected = await inspectScenario(sourceForm.payload(), {redirectOnUnauthorized: !activeSessionMode});
+        $('#inspectionStatus').textContent = '';
         $('#selectionTitle').textContent = `${inspected.project} · ${inspected.scenario}`;
-        if (!$('#recordReference').value.trim()) {
-            $('#recordReference').value = defaultReference(
-                inspected.project,
-                inspected.scenario
-            );
-        }
-        $('#summary').innerHTML = Object.entries(inspected.counts)
-            .map(([key, value]) => `
-                <div class="stat">
-                    <b>${value}</b>
-                    <span>${labels[key]}</span>
-                </div>
-            `)
-            .join('');
-        $('#spatialCount').textContent = `${inspected.spatial} ruimtelijke objecten`;
-        renderItemSelector(inspected.items || []);
+        setDefaultReference(inspected.project, inspected.scenario);
+        selectionPanel.renderCategories(inspected.counts);
+        $('#spatialCount').textContent = t('{count} ruimtelijke objecten', {count: inspected.spatial});
+        selectionPanel.renderItems(inspected.items || []);
 
         if (inspected.warnings.length) {
             toast(inspected.warnings.join(' '));
         }
 
-        step(2);
-        await drawScenarioMap(inspected.preview);
+        step(3);
+        await ensureScenarioMap();
         updateItemSelection();
     } catch (error) {
+        if (sessionForm) $('#sessionConnectionStatus').textContent = error.message;
+        $('#inspectionStatus').textContent = error.message;
+        $('#retryInspect').classList.remove('hidden');
         toast(error.message);
     } finally {
+        sessionForm?.setAttribute('aria-busy', 'false');
+        $('#step3').setAttribute('aria-busy', 'false');
+        $('#reviewScenario').disabled = false;
         button.disabled = false;
-        button.innerHTML = 'Verbinding controleren';
+        button.innerHTML = t('Verbinding controleren');
     }
 }
 
@@ -387,101 +149,105 @@ async function doExport() {
     const button = $('#export');
 
     button.disabled = true;
-    button.textContent = 'Dossier opbouwen…';
+    button.textContent = t('Dossier opbouwen…');
+    exporting = true;
 
     try {
         const exportPayload = {
-            ...payload(),
+            ...sourceForm.payload(),
             notes: $('#notes').value,
-            dossier: dossierPayload(),
-            components: componentOrder.filter(component =>
-                itemCheckboxes().some(input =>
-                    input.dataset.component === component && input.checked
-                )
-            ),
-            selected_items: selectedItems(),
+            dossier: readDossierFields(),
+            components: selectionPanel.selectedComponents(),
+            selected_items: selectionPanel.selectedItems(),
             rasters: true
         };
-        const data = await api('/api/export', exportPayload);
+        const data = await exportDossier(exportPayload, {redirectOnUnauthorized: !activeSessionMode});
 
-        $('#doneText').textContent =
-            `${data.summary.project} · ${data.summary.scenario} ` +
-            'is gereed voor overdracht en archivering.';
-        const validationRow = data.summary.validation
-            ? `
-                <span>Automatische validatie</span>
-                <b>${data.summary.validation}</b>
-            `
-            : '';
-
-        $('#package').innerHTML = `
-            <b>${data.filename}</b>
-            <span>${(data.summary.size / 1024).toFixed(1)} KB</span>
-            <span>Bestandsformaat</span>
-            <b>ZIP + GeoPackage + HTML-rapport</b>
-            <span>Integriteitscontrole</span>
-            <b>SHA-256</b>
-            ${validationRow}
-        `;
-        $('#download').href = data.download;
+        renderExportResult(data);
 
         if (data.summary.warnings.length) {
             toast(data.summary.warnings.join(' '));
         }
 
-        step(3);
+        hasExport = true;
+        step(4);
     } catch (error) {
         toast(error.message);
     } finally {
-        button.disabled = itemCheckboxes().every(input => !input.checked);
-        button.innerHTML = 'Dossier maken';
+        exporting = false;
+        updateItemSelection();
+        button.innerHTML = t('Dossier maken');
     }
 }
 
 async function init() {
     $('#decisionDate').value = new Intl.DateTimeFormat('sv-SE').format(new Date());
+    // De sessiepagina heeft geen projectlijst of demonstratiegegevens nodig.
+    if (activeSessionMode) return;
+    if (overviewSelection) step(3);
     try {
-        projects = await fetch('/api/demo/projects').then(response => response.json()
-            .catch(error => toast(error.message)));
-        fillSelect($('#project'), projects, 'id', 'name');
-        updateScenarios();
+        if (await sourceForm.initialize()) await inspect();
     } catch (error) {
-        toast('Demonstratiedata kon niet worden geladen.');
+        toast(error.message);
+        if (overviewSelection) {
+            $('#inspectionStatus').textContent = error.message;
+            $('#retryInspect').classList.remove('hidden');
+        }
     }
 }
 
-$$('.source-tabs button').forEach(button => {
-    button.onclick = () => {
-        $$('.source-tabs button').forEach(item => item.classList.remove('active'));
-        button.classList.add('active');
-        source = button.dataset.source;
-        $('#demoFields').classList.toggle('hidden', source !== 'demo');
-        $('#tygronFields').classList.toggle('hidden', source !== 'tygron');
-        $('#tygronProjectFields').classList.toggle(
-            'hidden',
-            source !== 'tygron_project'
-        );
+const activeSessionForm = $('#activeSessionForm');
+if (activeSessionForm) {
+    activeSessionForm.onsubmit = event => { event.preventDefault(); inspect(); };
+    activeSessionForm.addEventListener('input', () => {
+        $('#sessionConnectionStatus').textContent = '';
+        // Controleer gewijzigde sessiegegevens opnieuw voordat export mogelijk is.
+        inspected = undefined;
+        hasExport = false;
+        $('#export').disabled = true;
+        $$('.workflow-steps button').filter(button => Number(button.dataset.step) > 2)
+            .forEach(button => { button.disabled = true; });
+    });
+} else $('#inspect').onclick = inspect;
+$('#export').onclick = doExport;
+$('#reviewNext').onclick = () => setReviewTab(reviewTab === 'selection' ? 'details' : 'selection', true);
+$$('[data-review-tab]').forEach(button => {
+    button.onclick = () => setReviewTab(button.dataset.reviewTab);
+    button.onkeydown = event => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        const name = event.key === 'Home' ? 'selection' : event.key === 'End' ? 'details' : reviewTab === 'selection' ? 'details' : 'selection';
+        setReviewTab(name);
+        $(`[data-review-tab="${name}"]`).focus();
+    };
+});
+reviewMap.addEventListener('toggle', ensureScenarioMap);
+function chooseProject() {
+    if (accountMode) location.assign('/projecten');
+    else if (demoSelection) location.assign('/projecten?mode=demo');
+    else step(2);
+}
+$$('.back').forEach(button => { button.onclick = chooseProject; });
+$('#again').onclick = chooseProject;
+$('#retryInspect').onclick = () => overviewSelection && !inspected ? init() : inspect();
+$$('.workflow-steps button').forEach(button => {
+    if (Number(button.dataset.step) < 2) return;
+    button.onclick = event => {
+        event.preventDefault();
+        if (button.disabled) return;
+        if (Number(button.dataset.step) === 2) chooseProject();
+        else step(Number(button.dataset.step));
     };
 });
 
-$('#project').onchange = updateScenarios;
-$('#scenario').onchange = updateNote;
-$('#inspect').onclick = inspect;
-$('#export').onclick = doExport;
-$('#loadProjects').onclick = loadTygronProjects;
-$('#liveProject').onchange = updateLiveScenarios;
-$('#itemSearch').oninput = filterItems;
-$('#selectAll').onclick = () => {
-    itemCheckboxes().forEach(input => { input.checked = true; });
-    updateItemSelection();
-};
-$('#selectNone').onclick = () => {
-    itemCheckboxes().forEach(input => { input.checked = false; });
-    updateItemSelection();
-};
-$$('.back').forEach(button => {
-    button.onclick = () => step(1);
-});
-$('#again').onclick = () => step(1);
-
 init();
+
+document.addEventListener('languagechange', () => {
+    setReviewTab(reviewTab);
+    if (inspected) {
+        selectionPanel.renderCategories(inspected.counts);
+        updateItemSelection();
+        $('#doneText').textContent = `${inspected.project} · ${inspected.scenario} ${t('is gereed voor overdracht en archivering.')}`;
+    }
+
+});

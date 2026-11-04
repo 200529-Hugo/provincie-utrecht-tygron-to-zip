@@ -1,3 +1,5 @@
+import {t} from './i18n.js';
+import {validateDossierArchive} from './api/files.js';
 const archiveInput = document.querySelector('#archiveInput');
 const dropZone = document.querySelector('#dropZone');
 const dropTitle = document.querySelector('#dropTitle');
@@ -25,16 +27,16 @@ function selectFile(file) {
         return;
     }
     if (!file.name.toLowerCase().endsWith('.zip')) {
-        toast('Selecteer een ZIP-bestand.');
+        toast(t('Selecteer een ZIP-bestand.'));
         return;
     }
     if (file.size > 200_000_000) {
-        toast('Het ZIP-dossier is groter dan 200 MB.');
+        toast(t('Het ZIP-dossier is groter dan 200 MB.'));
         return;
     }
     selectedFile = file;
     dropTitle.textContent = file.name;
-    dropDetail.textContent = `${formatBytes(file.size)} · gereed voor controle`;
+    dropDetail.textContent = `${formatBytes(file.size)} · ${t('gereed voor controle')}`;
     dropZone.classList.add('has-file');
     validateButton.disabled = false;
     validationResult.classList.add('hidden');
@@ -60,10 +62,10 @@ function renderResult(report) {
     validationResult.classList.remove('hidden', 'approved', 'rejected');
     validationResult.classList.add(approved ? 'approved' : 'rejected');
     resultMark.textContent = approved ? 'OK' : '!';
-    document.querySelector('#resultLabel').textContent = approved ? 'Goedgekeurd' : 'Afgekeurd';
+    document.querySelector('#resultLabel').textContent = approved ? t('Goedgekeurd') : t('Afgekeurd');
     document.querySelector('#resultTitle').textContent = approved
-        ? 'Het dossier is compleet en ongewijzigd.'
-        : 'Er zijn afwijkingen in het dossier gevonden.';
+        ? t('Het dossier is compleet en ongewijzigd.')
+        : t('Er zijn afwijkingen in het dossier gevonden.');
     document.querySelector('#resultContext').textContent =
         [report.project, report.scenario, selectedFile.name].filter(Boolean).join(' · ');
 
@@ -92,24 +94,16 @@ async function validateArchive() {
         return;
     }
     validateButton.disabled = true;
-    validateButton.textContent = 'Dossier wordt gecontroleerd…';
+    validateButton.textContent = t('Dossier wordt gecontroleerd…');
     try {
-        const response = await fetch('/api/validate', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/zip'},
-            body: selectedFile
-        });
-        const report = await response.json();
-        if (!response.ok) {
-            throw Error(report.error || 'De controle is mislukt.');
-        }
+        const report = await validateDossierArchive(selectedFile);
         renderResult(report);
         validationResult.scrollIntoView({behavior: 'smooth', block: 'start'});
     } catch (error) {
         toast(error.message);
     } finally {
         validateButton.disabled = false;
-        validateButton.textContent = 'Opnieuw controleren';
+        validateButton.textContent = t('Opnieuw controleren');
     }
 }
 

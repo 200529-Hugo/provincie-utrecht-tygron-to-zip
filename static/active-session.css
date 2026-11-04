@@ -1,0 +1,22 @@
+#content:has(#step2.session-panel.active) { height: auto; min-height: 0; }
+.workspace:has(#step2.session-panel.active) { display: block; height: auto; min-height: 0; }
+#step2.session-panel.active { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); grid-template-rows: none; grid-auto-rows: auto; align-items: start; gap: 32px; width: min(1280px, 100%); height: auto; min-height: 0; max-height: none; padding: 40px 32px; margin: 0 auto; overflow: visible; background: transparent; }
+.session-intro { min-width: 0; }
+.session-intro .workflow-hero { min-height: 530px; }
+.session-card { min-width: 0; padding: 32px; }
+.session-card h2 { margin-top: 0; }
+.session-card > p { font-size: 14px; }
+.session-card .session-field-help { margin: 8px 0 0; font-size: 12px; line-height: 1.6; }
+.session-name-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+.session-card .hint { margin-top: 22px; }
+.session-card #inspect { width: 100%; min-height: 46px; margin-top: 10px; padding: 14px 18px; font-size: 14px; }
+.session-back { display: inline-block; margin-top: 22px; font-size: 13px; color: var(--ink); text-underline-offset: 4px; }
+@media(max-width: 900px) {
+    #step2.session-panel.active { grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 28px 24px; }
+    .session-intro .workflow-hero { min-height: 280px; }
+}
+@media(max-width: 560px) {
+    #step2.session-panel.active { padding: 24px 14px; }
+    .session-card { padding: 24px 20px; }
+    .session-name-fields { grid-template-columns: minmax(0, 1fr); gap: 0; }
+}

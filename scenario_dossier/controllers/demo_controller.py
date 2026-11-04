@@ -1,3 +1,5 @@
+"""Oude controllerinterface voor scripts, de API gebruikt ProjectController."""
+
 from werkzeug.exceptions import NotFound
 
 from ..services.demo_service import DemoService
@@ -20,9 +22,3 @@ class DemoController:
             return self.demo_service.get_scenarios(project_id)
         except LookupError as le:
             raise NotFound(description=str(le)) from le
-
-    def inspect(self, payload):
-        return self.demo_service.inspect(payload)
-
-    def export(self, payload):
-        return self.demo_service.export(payload)

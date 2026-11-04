@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% from 'components/workflow_steps.html' import workflow_steps with context %}
+{% from 'components/workflow_hero.html' import workflow_hero %}
+{% block title %}{{ t('Inloggen') }} · ScenarioDossier{% endblock %}
+{% block content %}
+{{ workflow_steps(1) }}
+<main class="entry-shell login-shell">
+    <section class="entry-intro">
+        {% call workflow_hero('login', 'ScenarioDossier', t('Van scenario naar een compleet dossier.')) %}
+            <p>{{ t('Bewaar de keuzes van vandaag voor de wereld van morgen. Selecteer, controleer en archiveer je Tygron-scenario.') }}</p>
+        {% endcall %}
+    </section>
+    <section class="entry-card" aria-labelledby="loginTitle">
+        <p class="eyebrow">{{ t('Stap 1') }}</p>
+        <h2 id="loginTitle">{{ t('Inloggen') }}</h2>
+        <p>{{ t('Log in met je Tygron-account om je projecten te bekijken.') }}</p>
+        <form id="loginForm">
+            <label for="loginUsername">{{ t('Gebruikersnaam') }}</label>
+            <input id="loginUsername" name="username" autocomplete="username" required>
+            <label for="loginPassword">{{ t('Wachtwoord') }}</label>
+            <div class="password-field">
+                <input id="loginPassword" name="password" type="password" autocomplete="current-password" required aria-describedby="loginHelp">
+                <button id="showPassword" type="button" aria-pressed="false">{{ t('Tonen') }}</button>
+            </div>
+            <details class="login-options">
+                <summary>{{ t('Verbindingsinstellingen') }}</summary>
+                <label for="loginBaseUrl">{{ t('Tygron-URL') }}</label>
+                <input id="loginBaseUrl" type="url" value="https://engine.tygron.com" required>
+                <label for="loginDomain">{{ t('Domein (optioneel)') }}</label>
+                <input id="loginDomain" autocomplete="organization">
+            </details>
+            <p class="hint" id="loginHelp">{{ t('Je kunt ook een bestaande login key gebruiken. Neem bij tweestapsverificatie contact op met Tygron Support over API-toegang.') }}</p>
+            <p class="form-error" id="loginError" role="alert"></p>
+            <button class="primary" id="loginButton" type="submit">{{ t('Inloggen') }} <span aria-hidden="true">→</span></button>
+        </form>
+        <div class="entry-alternatives">
+            <a class="secondary" href="/projecten?mode=demo">{{ t('Demonstratie openen') }}</a>
+            <a href="/workflow?mode=tygron">{{ t('Een actieve sessie gebruiken') }} →</a>
+        </div>
+    </section>
+</main>
+<script type="module" src="/static/account.js"></script>
+{% endblock %}

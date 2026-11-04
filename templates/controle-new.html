@@ -1,8 +1,67 @@
 {% extends 'base.html' %}
-
-{% block title %}Dossier controleren · ScenarioDossier{% endblock %}
-
-{% block links %}{% endblock %}
-
+{% block body_class %}control-page{% endblock %}
+{% block title %}{{ t('Dossier controleren') }} · ScenarioDossier{% endblock %}
+{% block links %}<link rel="stylesheet" href="/static/controle.css">{% endblock %}
 {% block content %}
+<main id="controlContent" class="control-shell">
+    <section class="control-intro">
+        <div>
+            <p class="eyebrow">{{ t("Onafhankelijke controle") }}</p>
+            <h1>{{ t("Is het dossier nog compleet en betrouwbaar?") }}</h1>
+            <p>
+                {{ t("Controleer een geëxporteerd ZIP-dossier zonder Tygron. Het bestand wordt tijdelijk geopend en niet bewaard.") }}
+            </p>
+        </div>
+    </section>
+
+    <section class="control-work" aria-live="polite">
+        <div class="control-primary">
+            <div class="control-heading">
+                <p class="eyebrow">{{ t("ZIP-dossier") }}</p>
+                <h2>{{ t("Selecteer een bestand") }}</h2>
+                <p>{{ t("Maximaal 200 MB. De controle wijzigt het oorspronkelijke dossier niet.") }}</p>
+            </div>
+
+            <label class="drop-zone" id="dropZone" for="archiveInput">
+                <input id="archiveInput" type="file" accept=".zip,application/zip">
+                <span class="file-mark">ZIP</span>
+                <strong id="dropTitle">{{ t("Kies een dossier of sleep het hierheen") }}</strong>
+                <small id="dropDetail">{{ t("Alle verwerking vindt lokaal op deze server plaats.") }}</small>
+            </label>
+
+            <button class="primary control-button" id="validateButton" type="button" disabled>
+                {{ t("Dossier controleren") }}
+            </button>
+        </div>
+
+        <aside class="control-explanation">
+            <p class="eyebrow">{{ t("Dit controleren we") }}</p>
+            <h2>{{ t("Drie technische controles") }}</h2>
+            <ol>
+                <li><b>{{ t("Structuur") }}</b><span>{{ t("Metadata, bronbestanden en GIS-tabellen") }}</span></li>
+                <li><b>{{ t("Inhoud") }}</b><span>{{ t("Aantallen en leesbaarheid van het GeoPackage") }}</span></li>
+                <li><b>{{ t("Integriteit") }}</b><span>{{ t("SHA-256-controle van ieder dossierbestand") }}</span></li>
+            </ol>
+            <p class="privacy-note">
+                {{ t("Het bestand wordt alleen tijdelijk uitgepakt voor de controle en daarna verwijderd.") }}
+            </p>
+        </aside>
+
+        <section class="validation-result hidden" id="validationResult">
+            <div class="result-head">
+                <span class="result-mark" id="resultMark"></span>
+                <div>
+                    <p class="eyebrow" id="resultLabel"></p>
+                    <h2 id="resultTitle"></h2>
+                    <p id="resultContext" data-source-content="true"></p>
+                </div>
+            </div>
+            <div class="result-counts" id="resultCounts"></div>
+            <div class="check-list" id="checkList"></div>
+        </section>
+    </section>
+</main>
+
+<div class="toast" id="toast" role="alert"></div>
+<script type="module" src="/static/controle.js"></script>
 {% endblock %}

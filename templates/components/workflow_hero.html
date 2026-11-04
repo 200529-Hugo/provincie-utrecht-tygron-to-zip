@@ -1,0 +1,9 @@
+{% macro workflow_hero(variant, eyebrow, title, heading='h1', compact=false) -%}
+<div class="workflow-hero workflow-hero--{{ variant }}{{ ' workflow-hero--compact' if compact else '' }}">
+    <div class="workflow-hero-copy">
+        <p class="eyebrow">{{ eyebrow }}</p>
+        {% if heading == 'h2' %}<h2>{{ title }}</h2>{% else %}<h1>{{ title }}</h1>{% endif %}
+        {{ caller() }}
+    </div>
+</div>
+{%- endmacro %}

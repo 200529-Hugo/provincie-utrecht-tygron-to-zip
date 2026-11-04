@@ -1,9 +1,7 @@
 # Technische documentatie: opbouw van het ZIP-bestand
 
 Dit document beschrijft hoe ScenarioDossier een selectie uit een demo of Tygron scenario omzet in een duurzaam
-ZIP-bestand. De beschrijving volgt de implementatie in [`scenario_dossier/web.py`](../scenario_dossier/web.py), [
-`scenario_dossier/exporter.py`](../scenario_dossier/exporter.py) en [
-`scenario_dossier/validation.py`](../scenario_dossier/validation.py).
+ZIP-bestand. De beschrijving volgt de implementatie in [WorkflowService](../scenario_dossier/services/workflow_service.py), [de ZIP-opbouw](../scenario_dossier/exporting/archive.py) en [de dossiercontrole](../scenario_dossier/validation.py). De mappen en verantwoordelijkheden staan in [CODE_WIJZIGEN.md](CODE_WIJZIGEN.md).
 
 ## 1. Overzicht
 
@@ -25,11 +23,11 @@ flowchart LR
     J --> K["Download aanbieden"]
 ```
 
-De centrale functie is `build_archive()` in [`scenario_dossier/exporter.py`](../scenario_dossier/exporter.py)
+De centrale functie is `build_archive()` in [`scenario_dossier/exporting/archive.py`](../scenario_dossier/exporting/archive.py). Het oude importpad `scenario_dossier/exporter.py` verwijst hiernaar door.
 
 ## 2. Start van de export
 
-Wanneer de gebruiker in stap 2 op **Dossier maken** klikt, bouwt [`../static`](../static/app.js) een JSON-verzoek
+Wanneer de gebruiker in stap 3 op **Dossier maken** klikt, bouwt [de workflowcontroller in de browser](../static/app.js) een JSON-verzoek
 voor `POST /api/export`.
 
 Dit verzoek bevat:
@@ -52,12 +50,11 @@ De vier vaste componenten zijn:
 3. `measures`
 4. `alerts`
 
-De server accepteert maximaal 1.000.000 bytes JSON per verzoek. API-tokens en login keys worden gebruikt om de bron te
-approachen, maar worden niet aan `build_archive()` doorgegeven.
+De server gebruikt de limiet `MAX_CONTENT_LENGTH` uit `config.py`, standaard 200 MB inclusief ZIP-uploads. `ExportRequest` controleert de vorm van de JSON-velden. API-tokens en login keys worden gebruikt om de bron te openen, maar worden niet aan `build_archive()` doorgegeven.
 
 ## 3. Brondata ophalen en selecteren
 
-`_resolve()` in [`scenario_dossier/web.py`](../scenario_dossier/web.py) bepaalt hoe de data wordt verkregen:
+`WorkflowService.resolve()` in [workflow_service.py](../scenario_dossier/services/workflow_service.py) bepaalt hoe de data wordt verkregen:
 
 | Bron                  | Werkwijze                                                                                      |
 |-----------------------|------------------------------------------------------------------------------------------------|
@@ -65,7 +62,7 @@ approachen, maar worden niet aan `build_archive()` doorgegeven.
 | Actieve Tygron-sessie | Gebruikt het ingevulde sessietoken om de componenten op te halen                               |
 | Tygron-project        | Start en join het gekozen project tijdelijk, haalt de componenten op en sluit de sessie daarna |
 
-De bronadapter levert vier lijsten en eventuele technische waarschuwingen op. `_select_data()` past daarna de selectie
+De bronadapter levert een `ScenarioContext` met gegevens en eventuele technische waarschuwingen op. `ScenarioService.select()` past daarna de selectie
 uit de interface toe. Niet-aangevinkte componenten en records worden verwijderd voordat het dossier wordt opgebouwd.
 Iedere component blijft wel als key bestaan, ook als de uiteindelijke lijst leeg is.
 

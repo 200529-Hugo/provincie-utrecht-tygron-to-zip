@@ -1,0 +1,11 @@
+{% macro report_table(rows, empty) -%}
+{% if rows -%}
+<div class="table-wrap"><table><thead><tr><th>Naam</th><th>Waarde of status</th><th>Toelichting</th></tr></thead><tbody>
+{% for row in rows -%}
+<tr><th>{{ row.name }}</th><td>{{ row.value }} {{ row.unit }}</td><td>{{ row.description }}</td></tr>
+{% endfor -%}
+</tbody></table></div>
+{% else -%}
+<p class="empty">{{ empty }}</p>
+{% endif -%}
+{%- endmacro %}

@@ -12,11 +12,21 @@ flowchart LR
 
 Start de toepassing met `python3 app.py` en open `http://127.0.0.1:8080`.
 
+### Inloggen en projecten
+
+1. Vul je Tygron-gebruikersnaam en wachtwoord in en kies **Inloggen**. Je kunt ook een bestaande login key gebruiken. Neem bij tweestapsverificatie contact op met Tygron Support over API-toegang.
+2. Onder **Verbindingsinstellingen** kun je de Tygron-URL en het domein aanpassen. Een leeg domein wordt uit het account gelezen.
+3. Zoek je project op naam in **Projecten** en selecteer de rij.
+4. Projectselectie opent direct **stap 3: Kaart en selectie**. Vervolg met stappen 4–8 hieronder. Na export verschijnt **stap 4: Succes** met de download. Alleen de actieve projectversie wordt geopend; de tijdelijke sessie sluit na controle en export.
+5. Kies **Uitloggen** als je klaar bent. De app-sessie verloopt na 30 minuten en na een serverherstart moet je opnieuw inloggen.
+
+**NL / EN** in de header wisselt de taal. De voorkeur blijft bewaard tijdens navigeren en vernieuwen. Wisselen van taal behoudt formulierwaarden en je selectie.
+
 ### Demonstratie
 
-1. Kies **Demonstratie**.
-2. Selecteer een project en scenario.
-3. Klik **Verbinding controleren**.
+1. Kies **Demonstratie openen** op de loginpagina. Stap 2 toont het projectenoverzicht.
+2. Selecteer een projectrij; stap 3 opent met de kaart en inhoudselectie.
+3. Kies indien gewenst een ander scenario in het scenarioveld boven de selectie.
 4. Controleer aantallen en kaartpreview.
    - Gebruik **Maatregelen** en **Alerts** om de kaartlagen afzonderlijk te tonen of verbergen.
    - Klik een punt, lijn of vlak voor naam, status en toelichting.
@@ -181,7 +191,7 @@ Open een tweede terminal, ga terug naar de map `project` en start de applicatie:
 python3 app.py
 ```
 
-Open `http://127.0.0.1:8080`, kies een bron en klik **Verbinding controleren**. In stap 2 hoort rechtsboven de melding **OpenMapTiles actief** te staan.
+Open `http://127.0.0.1:8080`, kies een bron en klik **Verbinding controleren**. In stap 3 hoort rechtsboven de melding **OpenMapTiles actief** te staan.
 
 ScenarioDossier gebruikt standaard:
 
@@ -223,7 +233,7 @@ Let op: de toepassing kan niet zelfstandig vaststellen welke bestuurlijke varian
 ### Project uit het Tygron-domein
 
 1. Maak of verkrijg in Tygron een login key en behandel die als geheim.
-2. Kies **Tygron-project**.
+2. Kies **Een login key gebruiken** op het projectenoverzicht (`/workflow?mode=legacy`).
 3. Vul Tygron-URL, gebruikersnaam en login key in. Het domein mag leeg blijven als het account dit teruggeeft.
 4. Kies **Projecten laden**.
 5. Selecteer een project. De toepassing toont de actieve projectversie die de Tygron start-API daadwerkelijk opent.

@@ -1,0 +1,11 @@
+[
+  {
+    "id": 21,
+    "name": "Inwoners binnen 300 m van groen",
+    "value": 84.2,
+    "unit": "%",
+    "status": "doelwaarde behaald",
+    "target": 75,
+    "description": "Aandeel toekomstige inwoners met groen nabij."
+  }
+]

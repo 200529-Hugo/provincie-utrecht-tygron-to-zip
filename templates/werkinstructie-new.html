@@ -1,8 +1,54 @@
 {% extends 'base.html' %}
-
-{% block title %}Werkinstructie · ScenarioDossier{% endblock %}
-
-{% block links %}{% endblock %}
-
+{% block body_class %}manual-page{% endblock %}
+{% block title %}{{ t('Werkinstructie') }} · ScenarioDossier{% endblock %}
+{% block links %}<link rel="stylesheet" href="/static/werkinstructie.css"><link rel="stylesheet" href="/static/mermaid.css">{% endblock %}
 {% block content %}
+<main class="manual-shell" id="manual">
+    <aside class="manual-nav" aria-label="{{ t('Inhoudsopgave') }}">
+        <div class="manual-nav-head">
+            <span>
+                {{ t("Werkinstructie") }}
+            </span>
+            <small>
+                ScenarioDossier
+            </small>
+        </div>
+
+        <nav id="toc">
+            <span class="loading-line">
+                {{ t("Inhoud laden…") }}
+            </span>
+        </nav>
+
+        <a class="manual-back" href="/workflow">
+            {{ t("Dossier maken") }}
+        </a>
+    </aside>
+
+    <article class="manual-content" aria-live="polite">
+        <div class="manual-toolbar">
+            <div>
+                <span class="section-label">
+                    {{ t("Handleiding") }}
+                </span>
+                <span id="readTime"></span>
+            </div>
+            <button id="print" type="button">
+                {{ t("Afdrukken") }}
+            </button>
+        </div>
+
+        <div id="markdown" class="markdown-body">
+            <div class="loading">
+                <span></span>
+                <p>
+                    {{ t("Werkinstructie wordt geladen…") }}
+                </p>
+            </div>
+        </div>
+    </article>
+</main>
+
+<div class="toast" id="toast" role="alert"></div>
+<script type="module" src="/static/werkinstructie.js"></script>
 {% endblock %}

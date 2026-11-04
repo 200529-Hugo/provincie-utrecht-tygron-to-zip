@@ -1,11 +1,11 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass(frozen=True)
 class ProjectCredentials:
     base_url: str
     username: str
-    login_key: str
+    login_key: str = field(repr=False)
     domain: str = ""
 
     def __post_init__(self) -> None:

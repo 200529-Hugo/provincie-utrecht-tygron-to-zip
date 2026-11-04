@@ -1,0 +1,98 @@
+INFO: Open of `/Users/hugodeheus/Desktop/INNO/project/output/onderzoek/deepdive/pakketten/A/scenario.gpkg'
+      using driver `GPKG' successful.
+
+Layer name: measures
+Metadata:
+  DESCRIPTION=Tygron measures
+Geometry: Unknown (any)
+Feature Count: 1
+Extent: (5.102800, 52.083000) - (5.108000, 52.086100)
+Layer SRS WKT:
+GEOGCRS["WGS 84",
+    DATUM["World Geodetic System 1984",
+        ELLIPSOID["WGS 84",6378137,298.257223563,
+            LENGTHUNIT["metre",1,
+                ID["EPSG",9001]]]],
+    PRIMEM["Greenwich",0,
+        ANGLEUNIT["degree",0.0174532925199433]],
+    CS[ellipsoidal,2],
+        AXIS["longitude",east,
+            ORDER[1],
+            ANGLEUNIT["degree",0.0174532925199433]],
+        AXIS["latitude",north,
+            ORDER[2],
+            ANGLEUNIT["degree",0.0174532925199433]]]
+Data axis to CRS axis mapping: 1,2
+FID Column = fid
+Geometry Column = geom
+item_id: String (0.0)
+name: String (0.0)
+status: String (0.0)
+value: String (0.0)
+unit: String (0.0)
+description: String (0.0)
+source_json: String (0.0)
+
+Layer name: alerts
+Metadata:
+  DESCRIPTION=Tygron alerts
+Geometry: Unknown (any)
+Feature Count: 1
+Extent: (5.110200, 52.083800) - (5.110200, 52.083800)
+Layer SRS WKT:
+GEOGCRS["WGS 84",
+    DATUM["World Geodetic System 1984",
+        ELLIPSOID["WGS 84",6378137,298.257223563,
+            LENGTHUNIT["metre",1,
+                ID["EPSG",9001]]]],
+    PRIMEM["Greenwich",0,
+        ANGLEUNIT["degree",0.0174532925199433]],
+    CS[ellipsoidal,2],
+        AXIS["longitude",east,
+            ORDER[1],
+            ANGLEUNIT["degree",0.0174532925199433]],
+        AXIS["latitude",north,
+            ORDER[2],
+            ANGLEUNIT["degree",0.0174532925199433]]]
+Data axis to CRS axis mapping: 1,2
+FID Column = fid
+Geometry Column = geom
+item_id: String (0.0)
+name: String (0.0)
+status: String (0.0)
+value: String (0.0)
+unit: String (0.0)
+description: String (0.0)
+source_json: String (0.0)
+
+Layer name: overlays
+Metadata:
+  DESCRIPTION=Tygron overlays
+Geometry: None
+Feature Count: 0
+Layer SRS WKT:
+(unknown)
+FID Column = fid
+item_id: String (0.0)
+name: String (0.0)
+status: String (0.0)
+value: String (0.0)
+unit: String (0.0)
+description: String (0.0)
+source_json: String (0.0)
+
+Layer name: indicators
+Metadata:
+  DESCRIPTION=Tygron indicators
+Geometry: None
+Feature Count: 1
+Layer SRS WKT:
+(unknown)
+FID Column = fid
+item_id: String (0.0)
+name: String (0.0)
+status: String (0.0)
+value: String (0.0)
+unit: String (0.0)
+description: String (0.0)
+source_json: String (0.0)

@@ -1,324 +1,228 @@
 {% extends 'base.html' %}
+{% from 'components/workflow_steps.html' import workflow_steps with context %}
+{% from 'components/workflow_hero.html' import workflow_hero %}
 
 {% block title %}ScenarioDossier{% endblock %}
 
 {% block links %}<link rel="stylesheet" href="{{ url_for('static', filename='vendor/maplibre-gl.css') }}">{% endblock %}
 
+{% block extra_styles %}<link rel="stylesheet" href="/static/review.css">{% endblock %}
+
 {% block content %}
     <main id="content">
         <section class="workspace">
-            <nav class="steps" aria-label="Voortgang">
-                <div class="steps-title">
-                    <strong>ScenarioDossier</strong>
-                    <span>Tygron-export</span>
-                </div>
-                <button class="active" data-step="1">
-                    <b>1</b>
-                    <span>
-                        Bron
-                        <small>
-                            Kies de omgeving
-                        </small>
-                    </span>
-                </button>
-                <button data-step="2">
-                    <b>2</b>
-                    <span>
-                        Controle
-                        <small>
-                            Bekijk de inhoud
-                        </small>
-                    </span>
-                </button>
-                <button data-step="3">
-                    <b>3</b>
-                    <span>
-                        Dossier
-                        <small>
-                            Archiveer & download
-                        </small>
-                    </span>
-                </button>
-            </nav>
+            {{ workflow_steps(current_step) }}
 
-            <div class="panel active" id="step1">
+            {% block source_panel %}
+            <div class="panel{{ ' active' if current_step == 2 else '' }}" id="step2">
                 <div class="panel-head">
                     <div>
-                        <p class="eyebrow">Stap 1</p>
-                        <h2>Selecteer de bron</h2>
+                        <p class="eyebrow">{{ t("Stap 2") }}</p>
+                        <h2>{{ t("Project kiezen") }}</h2>
                         <p>
-                            Kies de demonstratie of verbind met een actieve Tygron-sessie.
+                            {{ t("Kies de demonstratie of verbind met een actieve Tygron-sessie.") }}
                         </p>
                     </div>
                 </div>
                 <div class="panel-work">
                     <div class="source-tabs">
                         <button class="active" data-source="demo">
-                            Demonstratie
+                            {{ t("Demonstratie") }}
                         </button>
                         <button data-source="tygron">
-                            Actieve sessie
+                            {{ t("Actieve sessie") }}
                         </button>
                         <button data-source="tygron_project">
-                            Tygron-project
+                            {{ t("Tygron-project") }}
                         </button>
                     </div>
                     <div id="demoFields" class="fields two">
                         <label>
-                            Project
+                            {{ t("Project") }}
                             <select id="project">
-                                {% for project in projects %}
-                                	<option value="{{ project.id }}" {% if project.id == selected_project_id %}selected{% endif %} >
-                                        {{ project.name }}
-                                    </option>
-                                {% endfor %}
+
                             </select>
                         </label>
                         <label>
-                            Scenario
+                            {{ t("Scenario") }}
                             <select id="scenario">
-                                {% for scenario in scenarios %}
-                                    <option value="{{ scenario.id }}">{{ scenario.name }}</option>
-                                {% endfor %}
+
                             </select>
                         </label>
                         <div class="scenario-note" id="scenarioNote"></div>
                     </div>
                     <div id="tygronFields" class="fields two hidden">
                         <label>
-                            Sessie-URL
+                            {{ t("Sessie-URL") }}
                             <input id="baseUrl" value="https://engine.tygron.com" autocomplete="url">
                         </label>
                         <label>
-                            API-token
+                            {{ t("API-token") }}
                             <input id="token"
                                    type="password"
-                                   placeholder="Uit Tools > API Overview"
+                                   placeholder="{{ t('Uit Tools > API Overview') }}"
                                    autocomplete="off"
                             >
                         </label>
                         <label>
-                            Projectnaam
-                            <input id="projectName" placeholder="Bijv. Stationsgebied">
+                            {{ t("Projectnaam") }}
+                            <input id="projectName" placeholder="{{ t('Bijv. Stationsgebied') }}">
                         </label>
                         <label>
-                            Scenarionaam
-                            <input id="scenarioName" placeholder="Bijv. Groen 2040">
+                            {{ t("Scenarionaam") }}
+                            <input id="scenarioName" placeholder="{{ t('Bijv. Groen 2040') }}">
                         </label>
                         <p class="hint">
-                            De koppeling leest alleen de actieve sessie. Het token wordt uitsluitend in het
-                            werkgeheugen gebruikt.
+                            {{ t("De koppeling leest alleen de actieve sessie. Het token wordt uitsluitend in het werkgeheugen gebruikt.") }}
                         </p>
                     </div>
                     <div id="tygronProjectFields" class="fields two hidden">
                         <label>
-                            Tygron-URL
+                            {{ t("Tygron-URL") }}
                             <input id="rootBaseUrl" value="https://engine.tygron.com" autocomplete="url">
                         </label>
                         <label>
-                            Domein
-                            <input id="domain" placeholder="Wordt anders uit het account gelezen">
+                            {{ t("Domein") }}
+                            <input id="domain" placeholder="{{ t('Wordt anders uit het account gelezen') }}">
                         </label>
                         <label>
-                            Gebruikersnaam
+                            {{ t("Gebruikersnaam") }}
                             <input id="username" autocomplete="username">
                         </label>
                         <label>
-                            Login key
+                            {{ t("Login key") }}
                             <input
                                     id="loginKey"
                                     type="password"
                                     autocomplete="off"
-                                    placeholder="Gebruik een login key, geen wachtwoord"
+                                    placeholder="{{ t('Gebruik een login key, geen wachtwoord') }}"
                             >
                         </label>
                         <div class="project-loader">
                             <button class="secondary" id="loadProjects" type="button">
-                                Projecten laden
+                                {{ t("Projecten laden") }}
                             </button>
                             <span id="projectLoadStatus"></span>
                         </div>
                         <label>
-                            Project
+                            {{ t("Project") }}
                             <select id="liveProject" disabled></select>
                         </label>
                         <label>
-                            Scenario of projectversie
+                            {{ t("Scenario of projectversie") }}
                             <select id="liveScenario" disabled></select>
                         </label>
                         <p class="hint">
-                            De toepassing start het gekozen project tijdelijk, exporteert de actieve versie
-                            en sluit de sessie daarna automatisch. Accountgegevens worden niet opgeslagen.
+                            {{ t("De toepassing start het gekozen project tijdelijk, exporteert de actieve versie en sluit de sessie daarna automatisch. Accountgegevens worden niet opgeslagen.") }}
                         </p>
                     </div>
                     <div class="actions">
                         <span></span>
                         <button class="primary" id="inspect">
-                            Verbinding controleren
+                            {{ t("Verbinding controleren") }}
                         </button>
                     </div>
                 </div>
             </div>
+            {% endblock %}
 
-            <div class="panel" id="step2">
-                <div class="panel-head">
-                    <div>
-                        <p class="eyebrow">Stap 2</p>
-                        <h2>Controleer het scenario</h2>
-                        <p id="selectionTitle"></p>
-                    </div>
+            <div class="panel{{ ' active' if current_step == 3 else '' }}" id="step3">
+                <div class="review-heading">
+                    {% call workflow_hero('review', t('Stap 3 · Kaart en selectie'), t('Stel je dossier samen'), heading='h2', compact=true) %}
+                        <p id="selectionTitle" data-source-content="true"></p>
+                    {% endcall %}
+                    <p class="review-intro">{{ t('Kies welke onderdelen je bewaart en vul eventueel de dossiergegevens aan.') }}</p>
+                    <p id="inspectionStatus" role="status" aria-live="polite"></p>
+                    <button class="secondary hidden" id="retryInspect" type="button">{{ t('Opnieuw proberen') }}</button>
                 </div>
 
-                <div class="map-card">
-                    <div class="map-head">
-                        <div>
-                            <b>Ruimtelijke preview</b>
-                            <small>
-                                Measures en alerts · EPSG:4326
-                            </small>
-                        </div>
-                        <div class="map-state">
-                            <span id="spatialCount"></span>
-                            <small id="basemapStatus">Kaart voorbereiden</small>
-                        </div>
-                    </div>
+                <details class="map-card" id="reviewMap" open>
+                    <summary class="map-head">
+                        <div><b>{{ t('Kaartpreview') }}</b><small id="spatialCount"></small></div>
+                        <span class="map-disclosure" aria-hidden="true">⌄</span>
+                    </summary>
                     <div class="map-frame">
-                        <div id="map" role="application" aria-label="Interactieve kaart met maatregelen en alerts"></div>
-                        <div class="map-legend" aria-label="Kaartlagen">
-                            <button type="button" data-map-layer="measures" aria-pressed="true">
-                                <i class="measure-symbol"></i>
-                                Maatregelen
-                            </button>
-                            <button type="button" data-map-layer="alerts" aria-pressed="true">
-                                <i class="alert-symbol"></i>
-                                Alerts
-                            </button>
+                        <div id="map" role="application" aria-label="{{ t('Interactieve kaart met maatregelen en alerts') }}"></div>
+                        <div class="map-legend" aria-label="{{ t('Kaartlagen') }}">
+                            <button type="button" data-map-layer="measures" aria-pressed="true"><i class="measure-symbol"></i>{{ t('Maatregelen') }}</button>
+                            <button type="button" data-map-layer="alerts" aria-pressed="true"><i class="alert-symbol"></i>{{ t('Alerts') }}</button>
                         </div>
                     </div>
-                </div>
+                    <div class="review-map-note"><small id="basemapStatus">{{ t('Kaart voorbereiden') }}</small><p>{{ t('De kaart toont maatregelen en alerts met een locatie. Overlays en indicatoren vind je in de lijst.') }}</p></div>
+                </details>
 
                 <div class="panel-work">
-                    <div class="summary" id="summary"></div>
-
-                    <div class="review-controls">
-                        <section class="item-selector" aria-labelledby="itemSelectorTitle">
-                            <div class="item-selector-head">
-                                <div>
-                                    <b id="itemSelectorTitle">Onderdelen in dossier</b>
-                                    <small id="selectionCount"></small>
-                                </div>
-                                <div class="selection-actions">
-                                    <button type="button" id="selectAll">Alles</button>
-                                    <button type="button" id="selectNone">Geen</button>
-                                </div>
-                            </div>
-                            <label class="item-search">
-                                <span class="sr-only">Zoek onderdelen</span>
-                                <input id="itemSearch" type="search" placeholder="Zoek op naam, type of status">
-                            </label>
-                            <div class="item-groups" id="itemGroups"></div>
-                        </section>
-
-                        <details class="dossier-details decision-details">
-                            <summary>
-                                <span>Toelichting en afwegingen</span>
-                                <small>Onderbouwing van de selectie</small>
-                            </summary>
-                            <label class="notes">
-                                <span class="sr-only">Toelichting en gemaakte afwegingen</span>
-                                <textarea
-                                        id="notes"
-                                        placeholder="Leg vast waarom dit scenario is gekozen, welke alternatieven zijn afgevallen en door wie het besluit is genomen."
-                                ></textarea>
-                            </label>
-                        </details>
-
-                        <details class="dossier-details">
-                            <summary>
-                                <span>Dossierpaspoort</span>
-                                <small>Metadata voor overdracht</small>
-                            </summary>
-                            <div class="passport-fields">
-                                <label>
-                                    Zaak- of projectreferentie
-                                    <input id="recordReference" placeholder="Bijv. PU-2026-0142">
-                                </label>
-                                <label>
-                                    Dossiereigenaar
-                                    <input id="recordOwner" placeholder="Team of organisatieonderdeel">
-                                </label>
-                                <label>
-                                    Opsteller
-                                    <input id="recordAuthor" placeholder="Naam of functie">
-                                </label>
-                                <label>
-                                    Besluitdatum
-                                    <input id="decisionDate" type="date">
-                                </label>
-                                <label>
-                                    Besluitstatus
-                                    <select id="decisionStatus">
-                                        <option>Concept</option>
-                                        <option selected>Voorgenomen</option>
-                                        <option>Vastgesteld</option>
-                                    </select>
-                                </label>
-                                <label>
-                                    Classificatie
-                                    <select id="classification">
-                                        <option selected>Intern</option>
-                                        <option>Openbaar</option>
-                                        <option>Vertrouwelijk</option>
-                                    </select>
-                                </label>
-                                <label>
-                                    Bewaartermijn
-                                    <input id="retentionPeriod" value="Volgens provinciale selectielijst">
-                                </label>
-                                <label>
-                                    Andere overwogen alternatieven
-                                    <textarea id="alternatives" rows="2"
-                                              placeholder="Noem de varianten die niet zijn gekozen."></textarea>
-                                </label>
-                            </div>
-                        </details>
-
-                        <div class="actions">
-                            <button class="secondary back">
-                                Terug
-                            </button>
-                            <button class="primary" id="export">
-                                Dossier maken
-                            </button>
-                        </div>
+                    <div class="review-scenario hidden" id="reviewScenarioField">
+                        <label for="reviewScenario">{{ t('Scenario') }}</label><select id="reviewScenario"></select>
                     </div>
+                    <div class="review-tabs" role="tablist" aria-label="{{ t('Dossier samenstellen') }}">
+                        <button type="button" role="tab" id="selectionTab" aria-controls="selectionPanel" aria-selected="true" data-review-tab="selection">{{ t('Onderdelen kiezen') }}<span id="selectionTabCount">0</span></button>
+                        <button type="button" role="tab" id="detailsTab" aria-controls="detailsPanel" aria-selected="false" tabindex="-1" data-review-tab="details">{{ t('Dossiergegevens') }}<small>{{ t('Optioneel') }}</small></button>
+                    </div>
+
+                    <section id="selectionPanel" class="review-tab-panel" role="tabpanel" aria-labelledby="selectionTab" tabindex="0">
+                        <div class="review-section-heading"><div><h3 id="itemSelectorTitle">{{ t('Wat wil je bewaren?') }}</h3><p id="selectionCount" aria-live="polite"></p></div><button type="button" id="clearFilters" class="review-text-button">{{ t('Filters wissen') }}</button></div>
+                        <label class="item-search" for="itemSearch"><span>{{ t('Zoek onderdelen') }}</span><input id="itemSearch" type="search" placeholder="{{ t('Zoek op naam, type of status') }}" aria-describedby="filterResultCount"></label>
+                        <div class="summary review-categories" id="summary" role="group" aria-label="{{ t('Filter op type') }}"></div>
+                        <div class="review-filter-row">
+                            <label for="selectionFilter">{{ t('Toon') }}<select id="selectionFilter"><option value="all">{{ t('Alle onderdelen') }}</option><option value="selected">{{ t('Geselecteerd') }}</option><option value="unselected">{{ t('Niet geselecteerd') }}</option></select></label>
+                            <label class="review-check-filter"><input type="checkbox" id="spatialOnly">{{ t('Alleen op de kaart') }}</label>
+                        </div>
+                        <div class="review-bulk"><span id="filterResultCount" role="status"></span><div class="selection-actions"><button type="button" id="selectAll">{{ t('Resultaten selecteren') }}</button><button type="button" id="selectNone">{{ t('Resultaten wissen') }}</button></div></div>
+                        <p class="review-help">{{ t('Deze acties gelden alleen voor je zoek- en filterresultaten.') }}</p>
+                        <section class="item-selector" aria-labelledby="itemSelectorTitle"><div class="item-groups" id="itemGroups"></div><div class="review-empty hidden" id="noItemResults"><b>{{ t('Geen onderdelen gevonden') }}</b><p>{{ t('Probeer een andere zoekterm of wis de filters.') }}</p><button type="button" class="secondary" id="resetItemSearch">{{ t('Filters wissen') }}</button></div></section>
+                    </section>
+
+                    <section id="detailsPanel" class="review-tab-panel" role="tabpanel" aria-labelledby="detailsTab" tabindex="0" hidden>
+                        <div class="review-section-heading"><div><h3>{{ t('Dossiergegevens') }}</h3><p>{{ t('Voeg context toe voor de overdracht. Deze velden zijn optioneel.') }}</p></div></div>
+                        <fieldset class="review-fieldset"><legend>{{ t('Dossierpaspoort') }}</legend><div class="review-form-grid">
+                            <label for="recordReference">{{ t('Zaak- of projectreferentie') }}<input id="recordReference" placeholder="{{ t('Bijv. PU-2026-0142') }}"><small>{{ t('Een herkenbare referentie voor dit dossier.') }}</small></label>
+                            <label for="recordOwner">{{ t('Dossiereigenaar') }}<input id="recordOwner" placeholder="{{ t('Team of organisatieonderdeel') }}"></label>
+                            <label for="recordAuthor">{{ t('Opsteller') }}<input id="recordAuthor" placeholder="{{ t('Naam of functie') }}"></label>
+                            <label for="decisionDate">{{ t('Besluitdatum') }}<input id="decisionDate" type="date"></label>
+                            <label for="decisionStatus">{{ t('Besluitstatus') }}<select id="decisionStatus"><option value="Concept">{{ t('Concept') }}</option><option value="Voorgenomen" selected>{{ t('Voorgenomen') }}</option><option value="Vastgesteld">{{ t('Vastgesteld') }}</option></select></label>
+                            <label for="classification">{{ t('Classificatie') }}<select id="classification"><option value="Intern" selected>{{ t('Intern') }}</option><option value="Openbaar">{{ t('Openbaar') }}</option><option value="Vertrouwelijk">{{ t('Vertrouwelijk') }}</option></select></label>
+                            <label class="review-wide" for="retentionPeriod">{{ t('Bewaartermijn') }}<input id="retentionPeriod" value="{{ t('Volgens provinciale selectielijst') }}"></label>
+                        </div></fieldset>
+                        <fieldset class="review-fieldset"><legend>{{ t('Toelichting en afwegingen') }}</legend><div class="review-form-grid">
+                            <label class="review-wide" for="notes">{{ t('Waarom is dit scenario gekozen?') }}<textarea id="notes" rows="5" placeholder="{{ t('Leg vast waarom dit scenario is gekozen, welke alternatieven zijn afgevallen en door wie het besluit is genomen.') }}"></textarea></label>
+                            <label class="review-wide" for="alternatives">{{ t('Andere overwogen alternatieven') }}<textarea id="alternatives" rows="3" placeholder="{{ t('Noem de varianten die niet zijn gekozen.') }}"></textarea></label>
+                        </div></fieldset>
+                    </section>
+                </div>
+
+                <div class="review-actions">
+                    <button type="button" class="secondary back">{{ t('Terug naar actieve sessie' if active_session_mode else 'Terug naar projecten') }}</button>
+                    <div class="review-action-count"><b id="exportSelectionCount" aria-live="polite">{{ t('Geen onderdelen geselecteerd') }}</b><small>{{ t('Je selectie wordt meegenomen in het dossier.') }}</small></div>
+                    <button type="button" class="secondary" id="reviewNext">{{ t('Verder: dossiergegevens') }}</button>
+                    <button type="button" class="primary" id="export" disabled>{{ t('Dossier maken') }}</button>
                 </div>
             </div>
 
-            <div class="panel success-panel" id="step3">
+            <div class="panel success-panel" id="step4">
                 <div class="panel-head">
                     <div>
-                        <p class="eyebrow">Stap 3</p>
-                        <h2>Dossier gereed</h2>
+                        <p class="eyebrow">{{ t("Stap 4") }}</p>
+                        <h2>{{ t("Dossier gereed") }}</h2>
                         <p>
-                            Download het dossier en draag het over aan de afgesproken archieflocatie.
+                            {{ t("Download het dossier en draag het over aan de afgesproken archieflocatie.") }}
                         </p>
                     </div>
                 </div>
                 <div class="panel-work success-content">
                     <p class="eyebrow">
-                        Export voltooid
+                        {{ t("Export voltooid") }}
                     </p>
                     <h2>
-                        Het dossier is duurzaam verpakt.
+                        {{ t("Het dossier is duurzaam verpakt.") }}
                     </h2>
-                    <p id="doneText"></p>
+                    <p id="doneText" data-source-content="true"></p>
                     <div class="package" id="package"></div>
                     <a class="primary download" id="download" href="#">
-                        Download ZIP-dossier
+                        {{ t("Download ZIP-dossier") }}
                     </a>
                     <button class="link" id="again">
-                        Nog een scenario exporteren
+                        {{ t("Nog een scenario exporteren") }}
                     </button>
                 </div>
             </div>

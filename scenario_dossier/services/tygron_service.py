@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from collections.abc import Iterator
 from contextlib import contextmanager
+from threading import RLock
+from weakref import WeakValueDictionary
 
 from scenario_dossier.tygron import TygronRootSession
 from ..models import (
@@ -16,6 +18,26 @@ from ..tygron import TygronClient, TygronRootClient
 
 
 class TygronService:
+    # Preview, controle en export mogen hetzelfde project niet tegelijk openen.
+    _session_locks = WeakValueDictionary()
+    _session_locks_guard = RLock()
+
+    @contextmanager
+    def project_session(self, credentials, file_name):
+        key = (credentials.base_url.rstrip('/'), file_name)
+        with self._session_locks_guard:
+            lock = self._session_locks.get(key)
+            if lock is None:
+                lock = RLock()
+                self._session_locks[key] = lock
+        with lock:
+            with self._root_client(credentials).open_project(file_name) as session:
+                yield session
+
+    def project_thumbnail(self, credentials, file_name):
+        with self.project_session(credentials, file_name) as session:
+            return session.client.fetch_map_thumbnail()
+
     def list_projects(self, credentials: ProjectCredentials) -> list[TygronProject]:
         client = self._root_client(credentials)
         return [
@@ -27,14 +49,17 @@ class TygronService:
         self,
         credentials: ActiveSessionCredentials,
     ) -> TygronFetchResult:
-        data, warnings = self._active_client(credentials).fetch_all()
-        return TygronFetchResult(ScenarioData.from_dict(data), warnings)
+        connection = self.active_connection(credentials)
+        return TygronFetchResult(connection.data, connection.warnings)
 
     def active_connection(
         self,
         credentials: ActiveSessionCredentials,
     ) -> TygronConnection:
-        client = self._active_client(credentials)
+        return self._connection(self._active_client(credentials))
+
+    @staticmethod
+    def _connection(client: TygronClient) -> TygronConnection:
         data, warnings = client.fetch_all()
         return TygronConnection(
             data=ScenarioData.from_dict(data),
@@ -56,15 +81,8 @@ class TygronService:
         credentials: ProjectCredentials,
         file_name: str,
     ) -> Iterator[TygronConnection]:
-        root = self._root_client(credentials)
-        with root.open_project(file_name) as session:
-            client = session.client
-            data, warnings = client.fetch_all()
-            yield TygronConnection(
-                data=ScenarioData.from_dict(data),
-                warnings=warnings,
-                raster_fetcher=client.fetch_overlay_geotiff,
-            )
+        with self.project_session(credentials, file_name) as session:
+            yield self._connection(session.client)
 
     @staticmethod
     def _active_client(credentials: ActiveSessionCredentials) -> TygronClient:
