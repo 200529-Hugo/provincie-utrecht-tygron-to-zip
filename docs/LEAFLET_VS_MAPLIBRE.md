@@ -34,7 +34,7 @@ De keuze tussen beide technologieën kan als volgt worden samengevat:
 De centrale onderzoeksvraag is:
 
 > Welke JavaScript-kaartbibliotheek, MapLibre GL JS of Leaflet, is het meest geschikt voor het bouwen van moderne
-interactieve webkaarten?
+> interactieve webkaarten?
 
 Om deze vraag te beantwoorden zijn de volgende aspecten onderzocht:
 
@@ -64,8 +64,9 @@ De filosofie van Leaflet is bewust eenvoudig. De kern van de library bevat allee
 deel van de gebruikers noodzakelijk is. Extra functionaliteit wordt hoofdzakelijk door plugins geleverd.
 
 De huidige stabiele versie is op het moment van dit onderzoek **Leaflet 1.9.4**. Deze versie werd uitgebracht op 18 mei
+
 2023. Daarnaast bestaat **Leaflet 2.0.0-alpha.1** als prerelease. Leaflet 2 bevat onder andere moderniseringen richting
-ES Modules, maar behoort nog niet tot de stabiele productielijn.
+      ES Modules, maar behoort nog niet tot de stabiele productielijn.
 
 Dit betekent dat voor productieomgevingen Leaflet 1.9.4 op dit moment nog de veiligste standaardkeuze is.
 
