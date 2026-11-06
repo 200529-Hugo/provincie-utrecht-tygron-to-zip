@@ -14,7 +14,6 @@ import tempfile
 from pathlib import Path
 from typing import Iterable
 
-
 DOCS_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = DOCS_DIR.parent
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "docs" / "output" / "documents"
@@ -191,8 +190,8 @@ def discover_documents() -> list[Path]:
         path
         for path in DOCS_DIR.rglob("*")
         if path.is_file()
-        and path.suffix.lower() in SUPPORTED_SUFFIXES
-        and path.name != Path(__file__).name
+           and path.suffix.lower() in SUPPORTED_SUFFIXES
+           and path.name != Path(__file__).name
     ]
     return sorted(documents, key=lambda path: path.relative_to(DOCS_DIR).as_posix().lower())
 
@@ -363,9 +362,9 @@ def replace_mermaid(markdown: str) -> str:
                 "</div>"
             )
         return (
-            '<div class="diagram-grid" role="img" aria-label="Procesdiagram">'
-            + "".join(cards)
-            + "</div>"
+                '<div class="diagram-grid" role="img" aria-label="Procesdiagram">'
+                + "".join(cards)
+                + "</div>"
         )
 
     return pattern.sub(replacement, markdown)
@@ -557,6 +556,7 @@ def export_pdf(source: Path, output_dir: Path, title: str) -> Path:
         create_pdf(source, target, title, temporary)
 
     return target
+
 
 def main() -> int:
     args = parse_arguments()

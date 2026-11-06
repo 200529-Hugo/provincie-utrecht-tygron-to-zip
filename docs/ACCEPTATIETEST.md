@@ -1,6 +1,7 @@
 # Acceptatietest ScenarioDossier
 
-Gebruik deze checklist voor de formele opleverproef met een representatief Tygron-project. Noteer tester, datum, applicatieversies en afwijkingen in het projectdossier.
+Gebruik deze checklist voor de formele opleverproef met een representatief Tygron-project. Noteer tester, datum,
+applicatieversies en afwijkingen in het projectdossier.
 
 ## Functionele proef
 
@@ -39,5 +40,5 @@ Resultaat: `geaccepteerd / geaccepteerd met bevindingen / afgewezen`
 
 Openstaande bevindingen:
 
-1. 
+1.
 2. 

@@ -1,0 +1,43 @@
+{% from 'components/table.html' import report_table -%}
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dossierrapport · {{ metadata['project'] | display_value }} · {{ metadata['scenario'] | display_value }}</title>
+<style>
+:root{--red:#ec0000;--ink:#231b1b;--muted:#6c6868;--line:#dedbd9;--soft:#f4f2f1}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);font:15px/1.55 Arial,sans-serif;background:var(--soft)}
+header{padding:34px max(6vw,28px);color:#fff;background:var(--ink);border-top:10px solid var(--red)}
+header small{display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:.12em}header h1{max-width:850px;margin:0;font-size:38px;line-height:1.1}
+main{max-width:1100px;margin:auto;padding:34px 28px 70px}section{margin-bottom:24px;padding:26px;background:#fff;border-top:5px solid var(--red)}
+h2{margin:0 0 18px;font-size:22px}dl{display:grid;grid-template-columns:220px 1fr;margin:0}dt,dd{margin:0;padding:9px 0;border-bottom:1px solid var(--line)}dt{font-weight:700}dd{overflow-wrap:anywhere}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}.metric{padding:18px;background:#fff}.metric strong,.metric span{display:block}.metric strong{color:var(--red);font-size:30px}.metric span{color:var(--muted)}
+.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{padding:10px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}thead th{background:var(--ink);color:#fff}tbody th{width:25%}.empty{color:var(--muted)}
+.notice{padding:16px;background:#fde9eb;border-left:6px solid var(--red)}code{font-size:13px}footer{color:var(--muted);font-size:13px}@media print{body{background:#fff}section{break-inside:avoid}}
+@media(max-width:700px){dl{grid-template-columns:1fr}dt{border-bottom:0;padding-bottom:0}.metrics{grid-template-columns:1fr 1fr}header h1{font-size:30px}}
+</style>
+</head>
+<body>
+<header><small>Provincie Utrecht · ScenarioDossier</small><h1>{{ metadata['project'] | display_value }}<br>{{ metadata['scenario'] | display_value }}</h1></header>
+<main>
+<section><h2>Dossierpaspoort</h2><dl>
+<dt>Referentie</dt><dd>{{ record['reference'] | display_value }}</dd><dt>Dossiereigenaar</dt><dd>{{ record['owner'] | display_value }}</dd>
+<dt>Opsteller</dt><dd>{{ record['author'] | display_value }}</dd><dt>Classificatie</dt><dd>{{ record['classification'] | display_value }}</dd>
+<dt>Bewaartermijn</dt><dd>{{ record['retention_period'] | display_value }}</dd><dt>Exportmoment</dt><dd>{{ metadata['exported_at'] | display_value }}</dd>
+<dt>Bron</dt><dd>{{ metadata['source'] | display_value }}</dd><dt>Coördinatenstelsel</dt><dd>{{ metadata['crs'] | display_value }}</dd>
+</dl></section>
+<section><h2>Besluit en afweging</h2><dl>
+<dt>Besluitdatum</dt><dd>{{ decision['date'] | display_value }}</dd><dt>Status</dt><dd>{{ decision['status'] | display_value }}</dd>
+<dt>Gekozen scenario</dt><dd>{{ decision['selected_scenario'] | display_value }}</dd><dt>Andere alternatieven</dt><dd>{{ decision['alternatives'] | display_value }}</dd>
+<dt>Onderbouwing</dt><dd>{{ decision['rationale'] | display_value }}</dd>
+</dl></section>
+<section><h2>Opgenomen onderdelen</h2><div class="metrics">{% for name, count in components.items() %}<div class="metric"><strong>{{ count }}</strong><span>{{ component_labels.get(name, name) }}</span></div>{% endfor %}</div></section>
+<section><h2>Indicatoren</h2>{{ report_table(tables['indicators'], 'Geen indicatoren opgenomen.') }}</section>
+<section><h2>Maatregelen</h2>{{ report_table(tables['measures'], 'Geen maatregelen opgenomen.') }}</section>
+<section><h2>Alerts</h2>{{ report_table(tables['alerts'], 'Geen alerts opgenomen.') }}</section>
+<section><h2>Technische overdracht</h2><p class="notice">Open <code>../gis/scenario.gpkg</code> in QGIS of ArcGIS Pro. Gebruik de bronbestanden in dit dossier alleen-lezen en voer analyses uit op een werkkopie.</p><h3>Exportmeldingen</h3><ul>{% for warning in warnings %}<li>{{ warning }}</li>{% else %}<li>Geen technische waarschuwingen.</li>{% endfor %}</ul></section>
+<footer>Dit rapport is automatisch gegenereerd door {{ metadata['software'] | display_value }}. Controleer <code>../metadata/manifest-sha256.txt</code> om de integriteit van het volledige dossier vast te stellen.</footer>
+</main>
+</body>
+</html>

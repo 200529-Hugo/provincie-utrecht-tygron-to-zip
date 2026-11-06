@@ -32,7 +32,8 @@ en beschrijving worden voor GIS-gebruik genormaliseerd, terwijl ieder record ook
 `source_json` behouden blijft.
 
 **Integriteit, niet alleen transport.** Een SHA-256-manifest detecteert latere wijzigingen. `dossier.json` registreert
-context, tijd, softwareversie, CRS, component aantallen en vrije besluit toelichting. Dit ondersteunt reproduceerbaarheid,
+context, tijd, softwareversie, CRS, component aantallen en vrije besluit toelichting. Dit ondersteunt
+reproduceerbaarheid,
 maar is geen digitale handtekening.
 
 **Projectselectie zonder wachtwoordopslag.** De root-API-route gebruikt tijdelijk een gebruikersnaam en login key om

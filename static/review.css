@@ -1,0 +1,145 @@
+/* Step 3 uses document scrolling, generous controls and a compact map sidebar. */
+#content:has(#step3.active) { height: auto; min-height: 0; }
+.workspace:has(#step3.active) { display: block; height: auto; min-height: 0; }
+#step3.active { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, .85fr); grid-template-rows: auto auto; gap: 28px; width: min(1440px, 100%); height: auto; min-height: 0; max-height: none; margin: 0 auto; padding: 36px 32px 120px; overflow: visible; background: transparent; }
+#step3 > .review-heading { grid-column: 1 / -1; grid-row: 1; min-width: 0; }
+#step3 #selectionTitle { font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
+#step3 .review-intro { color: var(--muted); font-size: 14px; line-height: 1.6; margin: 14px 0 0; }
+#step3 #inspectionStatus { color: var(--muted); font-size: 13px; margin: 10px 0 0; }
+#step3 #inspectionStatus:empty { display: none; }
+#step3 > .panel-work { grid-column: 1; grid-row: 2; display: block; height: auto; min-height: 0; max-height: none; padding: 0; margin: 0; overflow: visible; background: transparent; }
+#step3 .review-scenario { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 16px; padding: 12px 20px; border: 1px solid var(--line); border-bottom: 0; background: white; }
+#step3 .review-scenario label { font-size: 13px; margin: 0; }
+#step3 .review-scenario select { min-height: 44px; font-size: 14px; }
+.review-tabs { display: flex; gap: 0; border: 1px solid var(--line); border-bottom: 0; background: white; scroll-margin-top: 16px; }
+.review-tabs button { flex: 1; display: flex; justify-content: center; align-items: center; gap: 10px; position: relative; min-height: 62px; padding: 15px 12px; color: var(--muted); background: white; border: 0; border-bottom: 3px solid var(--line); font-size: 14px; font-weight: 600; cursor: pointer; }
+.review-tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--red); background: #fffafa; }
+.review-tabs button span { display: inline-grid; place-items: center; min-width: 25px; height: 25px; padding: 0 6px; background: var(--rose); color: var(--red); font-size: 12px; }
+.review-tabs button small { font-size: 11px; font-weight: 400; }
+.review-tab-panel { border: 1px solid var(--line); border-top: 0; padding: 24px; background: white; outline-offset: 2px; }
+.review-tab-panel[hidden] { display: none !important; }
+.review-section-heading { display: flex; justify-content: space-between; align-items: start; gap: 18px; margin-bottom: 20px; }
+.review-section-heading h3 { margin: 0 0 7px; font-size: 19px; line-height: 1.3; }
+.review-section-heading p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.review-text-button { flex-shrink: 0; padding: 6px 0; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; color: var(--muted); background: none; border: 0; cursor: pointer; }
+#step3 .item-search { display: block; padding: 0; margin: 0 0 16px; border: 0; }
+#step3 .item-search > span { display: block; font-size: 12px; font-weight: 600; margin-bottom: 7px; }
+#step3 .item-search input { width: 100%; min-height: 46px; padding: 12px 14px; font-size: 14px; border: 1px solid #aaa5a2; background: white; }
+#step3 .summary.review-categories { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 16px; border: 0; background: none; }
+.review-categories button { display: inline-flex; align-items: center; gap: 8px; padding: 9px 11px; min-height: 40px; border: 1px solid var(--line); background: var(--soft); color: var(--ink); font-size: 12px; cursor: pointer; }
+.review-categories button span { text-transform: capitalize; }
+.review-categories button b { padding: 2px 5px; background: white; font-size: 11px; font-weight: 600; }
+.review-categories button[aria-pressed="true"] { border-color: var(--red); background: var(--rose); }
+.review-filter-row { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.review-filter-row > label:first-child { display: flex; gap: 9px; align-items: center; font-size: 12px; font-weight: 600; }
+.review-filter-row select { min-height: 39px; font-size: 13px; padding: 7px 30px 7px 9px; border: 1px solid var(--line); background: white; }
+.review-check-filter { display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer; }
+#step3 input[type="checkbox"] { width: 20px; height: 20px; min-width: 20px; accent-color: var(--red); cursor: pointer; }
+.review-bulk { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+#filterResultCount { font-size: 12px; color: var(--muted); }
+#step3 .selection-actions { gap: 7px; flex-wrap: wrap; }
+#step3 .selection-actions button { min-height: 35px; padding: 8px 10px; font-size: 11px; border-color: #bcb6b2; cursor: pointer; }
+#step3 .selection-actions button:disabled { opacity: .45; cursor: default; }
+.review-help { color: var(--muted); font-size: 11px; margin: 9px 0 18px; line-height: 1.5; }
+#step3 .item-selector { display: block; height: auto; min-height: 0; max-height: none; border: 0; overflow: visible; }
+#step3 .item-groups { display: block; height: auto; min-height: 0; max-height: none; overflow: visible; }
+#step3 .item-group { border: 1px solid var(--line); margin: 0 0 16px; }
+#step3 .item-group[hidden], #step3 .item-row[hidden], #step3 .item-list[hidden] { display: none !important; }
+#step3 .item-group-head { position: static; display: flex; align-items: stretch; gap: 0; padding: 0; background: var(--soft); }
+.item-group-toggle { display: grid; place-items: center; padding-inline: 12px; border-inline-end: 1px solid var(--line); cursor: pointer; }
+.group-disclosure { flex: 1; display: flex; align-items: center; gap: 14px; min-height: 46px; min-width: 0; padding: 10px 14px; border: 0; background: none; color: var(--ink); text-align: left; cursor: pointer; }
+.group-disclosure:hover, .item-group-toggle:hover { background: var(--rose); }
+.group-disclosure strong { text-transform: capitalize; font-size: 13px; }
+.group-disclosure small { margin-inline-start: auto; font-size: 12px; }
+#step3 .item-list { height: auto; min-height: 0; max-height: none; overflow: visible; }
+#step3 .item-row { display: flex; align-items: stretch; gap: 0; padding: 0; min-height: 68px; background: white; border-top: 1px solid var(--line); }
+#step3 .item-row:hover { background: #fffafa; }
+#step3 .item-row.is-focused { box-shadow: inset 3px 0 var(--red); background: #fffafa; }
+#step3 .item-toggle { display: flex; flex: 1; width: auto; height: auto; min-width: 0; align-items: center; gap: 12px; padding: 15px 12px; cursor: pointer; }
+#step3 .item-copy { display: block; min-width: 0; padding: 0; }
+#step3 .item-copy strong { display: block; font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; white-space: normal; }
+#step3 .item-copy small { display: block; margin-top: 3px; color: var(--muted); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; white-space: normal; }
+#step3 .item-jump { display: block; flex: 0 0 auto; align-self: center; min-height: 36px; padding: 8px 10px; margin: 8px 12px 8px 0; border: 1px solid var(--line); background: white; color: var(--ink); font-size: 11px; cursor: pointer; }
+.review-empty { text-align: center; padding: 35px 18px; background: var(--soft); border: 1px dashed var(--line); }
+.review-empty b { font-size: 15px; }
+.review-empty p { color: var(--muted); font-size: 13px; margin: 9px 0 18px; }
+.review-empty button { padding: 10px 14px; }
+.review-fieldset { border: 1px solid var(--line); margin: 0 0 24px; padding: 20px; min-width: 0; }
+.review-fieldset legend { padding: 0 9px; font-size: 14px; font-weight: 600; }
+.review-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.review-form-grid label { display: flex; flex-direction: column; gap: 8px; min-width: 0; font-size: 13px; font-weight: 600; }
+.review-form-grid label small { color: var(--muted); font-size: 11px; font-weight: 400; line-height: 1.5; }
+.review-form-grid input, .review-form-grid select, .review-form-grid textarea { display: block; width: 100%; min-width: 0; min-height: 45px; padding: 11px 12px; border: 1px solid #aaa5a2; color: var(--ink); background: white; font-size: 14px; font-weight: 400; }
+.review-form-grid textarea { min-height: 100px; resize: vertical; line-height: 1.6; }
+.review-wide { grid-column: 1 / -1; }
+#step3 > .map-card { grid-column: 2; grid-row: 2; align-self: start; position: sticky; top: 24px; height: auto; min-height: 0; max-height: none; margin: 0; padding: 0; border: 1px solid var(--line); background: white; scroll-margin-top: 16px; }
+#step3 .map-head { display: flex; align-items: center; justify-content: space-between; min-height: 68px; padding: 16px 18px; background: white; color: var(--ink); cursor: pointer; list-style: none; }
+#step3 .map-head::-webkit-details-marker { display: none; }
+#step3 .map-head b { display: block; font-size: 14px; }
+#step3 .map-head small { display: block; margin-top: 5px; font-size: 11px; color: var(--muted); }
+#step3 .map-frame { width: 100%; height: clamp(310px, 47vh, 480px); min-height: 0; max-height: none; }
+#step3 #map { height: 100%; min-height: 0; max-height: none; }
+#step3 .map-legend { padding: 8px 10px; }
+#step3 .map-legend button { font-size: 11px; }
+.review-map-note { padding: 14px 18px; border-top: 1px solid var(--line); }
+.review-map-note > small { display: block; color: var(--muted); font-size: 11px; }
+.review-map-note > small.available { color: var(--green); }
+.review-map-note p { font-size: 12px; color: var(--muted); line-height: 1.7; margin: 9px 0 0; }
+html:has(#step3.active) { scroll-padding-bottom: 120px; }
+.review-actions { position: fixed; z-index: 20; inset: auto 0 0; display: flex; align-items: center; gap: 12px; width: min(1440px, 100%); margin: 0 auto; padding: 12px 32px max(12px, env(safe-area-inset-bottom)); background: white; border: 1px solid var(--line); border-bottom: 0; box-shadow: 0 -6px 24px #231b1b12; }
+.review-actions button { justify-content: center; min-height: 44px; padding: 10px 14px; font-size: 13px; }
+.review-back { color: var(--ink); background: none; border: 0; text-align: left; cursor: pointer; }
+.review-back:hover { text-decoration: underline; text-underline-offset: 3px; }
+.review-action-count { margin-inline-start: auto; min-width: 0; padding-inline: 8px; color: var(--muted); font-size: 13px; }
+.review-actions #reviewNext > .chevron--left { order: -1; }
+.review-actions #export { gap: 12px; }
+.review-actions button:disabled { opacity: .45; cursor: default; }
+@media(min-width: 1001px) {
+    #step3.active { padding-top: 24px; gap: 20px; }
+    .review-tabs button { min-height: 54px; padding-block: 11px; }
+    .review-tab-panel { padding: 20px; }
+    .review-section-heading { margin-bottom: 14px; }
+    #step3 .item-search { margin-bottom: 12px; }
+    .review-filter-row { padding-bottom: 12px; }
+    .review-bulk { margin-top: 12px; }
+    .review-help { margin: 7px 0 12px; }
+}
+@media(min-width: 1250px) {
+    #selectionPanel { display: grid; grid-template-columns: minmax(0, 1fr) 180px; column-gap: 16px; }
+    #selectionPanel > .review-section-heading, #selectionPanel > .review-bulk,
+    #selectionPanel > .review-help, #selectionPanel > .item-selector { grid-column: 1 / -1; }
+    #step3 #selectionPanel .item-search { grid-column: 1; grid-row: 2; }
+    #step3 #selectionPanel .review-categories { grid-column: 1; grid-row: 3; align-items: start; }
+    #selectionPanel .review-filter-row { display: contents; }
+    #selectionPanel .review-filter-row > label:first-child { grid-column: 2; grid-row: 2; display: flex; flex-direction: column; align-items: stretch; gap: 7px; }
+    #selectionPanel .review-filter-row select { width: 100%; min-height: 46px; }
+    #selectionPanel .review-check-filter { grid-column: 2; grid-row: 3; align-self: start; min-height: 40px; }
+    #selectionPanel .review-bulk { margin-top: 0; padding-top: 12px; border-top: 1px solid var(--line); }
+}
+@media(max-width: 1000px) {
+    #step3.active { grid-template-columns: minmax(0, 1fr); gap: 20px; padding: 25px 24px 145px; }
+    #step3 > .map-card { grid-column: 1; grid-row: 2; position: static; }
+    #step3 > .panel-work { grid-column: 1; grid-row: 3; }
+    #step3 .map-frame { height: 310px; }
+    .review-actions { padding-inline: 24px; }
+}
+@media(max-width: 560px) {
+    #step3.active { padding: 23px 14px 160px; gap: 18px; }
+    .review-tab-panel { padding: 20px 14px; }
+    .review-tabs button { min-height: 58px; padding: 12px 8px; font-size: 12px; gap: 6px; }
+    .review-tabs button small { display: none; }
+    .review-section-heading { gap: 12px; }
+    .review-section-heading h3 { font-size: 17px; }
+    .review-text-button { font-size: 11px; }
+    .review-form-grid { grid-template-columns: 1fr; gap: 18px; }
+    .review-fieldset { padding: 16px 12px; }
+    .review-filter-row { gap: 12px; }
+    .review-bulk { gap: 10px; }
+    #step3 .item-copy strong { font-size: 13px; }
+    #step3 .item-copy small { font-size: 11px; }
+    .review-actions { padding: 8px 14px max(8px, env(safe-area-inset-bottom)); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 8px; }
+    .review-actions .review-back { justify-content: flex-start; padding-inline: 0; }
+    .review-action-count { margin: 0; padding: 0; text-align: right; font-size: 11px; }
+    .review-actions button { font-size: 12px; padding: 8px 9px; }
+}
+#step3 > .map-card { display: block; }

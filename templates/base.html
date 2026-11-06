@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="{{ language }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="description" content="{{ description }}">
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="icon" href="/static/provincie-utrecht-mark.svg" type="image/svg+xml">
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='app-layout.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='province.css') }}">
+        {% block links %}{% endblock %}
+        <link rel="stylesheet" href="/static/account.css">
+        <link rel="stylesheet" href="/static/workflow-hero.css">
+        {% block extra_styles %}{% endblock %}
+        <link rel="stylesheet" href="/static/controls.css">
+    </head>
+    <body class="{% block body_class %}{% endblock %}">
+        <script id="languageConfig" type="application/json">{{ {'language': language, 'catalog': catalog}|tojson }}</script>
+        <script type="module" src="/static/navigation.js"></script>
+        <header>
+            <nav>
+                <div class="header-main">
+                    <a class="brand" href="/" aria-label="{{ t('Provincie Utrecht, ScenarioDossier') }}">
+                        <img
+                                class="province-logo"
+                                src="{{ url_for('static', filename='provincie-utrecht-logo.svg') }}"
+                                alt="{{ t('Provincie Utrecht') }}"
+                        >
+                    </a>
+                    <div class="utilities">
+                        <a href="{{ '/projecten' if account else '/login' }}">{{ t("Dossier maken") }}</a>
+                        <a href="/controle">{{ t("Dossier controleren") }}</a>
+                        <a href="/werkinstructie">{{ t("Werkinstructie") }}</a>
+                    <div class="language-switch" aria-label="{{ t('Taal') }}">
+                            <button type="button" data-language="nl" aria-pressed="{{ 'true' if language == 'nl' else 'false' }}">{{ t("NL") }}</button>
+                            <button type="button" data-language="en" aria-pressed="{{ 'true' if language == 'en' else 'false' }}">{{ t("EN") }}</button>
+                        </div>
+                        {% if account %}<button type="button" id="logout">{{ t('Uitloggen') }}</button>{% endif %}
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <section class="content">
+            {% block content %}{% endblock %}
+        </section>
+    </body>
+</html>

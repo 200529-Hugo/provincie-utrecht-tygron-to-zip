@@ -1,5 +1,9 @@
+import {t} from './i18n.js';
+import {getManual} from './api/settings.js';
 const target = document.querySelector('#markdown');
 const toc = document.querySelector('#toc');
+let tocObserver;
+let loadVersion = 0;
 
 const escapeHtml = value => value.replace(
     /[&<>"']/g,
@@ -254,7 +258,8 @@ function buildTableOfContents() {
         .join('');
 
     const links = [...toc.querySelectorAll('a')];
-    const observer = new IntersectionObserver(
+    tocObserver?.disconnect();
+    tocObserver = new IntersectionObserver(
         entries => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -273,38 +278,35 @@ function buildTableOfContents() {
         }
     );
 
-    headings.forEach(heading => observer.observe(heading));
+    headings.forEach(heading => tocObserver.observe(heading));
 }
 
 async function load() {
+    const version = ++loadVersion;
     try {
-        const response = await fetch('/api/werkinstructie', {
-            cache: 'no-store'
-        });
+        const markdownText = await getManual();
 
-        if (!response.ok) {
-            throw Error('De werkinstructie kon niet worden opgehaald.');
-        }
-
-        const markdownText = await response.text();
-
+        if (version !== loadVersion) return;
         target.innerHTML = markdown(markdownText);
         await renderMermaidDiagrams();
+        if (version !== loadVersion) return;
         document.querySelector('#readTime').textContent =
             `± ${Math.max(1, Math.ceil(markdownText.split(/\s+/).length / 220))} ` +
-            'min. leestijd';
+            t('min. leestijd');
         buildTableOfContents();
     } catch (error) {
+        if (version !== loadVersion) return;
         target.innerHTML = `
             <div class="manual-error">
-                <strong>Laden mislukt</strong>
+                <strong>${t('Laden mislukt')}</strong>
                 <p>${escapeHtml(error.message)}</p>
             </div>
         `;
-        toc.innerHTML = '<span class="loading-line">Niet beschikbaar</span>';
+        toc.textContent = t('Niet beschikbaar');
     }
 }
 
 document.querySelector('#print').onclick = () => window.print();
 
 load();
+document.addEventListener('languagechange', load);

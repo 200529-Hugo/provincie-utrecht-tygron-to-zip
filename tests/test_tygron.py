@@ -20,7 +20,7 @@ class FakeResponse:
 
 
 class TygronClientTests(unittest.TestCase):
-    @patch("urllib.request.urlopen")
+    @patch("scenario_dossier.tygron._open_authenticated")
     def test_fetches_spatial_measures_and_panel_alerts(self, urlopen):
         responses = {
             "overlays": [{"id": 1, "name": "Heat", "warnings": "Te warm"}],
@@ -67,7 +67,7 @@ class TygronClientTests(unittest.TestCase):
 
 
 class TygronRootClientTests(unittest.TestCase):
-    @patch("urllib.request.urlopen")
+    @patch("scenario_dossier.tygron._open_authenticated")
     def test_lists_opens_joins_and_closes_project(self, urlopen):
         calls = []
 

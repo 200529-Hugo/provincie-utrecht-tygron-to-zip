@@ -7,7 +7,8 @@
 
 ## 5.1 Hoofdvraag en antwoord
 
-> Van Tygron-object naar duurzaam GIS-dossier: hoe combineer je open formaten, validatie en integriteitscontrole zonder betekenis te verliezen?
+> Van Tygron-object naar duurzaam GIS-dossier: hoe combineer je open formaten, validatie en integriteitscontrole zonder
+> betekenis te verliezen?
 
 Het antwoord is een combinatie van een open gegevenscontainer, behoud van broninformatie en dossiercontext, inhoudelijke
 controles en wijzigingsdetectie met een vertrouwde referentie. GeoPackage met bron-JSON en een SHA-256-manifest is mijn
@@ -36,11 +37,11 @@ Het onderzoek combineert brononderzoek, code-inspectie en uitgevoerde lokale exp
 Voor de formaatvergelijking zijn drie bestaande synthetische demo-objecten geselecteerd uit Merwedekanaalzone,
 scenario Groen & Gezond 2040:
 
-| Type | Object | Geteste kenmerken |
-|------|--------|--------------------|
-| Measure | 31, Parklint langs kanaal | Polygon, naam, status, beschrijving en kosten |
+| Type      | Object                              | Geteste kenmerken                                     |
+|-----------|-------------------------------------|-------------------------------------------------------|
+| Measure   | 31, Parklint langs kanaal           | Polygon, naam, status, beschrijving en kosten         |
 | Indicator | 21, Inwoners binnen 300 m van groen | Waarde 84,2, eenheid %, doelwaarde 75 en beschrijving |
-| Alert | 41, Hittestress bij schoolplein | Punt, naam, ernst, status en beschrijving |
+| Alert     | 41, Hittestress bij schoolplein     | Punt, naam, ernst, status en beschrijving             |
 
 Dit zijn demo-objecten, geen export uit een actueel Tygron-project. Het oudere dossier `test_hallo_20260905T230247Z.zip`
 diende afzonderlijk als referentie voor de proeven op de bestaande validator. Het bevat vier overlays, twee indicatoren,
@@ -53,11 +54,11 @@ reproduceerbaarheid. Dit document bevat de relevante methode en uitkomsten zelf,
 
 De drie vergeleken proefpakketten zijn:
 
-| Alternatief | Inhoud |
-|-------------|--------|
-| A | GeoPackage met genormaliseerde velden, bestaande `source_json`-kolommen en dossiercontext |
-| B | Hetzelfde GeoPackage, aparte bron-JSON, contextbestand en SHA-256-manifest |
-| C | Bron-JSON, CSV, ruimtelijke GeoJSON, contextbestand en SHA-256-manifest |
+| Alternatief | Inhoud                                                                                    |
+|-------------|-------------------------------------------------------------------------------------------|
+| A           | GeoPackage met genormaliseerde velden, bestaande `source_json`-kolommen en dossiercontext |
+| B           | Hetzelfde GeoPackage, aparte bron-JSON, contextbestand en SHA-256-manifest                |
+| C           | Bron-JSON, CSV, ruimtelijke GeoJSON, contextbestand en SHA-256-manifest                   |
 
 Nieuwe exports uit de applicatie liepen vast. Daarom zijn A en B opgebouwd in een geïsoleerde proefopstelling op basis
 van de tabelstructuur uit het bestaande referentiedossier. De geselecteerde records zijn hierin opnieuw ingevoerd met
@@ -71,13 +72,13 @@ De oorspronkelijke veldchecklist is gebruikt om de betekenis van de controles te
 bestond uit exacte vergelijking van de drie property-dictionaries, vergelijking van de twee geometrieblobs met de
 bronencoding en controle van de scenario-context. Bij C zijn de volledige bronobjecten teruggelezen en vergeleken.
 
-| Onderdeel | Controle en interpretatie |
-|-----------|----------------------------|
-| Identificatie, type, naam en beschrijving | Vergelijken van bronattributen en teruggelezen `source_json` of bron-JSON |
-| Waarde en eenheid | Indicatorwaarde, eenheid en overige attributen behouden in de bronrepresentatie |
-| Geometrie en CRS | Vergelijking met bronencoding en afzonderlijke GDAL-leesproef. Dit is geen volledige onafhankelijke geometrievalidatie |
-| Relaties | Alleen aanwezige bronattributen vergelijken. De fixture bevat geen uitgebreide relatiestructuur, dus geen algemene conclusie over relationele volledigheid |
-| Scenario-context | Dezelfde project-, scenario- en CRS-context meegeven en teruglezen |
+| Onderdeel                                 | Controle en interpretatie                                                                                                                                  |
+|-------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Identificatie, type, naam en beschrijving | Vergelijken van bronattributen en teruggelezen `source_json` of bron-JSON                                                                                  |
+| Waarde en eenheid                         | Indicatorwaarde, eenheid en overige attributen behouden in de bronrepresentatie                                                                            |
+| Geometrie en CRS                          | Vergelijking met bronencoding en afzonderlijke GDAL-leesproef. Dit is geen volledige onafhankelijke geometrievalidatie                                     |
+| Relaties                                  | Alleen aanwezige bronattributen vergelijken. De fixture bevat geen uitgebreide relatiestructuur, dus geen algemene conclusie over relationele volledigheid |
+| Scenario-context                          | Dezelfde project-, scenario- en CRS-context meegeven en teruglezen                                                                                         |
 
 Er is geen kunstmatige totaalscore van 20 punten toegekend. Daarvoor zou een onafhankelijk ingevuld formulier per veld
 nodig zijn. Een geslaagde dictionaryvergelijking bewijst behoud van de geteste bronattributen, maar niet hun
@@ -87,13 +88,14 @@ domeininhoudelijke juistheid of gelijkwaardige zichtbaarheid in iedere GIS-gebru
 
 Per alternatief zijn vijf opwarmruns en dertig meetruns uitgevoerd. De tijd omvat het opbouwen en ZIP-verpakken van het
 proefpakket. De mediaan en interkwartielafstand zijn berekend uit de dertig meetruns. De volgorde was A, B, C. De
-testomgeving was macOS op ARM64 met Python 3.13.3. Cache-effecten en achtergrondbelasting zijn niet volledig uitgesloten.
+testomgeving was macOS op ARM64 met Python 3.13.3. Cache-effecten en achtergrondbelasting zijn niet volledig
+uitgesloten.
 
-| Alternatief | Teruggelezen informatie | Mediaan | Interkwartielafstand | Uitgepakt | ZIP |
-|-------------|--------------------------|--------:|---------------------:|---------:|----:|
-| A | 3/3 property-dictionaries, 2/2 geometrie-encodings en context gelijk | 1,305 ms | 0,325 ms | 53.248 bytes | 3.535 bytes |
-| B | 3/3 property-dictionaries, 2/2 geometrie-encodings en context gelijk | 2,675 ms | 0,239 ms | 55.170 bytes | 5.295 bytes |
-| C | 3/3 volledige bronobjecten gelijk | 2,771 ms | 0,203 ms | 4.044 bytes | 3.589 bytes |
+| Alternatief | Teruggelezen informatie                                              |  Mediaan | Interkwartielafstand |    Uitgepakt |         ZIP |
+|-------------|----------------------------------------------------------------------|---------:|---------------------:|-------------:|------------:|
+| A           | 3/3 property-dictionaries, 2/2 geometrie-encodings en context gelijk | 1,305 ms |             0,325 ms | 53.248 bytes | 3.535 bytes |
+| B           | 3/3 property-dictionaries, 2/2 geometrie-encodings en context gelijk | 2,675 ms |             0,239 ms | 55.170 bytes | 5.295 bytes |
+| C           | 3/3 volledige bronobjecten gelijk                                    | 2,771 ms |             0,203 ms |  4.044 bytes | 3.589 bytes |
 
 Alle drie de proefpakketten behouden de gecontroleerde broninformatie. Bij A en B staan aanvullende attributen zoals
 kosten en doelwaarde al in `source_json`. De hypothese dat alleen een genormaliseerd GeoPackage deze eigenschappen
@@ -111,13 +113,13 @@ GeoPackage in het algemeen sneller is. Snelheid is daarom niet doorslaggevend in
 
 De bestaande validator is op zes gecontroleerde varianten van het referentiedossier uitgevoerd:
 
-| Proef | Uitkomst | Betekenis |
-|-------|----------|-----------|
-| Ongewijzigd dossier | Goedgekeurd, 19/19 controles | Positieve controle voor deze interne validator |
-| Bron-JSON gewijzigd, manifest gelijk | Afgekeurd, 18 goed en 1 fout | Afwijkende hash herkend |
-| README verwijderd | Afgekeurd, 18 goed en 1 fout | Ontbrekend bestand herkend |
-| Extra bestand toegevoegd | Afgekeurd, 18 goed en 1 fout | Niet-geregistreerd bestand herkend |
-| Bron-JSON en manifest opnieuw gemaakt | Goedgekeurd, 19/19 controles | Een intern consistent manifest bewijst geen authenticiteit |
+| Proef                                                | Uitkomst                     | Betekenis                                                                                             |
+|------------------------------------------------------|------------------------------|-------------------------------------------------------------------------------------------------------|
+| Ongewijzigd dossier                                  | Goedgekeurd, 19/19 controles | Positieve controle voor deze interne validator                                                        |
+| Bron-JSON gewijzigd, manifest gelijk                 | Afgekeurd, 18 goed en 1 fout | Afwijkende hash herkend                                                                               |
+| README verwijderd                                    | Afgekeurd, 18 goed en 1 fout | Ontbrekend bestand herkend                                                                            |
+| Extra bestand toegevoegd                             | Afgekeurd, 18 goed en 1 fout | Niet-geregistreerd bestand herkend                                                                    |
+| Bron-JSON en manifest opnieuw gemaakt                | Goedgekeurd, 19/19 controles | Een intern consistent manifest bewijst geen authenticiteit                                            |
 | Indicatorwaarde -999999 in bron-JSON, nieuw manifest | Goedgekeurd, 19/19 controles | De validator controleert geen inhoudelijke domeingeldigheid of exacte overeenkomst met het GeoPackage |
 
 De laatste proef houdt de aantallen gelijk, maar verandert een inhoudelijke waarde. Het bestaande GeoPackage blijft
@@ -145,18 +147,19 @@ Met GDAL 3.13.3, geleverd bij de lokale QGIS-installatie, is `ogrinfo -ro -al -s
 het GeoPackage openen en rapporteerde één measure, één alert en één indicator. De twee ruimtelijke lagen werden
 herkend, inclusief hun geometriekolom en geografisch referentiestelsel.
 
-Dit is een onafhankelijke driverleesproef naast de eigen SQLite-controles. Het is geen test van de QGIS-gebruikersinterface,
+Dit is een onafhankelijke driverleesproef naast de eigen SQLite-controles. Het is geen test van de
+QGIS-gebruikersinterface,
 geen ArcGIS Pro-test en geen volledige OGC-conformiteitscontrole. Het onderzoek rapporteert deze beperkingen als
 afgeronde afbakening. Er wordt geen latere test beloofd om de conclusies alsnog geldig te maken.
 
-| Bron | Rol en kritische weging |
-|------|--------------------------|
-| [OGC GeoPackage-specificatie](https://docs.ogc.org/is/12-128r19/12-128r19.html) | Normatieve structuur en conventies. Bewijst geen correctheid van mijn implementatie |
-| [Nationaal Archief over geodata](https://www.nationaalarchief.nl/archiveren/kennisbank/geo-data) | Voorkeursformaten en preservation-overwegingen. Geen certificaat voor dit dossier |
-| [GDAL GeoPackage-driver](https://gdal.org/en/stable/drivers/vector/gpkg.html) | Driverfuncties en technische beperkingen. Ondersteuning blijft versiegebonden |
-| [ArcGIS Pro-documentatie](https://pro.arcgis.com/en/pro-app/latest/help/data/databases/work-with-sqlite-databases-in-arcgis-pro.htm) | Documenteerde productondersteuning. Geen vervanging van een zelf uitgevoerde ArcGIS-test |
-| [Python hashlib](https://docs.python.org/3/library/hashlib.html) | Werking van hashfuncties op bestandsbytes. Geen inhoudelijke domeincontrole |
-| Eigen experimenten | Direct bewijs voor de beschreven fixture en implementatie. Kleine steekproef en één testomgeving |
+| Bron                                                                                                                                 | Rol en kritische weging                                                                          |
+|--------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
+| [OGC GeoPackage-specificatie](https://docs.ogc.org/is/12-128r19/12-128r19.html)                                                      | Normatieve structuur en conventies. Bewijst geen correctheid van mijn implementatie              |
+| [Nationaal Archief over geodata](https://www.nationaalarchief.nl/archiveren/kennisbank/geo-data)                                     | Voorkeursformaten en preservation-overwegingen. Geen certificaat voor dit dossier                |
+| [GDAL GeoPackage-driver](https://gdal.org/en/stable/drivers/vector/gpkg.html)                                                        | Driverfuncties en technische beperkingen. Ondersteuning blijft versiegebonden                    |
+| [ArcGIS Pro-documentatie](https://pro.arcgis.com/en/pro-app/latest/help/data/databases/work-with-sqlite-databases-in-arcgis-pro.htm) | Documenteerde productondersteuning. Geen vervanging van een zelf uitgevoerde ArcGIS-test         |
+| [Python hashlib](https://docs.python.org/3/library/hashlib.html)                                                                     | Werking van hashfuncties op bestandsbytes. Geen inhoudelijke domeincontrole                      |
+| Eigen experimenten                                                                                                                   | Direct bewijs voor de beschreven fixture en implementatie. Kleine steekproef en één testomgeving |
 
 De schijnbare spanning tussen een interoperabele standaard, beschikbare validatietools en beperkte praktische
 validatieondersteuning ontstaat doordat de bronnen verschillende claims behandelen. De meetresultaten bevestigen dat
@@ -179,13 +182,14 @@ Mijn definitieve advies aan het projectteam is **GeoPackage met bron-JSON, expli
 voor overdracht**, met het GeoPackage als primaire GIS-representatie en de bron als inspecteerbare referentie. Dit is
 een onderbouwd ontwerpbesluit, geen verklaring dat de huidige applicatie productierijp is.
 
-| Optie | Afweging in het eindadvies |
-|-------|----------------------------|
-| A | Behoudt de fixture en is compact als pakket. Valt af als volledige overdrachtsroute door het ontbreken van een apart manifest en de afhankelijkheid van databasegereedschap voor broninspectie |
-| B | Voorkeur voor overdracht. Combineert GIS-gebruik met los inspecteerbare broninformatie en bestandscontrole. Dubbele representaties vragen aantoonbare inhoudelijke vergelijking |
-| C | Geschikt als eenvoudige uitwissel- of fallbackroute. Valt af als primaire dossierstructuur doordat relaties en samenhang over bestanden zijn verdeeld. Geen empirisch bewijs dat C inhoudelijk slechter bewaart in deze kleine fixture |
+| Optie | Afweging in het eindadvies                                                                                                                                                                                                             |
+|-------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| A     | Behoudt de fixture en is compact als pakket. Valt af als volledige overdrachtsroute door het ontbreken van een apart manifest en de afhankelijkheid van databasegereedschap voor broninspectie                                         |
+| B     | Voorkeur voor overdracht. Combineert GIS-gebruik met los inspecteerbare broninformatie en bestandscontrole. Dubbele representaties vragen aantoonbare inhoudelijke vergelijking                                                        |
+| C     | Geschikt als eenvoudige uitwissel- of fallbackroute. Valt af als primaire dossierstructuur doordat relaties en samenhang over bestanden zijn verdeeld. Geen empirisch bewijs dat C inhoudelijk slechter bewaart in deze kleine fixture |
 
-Voor ingebruikname gelden vier acceptatievoorwaarden voor het projectteam: correcte aanmaak van niet-ruimtelijke tabellen,
+Voor ingebruikname gelden vier acceptatievoorwaarden voor het projectteam: correcte aanmaak van niet-ruimtelijke
+tabellen,
 vergelijking van waarden en relaties tussen representaties, expliciet ondersteunen of afwijzen van Z-coördinaten en een
 vertrouwde manifestreferentie voor de gewenste herkomstclaim. Deze voorwaarden volgen uit de gevonden fouten. Zij zijn
 geen extra werkzaamheden die in deze deep-dive als uitgevoerd worden voorgesteld.
@@ -210,15 +214,15 @@ De presentatie behandelt het afgeronde onderzoek in dezelfde twaalf slides als d
 hoofdvraag staat direct na de titel. De bestaande secties zijn bijgewerkt naar methode, uitkomsten, beperkingen en
 eindadvies. Spreekpunten ondersteunen improvisatie, met uitleg van afkortingen in de begeleidende spiekbrief.
 
-| Slides | Onderdeel | Richttijd |
-|--------|-----------|----------:|
-| 1 en 2 | Onderwerp en hoofdvraag | 3 minuten |
-| 3 en 4 | Praktijkprobleem en afbakening | 4 minuten |
-| 5 en 6 | Alternatieven en geïsoleerde proefopstelling | 6 minuten |
-| 7 en 8 | Betekenisbehoud, exportfout en leesproef | 5 minuten |
-| 9 en 10 | Integriteitsproeven en bronnen | 6 minuten |
-| 11 en 12 | Metingen, beperkingen en eindadvies | 4 minuten |
-| Na slide 12 | Vragen | maximaal 5 minuten |
+| Slides      | Onderdeel                                    |          Richttijd |
+|-------------|----------------------------------------------|-------------------:|
+| 1 en 2      | Onderwerp en hoofdvraag                      |          3 minuten |
+| 3 en 4      | Praktijkprobleem en afbakening               |          4 minuten |
+| 5 en 6      | Alternatieven en geïsoleerde proefopstelling |          6 minuten |
+| 7 en 8      | Betekenisbehoud, exportfout en leesproef     |          5 minuten |
+| 9 en 10     | Integriteitsproeven en bronnen               |          6 minuten |
+| 11 en 12    | Metingen, beperkingen en eindadvies          |          4 minuten |
+| Na slide 12 | Vragen                                       | maximaal 5 minuten |
 
 De richttijd is 28 minuten inhoud plus maximaal 5 minuten vragen. Een proefpresentatie is nodig om de werkelijke duur
 vast te stellen, maar wordt niet als uitgevoerd geclaimd. Er staan geen ontbrekende resultaten of toekomstige

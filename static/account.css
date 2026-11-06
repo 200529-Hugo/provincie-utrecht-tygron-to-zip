@@ -1,0 +1,114 @@
+.utilities { flex-wrap: wrap; align-items: center; }
+.language-switch { display: inline-flex; border: 1px solid var(--line); margin-left: 12px; }
+.language-switch button { padding: 7px 9px; background: white; color: var(--ink); font-size: 12px; border: 0; cursor: pointer; }
+.language-switch button[aria-pressed="true"] { background: var(--ink); color: white; }
+#logout { border: 0; background: none; font-size: 13px; cursor: pointer; color: var(--red); }
+.entry-shell { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(35px, 7vw, 120px); max-width: 1260px; width: 100%; margin: auto; height: auto; min-height: calc(100vh - 100px); padding: 70px 48px; align-items: center; }
+.entry-intro { max-width: 470px; }
+.entry-intro h1 { font-size: clamp(32px, 3.5vw, 49px); line-height: 1.12; letter-spacing: -.035em; margin: 18px 0 24px; }
+.entry-intro > p:not(.eyebrow) { color: var(--muted); line-height: 1.75; font-size: 16px; }
+.intro-line { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 40px; font-size: 12px; }
+.intro-line span { color: var(--red); font-weight: 700; }
+.entry-card { background: white; border: 1px solid var(--line); padding: clamp(24px, 3.6vw, 48px); border-top: 4px solid var(--red); }
+.entry-card h2 { margin: 9px 0 12px; font-size: 31px; }
+.entry-card p { color: var(--muted); line-height: 1.6; }
+.entry-card label { display: block; font-weight: 600; font-size: 13px; margin: 22px 0 8px; }
+.entry-card input { width: 100%; padding: 13px; border: 1px solid #bdb7b4; font-size: 15px; min-width: 0; }
+.password-field { display: flex; border: 1px solid #bdb7b4; }
+.password-field input { border: 0; flex: 1; }
+.password-field button { background: none; border: 0; cursor: pointer; }
+.login-options { margin-top: 20px; font-size: 13px; }
+.login-options summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; background: var(--soft); cursor: pointer; list-style: none; }
+.login-options summary::-webkit-details-marker { display: none; }
+.entry-card .hint { font-size: 12px; }
+#loginButton { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 15px 18px; margin-top: 18px; }
+.form-error { color: #b00000 !important; font-size: 13px; }
+.entry-alternatives { border-top: 1px solid var(--line); margin-top: 28px; padding-top: 24px; display: grid; gap: 18px; text-align: center; font-size: 13px; }
+.entry-alternatives a { justify-content: center; text-decoration: none; }
+.entry-alternatives .secondary { display: block; padding: 12px; }
+.projects-shell { max-width: 1400px; grid-template-columns: .85fr 1.5fr; align-items: start; }
+.project-intro { padding: 14px 0; }
+.project-intro h1 { font-size: 38px; }
+.workflow-guide { list-style: none; padding: 0; margin: 30px 0; display: grid; gap: 25px; }
+.workflow-guide li { display: flex; gap: 18px; font-size: 14px; font-weight: 600; }
+.workflow-guide b { color: var(--red); }
+.workflow-guide small { display: block; color: var(--muted); font-weight: 400; margin-top: 6px; line-height: 1.5; }
+.project-heading { display: flex; gap: 15px; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.project-heading button { padding: 9px 12px; font-size: 12px; }
+#projectsStatus { font-size: 12px; min-height: 20px; }
+.project-row { width: 100%; display: flex; align-items: stretch; text-align: left; padding: 0; border: 1px solid var(--line); background: white; cursor: pointer; margin-top: 12px; color: var(--ink); }
+.project-row:hover { border-color: var(--red); background: #fffafa; }
+.project-visual { min-width: 78px; min-height: 84px; display: grid; place-items: center; font-size: 21px; font-weight: 600; color: #635d55; background: repeating-linear-gradient(135deg,#ece9e2 0 13px,#e2ded4 13px 14px); }
+.visual-1 { background: repeating-linear-gradient(35deg,#e1e8e0 0 20px,#cad8c8 20px 21px); }
+.visual-2 { background: repeating-linear-gradient(145deg,#e5e9ed 0 17px,#cdd7dd 17px 18px); }
+.project-copy { flex: 1; min-width: 0; padding: 20px; }
+.project-copy strong { display: block; font-size: 15px; overflow-wrap: anywhere; }
+.project-copy small { display: block; color: var(--muted); margin-top: 7px; font-size: 12px; }
+.project-chevron { align-self: center; margin-inline: 10px 20px; color: var(--red); }
+.project-pagination { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 20px; font-size: 12px; }
+.project-pagination[hidden] { display: none; }
+.project-pagination button { padding: 10px; font-size: inherit; }
+.project-pagination button:disabled { opacity: .45; cursor: default; }
+.project-pagination span { text-align: center; }
+.account-selected { margin-bottom: 20px; padding: 14px; background: var(--soft); }
+main.control-shell { height: auto; }
+@media(max-width: 850px) { .header-main { height: auto; min-height: 82px; gap: 20px; flex-wrap: wrap; padding: 16px 22px; } .utilities { gap: 12px; } .entry-shell { padding: 35px 24px; gap: 30px; grid-template-columns: 1fr; } .entry-intro { max-width: none; } .login-shell .entry-intro { display: none; } .project-intro h1 { font-size: 30px; } .workflow-guide { display: none; } }
+@media(max-width: 480px) { .entry-shell { padding: 24px 16px; } .entry-card { padding: 24px 18px; } .project-visual { min-width: 55px; } .project-copy { padding: 17px 12px; } }
+/* Keep account navigation accessible at the existing mobile breakpoint. */
+@media(max-width: 780px) {
+    .header-main { display: flex; flex-direction: row; justify-content: space-between; height: auto; }
+    .utilities { display: flex; width: 100%; justify-content: center; flex-wrap: wrap; }
+    .utilities a { font-size: 11px; }
+    .language-switch { margin-left: 0; }
+}
+header { height: auto; min-height: 74px; }
+.header-main { display: flex; height: auto; min-height: 74px; justify-content: space-between; gap: 24px; }
+.brand { flex-shrink: 0; }
+.utilities { position: static; transform: none; gap: 16px; }
+@media(max-width: 1050px) {
+    .header-main { flex-direction: column; gap: 14px; padding: 16px 22px; }
+    .utilities { width: 100%; justify-content: center; }
+}
+
+.manual-page header { height: auto; }
+@media(min-width: 761px) {
+    .manual-page { display: flex; flex-direction: column; }
+    .manual-page > header { flex-shrink: 0; }
+    .manual-page > .content { flex: 1; min-height: 0; }
+    .manual-page main.manual-shell { height: 100%; min-height: 0; }
+}
+/* One shared four-step progress bar across the complete workflow. */
+.workflow-steps { position: relative; height: auto; min-height: 72px; padding: 0 24px; }
+.workflow-steps button { display: flex; align-items: center; gap: 12px; width: min(260px, 25%); min-height: 72px; text-align: left; }
+.workflow-steps button span { display: block; }
+.workflow-steps button b { flex-shrink: 0; }
+.workflow-steps button:disabled { opacity: 1; cursor: default; }
+.workflow-steps button:disabled:not(.active):not(.completed) { color: var(--muted); }
+.workflow-steps button.completed b { border-color: var(--red); color: var(--red); }
+#inspectionStatus { font-size: 13px; }
+#retryInspect { margin-top: 12px; }
+@media(max-width: 780px) {
+    .workflow-steps { min-height: 70px; padding: 0; }
+    .workspace { grid-template-rows: 70px minmax(0, 1fr); }
+    .workflow-steps button { width: 25%; min-height: 70px; padding: 10px 5px; flex-direction: column; gap: 5px; text-align: center; }
+    .workflow-steps button b { width: 27px; height: 27px; }
+    .workflow-steps button span { display: block; font-size: 10px; line-height: 1.2; }
+    .workflow-steps button small { display: none; }
+}
+@media(min-width: 781px) {
+    .workspace { grid-template-rows: 72px minmax(0, 1fr); }
+}
+.project-alternatives { margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line); display: grid; gap: 14px; font-size: 13px; }
+.project-alternatives a { color: var(--ink); text-underline-offset: 4px; }
+.project-version { font-size: 11px !important; }
+.review-scenario { padding: 14px; background: white; border-bottom: 1px solid var(--line); }
+.review-scenario label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 7px; }
+.review-scenario select { width: 100%; padding: 8px; border: 1px solid var(--line); }
+@media(min-width: 781px) { #step3 .panel-work:has(.review-scenario:not(.hidden)) { grid-template-rows: auto auto minmax(0, 1fr); } }
+.project-visual { position: relative; flex: 0 0 140px; min-width: 140px; overflow: hidden; }
+.project-visual.has-thumbnail { background: #edf1e9; }
+.project-visual img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; }
+.project-visual.thumbnail-loading::after { content: ''; position: absolute; width: 15px; height: 15px; right: 8px; bottom: 8px; border: 2px solid #fff; border-top-color: var(--red); border-radius: 50%; animation: thumbnail-spin 1s linear infinite; }
+@keyframes thumbnail-spin { to { transform: rotate(360deg); } }
+@media(max-width: 480px) { .project-visual { flex-basis: 85px; min-width: 85px; } }
+@media(prefers-reduced-motion: reduce) { .project-visual.thumbnail-loading::after { animation: none; } }

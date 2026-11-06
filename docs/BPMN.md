@@ -18,7 +18,6 @@ flowchart TD
     zip[Maak ZIP met rapport en controlesommen]
     bewaren[Download en bewaar het dossier]
     einde((Einde))
-
     start --> bron
     bron --> scenario
     scenario --> ophalen

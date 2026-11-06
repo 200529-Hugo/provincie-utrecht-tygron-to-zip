@@ -1,3 +1,7 @@
+import {t} from './i18n.js';
+import {getMapConfig} from './api/settings.js';
+import {getMapStyle, getTileMetadata} from './api/map-assets.js';
+import {selectionKey} from './review-selection.js';
 import {
     LngLatBounds,
     Map,
@@ -12,6 +16,8 @@ const GROUPS = {
 };
 
 let scenarioMap;
+let focusPopup;
+let selectedScenarioKeys = new Set();
 let scenarioData = {type: 'FeatureCollection', features: []};
 
 function blankStyle() {
@@ -34,32 +40,21 @@ function status(text, available) {
 
 async function resolveStyle() {
     try {
-        const configResponse = await fetch('/api/map-config');
-        const config = await configResponse.json();
+        const config = await getMapConfig();
         if (!config.style_url) {
-            throw Error('Geen OpenMapTiles-stijl geconfigureerd.');
+            throw Error(t('Geen OpenMapTiles-stijl geconfigureerd.'));
         }
-        const response = await fetch(config.style_url, {
-            signal: AbortSignal.timeout(1200)
-        });
-        if (!response.ok) {
-            throw Error('TileServer GL is niet beschikbaar.');
-        }
-        const styleDocument = await response.json();
+        const styleDocument = await getMapStyle({url: config.style_url}, AbortSignal.timeout(1200));
         const tileSource = Object.values(styleDocument.sources || {})
             .find(source => source.type === 'vector' && source.url);
         let coverage;
 
         if (tileSource) {
             const tileJsonUrl = new URL(tileSource.url, config.style_url).href;
-            const tileJsonResponse = await fetch(tileJsonUrl, {
-                signal: AbortSignal.timeout(1200)
-            });
-            if (tileJsonResponse.ok) {
-                const tileJson = await tileJsonResponse.json();
-                if (Array.isArray(tileJson.bounds) && tileJson.bounds.length === 4) {
-                    coverage = tileJson.bounds.map(Number);
-                }
+            // Ontbrekende metadata mag de basiskaart niet uitschakelen.
+            const tileJson = await getTileMetadata({url: tileJsonUrl}, AbortSignal.timeout(1200)).catch(() => ({}));
+            if (Array.isArray(tileJson.bounds) && tileJson.bounds.length === 4) {
+                coverage = tileJson.bounds.map(Number);
             }
         }
         return {style: config.style_url, available: true, coverage};
@@ -97,7 +92,7 @@ function featureCollection(items) {
         const properties = {
             ...(source.properties || {}),
             component: item.component,
-            selection_key: item.key
+            selection_key: selectionKey(item.component, item.key)
         };
         if (source.geometry.type === 'GeometryCollection') {
             source.geometry.geometries.forEach((geometry, index) => {
@@ -121,6 +116,7 @@ function coordinatesForFeature(feature) {
 }
 
 export function setScenarioSelection(keys) {
+    selectedScenarioKeys = keys;
     if (!scenarioMap || !scenarioMap.getSource(SOURCE_ID)) {
         return;
     }
@@ -128,6 +124,10 @@ export function setScenarioSelection(keys) {
         type: 'FeatureCollection',
         features: scenarioData.features.filter(feature => keys.has(feature.properties.selection_key))
     });
+}
+
+export function resizeScenarioMap() {
+    scenarioMap?.resize();
 }
 
 export function focusScenarioItem(key) {
@@ -163,6 +163,21 @@ export function focusScenarioItem(key) {
     const east = bounds.getEast();
     const south = bounds.getSouth();
     const north = bounds.getNorth();
+    focusPopup?.remove();
+    const content = document.createElement('div');
+    content.className = 'scenario-popup';
+    const title = document.createElement('strong');
+    title.textContent = features[0].properties.name || t('Onbenoemd object');
+    content.append(title);
+    if (!selectedScenarioKeys.has(key)) {
+        const note = document.createElement('small');
+        note.textContent = t('Alleen bekijken · niet geselecteerd');
+        content.append(note);
+    }
+    focusPopup = new Popup({maxWidth: '280px'})
+        .setLngLat([(west + east) / 2, (south + north) / 2])
+        .setDOMContent(content).addTo(scenarioMap);
+
     if (west === east && south === north) {
         scenarioMap.easeTo({center: coordinates[0], zoom: 17, duration: 650});
     } else {
@@ -252,12 +267,12 @@ function popupHtml(properties) {
         .replaceAll('<', '&lt;')
         .replaceAll('>', '&gt;')
         .replaceAll('"', '&quot;');
-    const type = properties.component === 'alerts' ? 'Alert' : 'Maatregel';
+    const type = properties.component === 'alerts' ? 'Alert' : t('Maatregel');
     const statusText = properties.status || properties.severity || '';
     return `
         <div class="scenario-popup">
             <small>${type}</small>
-            <strong>${escape(properties.name || 'Onbenoemd object')}</strong>
+            <strong>${escape(properties.name || t('Onbenoemd object'))}</strong>
             ${statusText ? `<span>${escape(statusText)}</span>` : ''}
             ${properties.description ? `<p>${escape(properties.description)}</p>` : ''}
         </div>
@@ -305,14 +320,15 @@ function bindLayerButtons(map) {
 export async function drawScenarioMap(items) {
     const container = document.querySelector('#map');
     if (scenarioMap) {
+        focusPopup?.remove();
         scenarioMap.remove();
     }
     container.replaceChildren();
 
     if (!items.length) {
         container.className = 'map-empty';
-        container.textContent = 'Geen ruimtelijke maatregelen of alerts in deze selectie.';
-        status('Geen kaartobjecten', false);
+        container.textContent = t('Geen ruimtelijke maatregelen of alerts in deze selectie.');
+        status(t('Geen kaartobjecten'), false);
         return;
     }
 
@@ -320,13 +336,13 @@ export async function drawScenarioMap(items) {
     const data = featureCollection(items);
     scenarioData = data;
     const spatial = dataBounds(data);
-    status('OpenMapTiles zoeken', false);
+    status(t('OpenMapTiles zoeken'), false);
     const resolved = await resolveStyle();
     const covered = resolved.available && coversScenario(resolved.coverage, spatial.bounds);
     status(
         !resolved.available
-            ? 'Basiskaart niet actief'
-            : covered ? 'OpenMapTiles actief' : 'Basiskaart dekt gebied niet',
+            ? t('Basiskaart niet actief')
+            : covered ? t('OpenMapTiles actief') : t('Basiskaart dekt gebied niet'),
         covered
     );
     scenarioMap = new Map({
@@ -334,7 +350,14 @@ export async function drawScenarioMap(items) {
         style: resolved.style,
         center: [5.12, 52.09],
         zoom: 11,
-        attributionControl: true
+        attributionControl: true,
+        locale: {
+            'NavigationControl.ZoomIn': t('Inzoomen'),
+            'NavigationControl.ZoomOut': t('Uitzoomen'),
+            'AttributionControl.ToggleAttribution': t('Bronvermelding tonen'),
+            'Map.Title': t('Kaart'),
+            'Popup.Close': t('Sluiten')
+        }
     });
     scenarioMap.addControl(new NavigationControl({showCompass: false}), 'top-right');
 

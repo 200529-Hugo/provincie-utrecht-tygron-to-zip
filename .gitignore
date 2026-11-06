@@ -5,3 +5,10 @@ exports/*.zip
 .idea
 docs/output/
 output/
+
+# Lokale kopieën van vervangen templates
+templates/old-templates/
+
+.venv/
+
+.cache/

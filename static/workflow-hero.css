@@ -1,0 +1,43 @@
+/* Shared photo and red text panel, following the success screen. */
+.workflow-hero {
+    display: flex;
+    align-items: flex-start;
+    min-width: 0;
+    min-height: 500px;
+    padding: 28px;
+    background: linear-gradient(180deg, #00000008, #0000002e), var(--workflow-photo) center / cover no-repeat;
+}
+.workflow-hero--login { --workflow-photo: url('images/stap-1-bron.jpg'); }
+.workflow-hero--projects { --workflow-photo: url('images/stap-2-controle.jpg'); }
+.workflow-hero--review { --workflow-photo: url('images/stap-2-controle.jpg'); background-position: center, center 57%; }
+.workflow-hero-copy { width: min(360px, 100%); padding: 28px; background: var(--red); color: white; }
+.workflow-hero-copy .eyebrow { margin: 0 0 12px; color: white; opacity: .8; font-size: 11px; }
+.workflow-hero-copy h1, .workflow-hero-copy h2 { margin: 0; color: white; font-size: clamp(29px, 3vw, 39px); line-height: 1.12; letter-spacing: -.035em; overflow-wrap: anywhere; }
+.workflow-hero-copy p:not(.eyebrow) { margin: 18px 0 0; color: white; font-size: 14px; line-height: 1.65; }
+.login-shell .entry-intro { display: block; width: 100%; max-width: none; }
+@media(min-width: 851px) and (min-height: 560px) {
+    .login-shell { align-items: start; }
+    .login-shell .entry-intro { position: sticky; top: 24px; }
+}
+.projects-shell .project-intro { padding-top: 0; }
+.projects-shell .workflow-hero { min-height: 420px; padding: 24px; }
+.projects-shell .workflow-hero-copy { padding: 24px; }
+.projects-shell .workflow-hero-copy h1 { font-size: clamp(27px, 2.6vw, 35px); }
+.workflow-hero--compact { min-height: 200px; padding: 22px; align-items: center; }
+.workflow-hero--compact .workflow-hero-copy { width: min(510px, 100%); padding: 22px 26px; }
+.workflow-hero--compact h2 { font-size: clamp(27px, 2.5vw, 34px); }
+.workflow-hero--compact .workflow-hero-copy p:not(.eyebrow) { margin-top: 12px; }
+@media(max-width: 850px) {
+    .login-shell .workflow-hero, .projects-shell .workflow-hero { min-height: 270px; padding: 22px; }
+    .workflow-hero-copy { width: min(370px, 85%); padding: 22px; }
+    .workflow-hero-copy h1 { font-size: 29px; }
+    .workflow-hero-copy p:not(.eyebrow) { font-size: 13px; margin-top: 14px; }
+}
+@media(max-width: 560px) {
+    .login-shell .workflow-hero, .projects-shell .workflow-hero { min-height: 300px; padding: 18px; }
+    .workflow-hero-copy { width: 88%; padding: 20px; }
+    .workflow-hero-copy h1, .projects-shell .workflow-hero-copy h1 { font-size: 27px; }
+    .workflow-hero--compact { min-height: 220px; padding: 16px; }
+    .workflow-hero--compact .workflow-hero-copy { width: 92%; padding: 20px; }
+    .workflow-hero--compact h2 { font-size: 27px; }
+}

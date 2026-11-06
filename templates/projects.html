@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% from 'components/workflow_steps.html' import workflow_steps with context %}
+{% from 'components/workflow_hero.html' import workflow_hero %}
+{% from 'components/controls.html' import chevron %}
+{% block title %}{{ t('Projecten') }} · ScenarioDossier{% endblock %}
+{% block content %}
+{{ workflow_steps(2) }}
+<main class="entry-shell projects-shell">
+    <aside class="entry-intro project-intro">
+        {% call workflow_hero('projects', t('Demonstratie' if demo_mode else 'Je werkruimte'), t('Een goed dossier begint bij de bron.')) %}
+            <p>{% if demo_mode %}{{ t('Verken de werkwijze met een demonstratieproject. Kies een project, bekijk de kaart en stel je dossier samen.') }}{% else %}{{ t('Selecteer een project uit je Tygron-domein. Daarna controleer je het scenario en kies je wat je wilt bewaren.') }}{% endif %}</p>
+        {% endcall %}
+{#        <ol class="workflow-guide">#}
+{#            <li><b>02</b><span>{{ t('Kies je project') }}<small>{{ t('Offline beschikbaar' if demo_mode else 'Alle projecten die je mag starten.') }}</small></span></li>#}
+{#            <li><b>03</b><span>{{ t('Controleer de inhoud') }}<small>{{ t('Bekijk de kaart en selecteer onderdelen.') }}</small></span></li>#}
+{#            <li><b>04</b><span>{{ t('Dossier gereed') }}<small>{{ t('Download een controleerbaar GIS-dossier.') }}</small></span></li>#}
+{#        </ol>#}
+        {% if not demo_mode %}<p class="hint">{{ t('Bij controle en export wordt de actieve projectversie tijdelijk geopend en daarna gesloten.') }}</p>{% endif %}
+        <div class="project-alternatives">
+            {% if not demo_mode %}<a class="icon-link" href="/projecten?mode=demo">{{ t('Demonstratie openen') }} {{ chevron() }}</a>{% endif %}
+            <a class="icon-link" href="/workflow?mode=tygron">{{ t('Een actieve sessie gebruiken') }} {{ chevron() }}</a>
+            <a class="icon-link" href="{{ url_for('pages.login_key_page') }}">{{ t('Een login key gebruiken') }} {{ chevron() }}</a>
+        </div>
+    </aside>
+    <section class="entry-card projects-card" aria-labelledby="projectsTitle">
+        <div class="project-heading"><div><p class="eyebrow">{{ t('Stap 2') }}</p><h2 id="projectsTitle">{{ t('Projecten') }}</h2></div><button class="secondary" id="refreshProjects">{{ t('Vernieuwen') }}</button></div>
+        <label class="sr-only" for="projectSearch">{{ t('Zoek projecten') }}</label>
+        <input id="projectSearch" type="search" placeholder="{{ t('Zoek op projectnaam…') }}">
+        <p id="projectsStatus" role="status" aria-live="polite">{{ t('Projecten ophalen…') }}</p>
+        <div id="projectList" class="project-list" data-thumbnail-concurrency="{{ config['THUMBNAIL_CONCURRENCY'] }}" data-source="{{ 'demo' if demo_mode else 'tygron' }}"></div>
+        <nav class="project-pagination" id="projectPagination" aria-label="{{ t('Projectpagina’s') }}" hidden>
+            <button class="secondary icon-link" id="previousProjects" type="button" aria-controls="projectList">{{ chevron('left') }} {{ t('Vorige') }}</button>
+            <span id="projectPage"></span>
+            <button class="secondary icon-link" id="nextProjects" type="button" aria-controls="projectList">{{ t('Volgende') }} {{ chevron() }}</button>
+        </nav>
+    </section>
+</main>
+<script type="module" src="/static/projects.js"></script>
+{% endblock %}
