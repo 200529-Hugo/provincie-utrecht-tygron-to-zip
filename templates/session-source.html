@@ -1,0 +1,22 @@
+{% extends 'index-new.html' %}
+{% from 'components/workflow_hero.html' import workflow_hero %}
+{% from 'components/controls.html' import chevron %}
+{% block extra_styles %}{{ super() }}<link rel="stylesheet" href="/static/active-session.css">{% endblock %}
+
+{% block source_panel %}
+<div class="panel session-panel active" id="step2">
+    <aside class="session-intro">
+        {% call workflow_hero('login', t('Stap 2') ~ ' · ' ~ source_title, source_heading) %}
+            <p>{{ source_intro }}</p>
+        {% endcall %}
+    </aside>
+    <section class="entry-card session-card" aria-labelledby="sessionTitle">
+        <h2 id="sessionTitle">{{ source_title }}</h2>
+        <p>{{ source_description }}</p>
+        {% block source_form %}{% endblock %}
+        <a class="session-back icon-link" href="{{ '/projecten' if account else '/login' }}">
+            {{ chevron('left') }} {{ t('Terug naar projecten' if account else 'Terug naar inloggen') }}
+        </a>
+    </section>
+</div>
+{% endblock %}

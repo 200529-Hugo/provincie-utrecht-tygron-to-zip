@@ -1,21 +1,17 @@
 import {t} from './i18n.js';
 import {loginAccount} from './api/auth.js';
+import {bindSecretToggles} from './secret-toggle.js';
 
 const form = document.querySelector('#loginForm');
 if (form) {
     const password = document.querySelector('#loginPassword');
-    document.querySelector('#showPassword').onclick = event => {
-        const visible = password.type === 'password';
-        password.type = visible ? 'text' : 'password';
-        event.currentTarget.setAttribute('aria-pressed', String(visible));
-        event.currentTarget.textContent = t(visible ? 'Verbergen' : 'Tonen');
-    };
+    bindSecretToggles();
     form.onsubmit = async event => {
         event.preventDefault();
         const button = document.querySelector('#loginButton');
         const error = document.querySelector('#loginError');
         button.disabled = true;
-        button.textContent = t('Inloggen…');
+        button.firstElementChild.textContent = t('Inloggen…');
         error.textContent = '';
         form.setAttribute('aria-busy', 'true');
         try {
@@ -31,7 +27,7 @@ if (form) {
         } finally {
             password.value = '';
             button.disabled = false;
-            button.textContent = t('Inloggen');
+            button.firstElementChild.textContent = t('Inloggen');
             form.setAttribute('aria-busy', 'false');
         }
     };

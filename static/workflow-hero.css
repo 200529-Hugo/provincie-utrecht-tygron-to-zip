@@ -15,6 +15,10 @@
 .workflow-hero-copy h1, .workflow-hero-copy h2 { margin: 0; color: white; font-size: clamp(29px, 3vw, 39px); line-height: 1.12; letter-spacing: -.035em; overflow-wrap: anywhere; }
 .workflow-hero-copy p:not(.eyebrow) { margin: 18px 0 0; color: white; font-size: 14px; line-height: 1.65; }
 .login-shell .entry-intro { display: block; width: 100%; max-width: none; }
+@media(min-width: 851px) and (min-height: 560px) {
+    .login-shell { align-items: start; }
+    .login-shell .entry-intro { position: sticky; top: 24px; }
+}
 .projects-shell .project-intro { padding-top: 0; }
 .projects-shell .workflow-hero { min-height: 420px; padding: 24px; }
 .projects-shell .workflow-hero-copy { padding: 24px; }

@@ -16,14 +16,15 @@
 .entry-card input { width: 100%; padding: 13px; border: 1px solid #bdb7b4; font-size: 15px; min-width: 0; }
 .password-field { display: flex; border: 1px solid #bdb7b4; }
 .password-field input { border: 0; flex: 1; }
-.password-field button { background: none; border: 0; padding: 0 14px; font-size: 12px; cursor: pointer; }
+.password-field button { background: none; border: 0; cursor: pointer; }
 .login-options { margin-top: 20px; font-size: 13px; }
-.login-options summary { cursor: pointer; }
+.login-options summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; background: var(--soft); cursor: pointer; list-style: none; }
+.login-options summary::-webkit-details-marker { display: none; }
 .entry-card .hint { font-size: 12px; }
-#loginButton { width: 100%; display: flex; justify-content: space-between; padding: 15px 18px; margin-top: 18px; }
+#loginButton { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 15px 18px; margin-top: 18px; }
 .form-error { color: #b00000 !important; font-size: 13px; }
 .entry-alternatives { border-top: 1px solid var(--line); margin-top: 28px; padding-top: 24px; display: grid; gap: 18px; text-align: center; font-size: 13px; }
-.entry-alternatives a { text-decoration: none; }
+.entry-alternatives a { justify-content: center; text-decoration: none; }
 .entry-alternatives .secondary { display: block; padding: 12px; }
 .projects-shell { max-width: 1400px; grid-template-columns: .85fr 1.5fr; align-items: start; }
 .project-intro { padding: 14px 0; }
@@ -43,7 +44,12 @@
 .project-copy { flex: 1; min-width: 0; padding: 20px; }
 .project-copy strong { display: block; font-size: 15px; overflow-wrap: anywhere; }
 .project-copy small { display: block; color: var(--muted); margin-top: 7px; font-size: 12px; }
-.project-arrow { align-self: center; padding: 15px; color: var(--red); font-size: 23px; }
+.project-chevron { align-self: center; margin-inline: 10px 20px; color: var(--red); }
+.project-pagination { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 20px; font-size: 12px; }
+.project-pagination[hidden] { display: none; }
+.project-pagination button { padding: 10px; font-size: inherit; }
+.project-pagination button:disabled { opacity: .45; cursor: default; }
+.project-pagination span { text-align: center; }
 .account-selected { margin-bottom: 20px; padding: 14px; background: var(--soft); }
 main.control-shell { height: auto; }
 @media(max-width: 850px) { .header-main { height: auto; min-height: 82px; gap: 20px; flex-wrap: wrap; padding: 16px 22px; } .utilities { gap: 12px; } .entry-shell { padding: 35px 24px; gap: 30px; grid-template-columns: 1fr; } .entry-intro { max-width: none; } .login-shell .entry-intro { display: none; } .project-intro h1 { font-size: 30px; } .workflow-guide { display: none; } }

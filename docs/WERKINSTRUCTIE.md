@@ -14,16 +14,11 @@ Start de toepassing met `python3 app.py` en open `http://127.0.0.1:8080`.
 
 ### Inloggen en projecten
 
-1. Vul je Tygron-gebruikersnaam en wachtwoord in en kies **Inloggen**. Je kunt ook een bestaande login key gebruiken.
-   Neem bij tweestapsverificatie contact op met Tygron Support over API-toegang.
-2. Onder **Verbindingsinstellingen** kun je de Tygron-URL en het domein aanpassen. Een leeg domein wordt uit het account
-   gelezen.
+1. Vul je Tygron-gebruikersnaam en wachtwoord in en kies **Inloggen**. Je kunt ook een bestaande login key gebruiken. Neem bij tweestapsverificatie contact op met Tygron Support over API-toegang.
+2. Onder **Verbindingsinstellingen** kun je de Tygron-URL en het domein aanpassen. Een leeg domein wordt uit het account gelezen.
 3. Zoek je project op naam in **Projecten** en selecteer de rij.
-4. Projectselectie opent direct **stap 3: Kaart en selectie**. Vervolg met stappen 4–8 hieronder. Na export verschijnt *
-   *stap 4: Succes** met de download. Alleen de actieve projectversie wordt geopend; de tijdelijke sessie sluit na
-   controle en export.
-5. Kies **Uitloggen** als je klaar bent. De app-sessie verloopt na 30 minuten en na een serverherstart moet je opnieuw
-   inloggen.
+4. Projectselectie opent direct **stap 3: Kaart en selectie**. Vervolg met stappen 4–8 hieronder. Na export verschijnt **stap 4: Succes** met de download. Alleen de actieve projectversie wordt geopend; de tijdelijke sessie sluit na controle en export.
+5. Kies **Uitloggen** als je klaar bent. De app-sessie verloopt na 30 minuten en na een serverherstart moet je opnieuw inloggen.
 
 **NL / EN** in de header wisselt de taal. De voorkeur blijft bewaard tijdens navigeren en vernieuwen. Wisselen van taal
 behoudt formulierwaarden en je selectie.
@@ -37,17 +32,12 @@ behoudt formulierwaarden en je selectie.
     - Gebruik **Maatregelen** en **Alerts** om de kaartlagen afzonderlijk te tonen of verbergen.
     - Klik een punt, lijn of vlak voor naam, status en toelichting.
     - Zoek in **Onderdelen in dossier** op naam, type of status.
-    - Vink afzonderlijke overlays, indicatoren, maatregelen en alerts aan of uit. De teller toont hoeveel records in het
-      dossier komen; uitgesloten ruimtelijke records verdwijnen direct van de kaart.
-    - Klik op de naam van een ruimtelijk record om de kaart daarop te centreren. Een uitgevinkt object wordt daarbij
-      automatisch geselecteerd. **Alles** en **Geen** passen de volledige selectie in één keer aan.
-    - **OpenMapTiles actief** betekent dat de lokale basiskaart geladen is. Bij **Basiskaart niet actief** blijven de
-      scenario-objecten zichtbaar op een neutrale achtergrond.
+    - Vink afzonderlijke overlays, indicatoren, maatregelen en alerts aan of uit. De teller toont hoeveel records in het dossier komen; uitgesloten ruimtelijke records verdwijnen direct van de kaart.
+    - Klik op de naam van een ruimtelijk record om de kaart daarop te centreren. Een uitgevinkt object wordt daarbij automatisch geselecteerd. **Alles** en **Geen** passen de volledige selectie in één keer aan.
+    - **OpenMapTiles actief** betekent dat de lokale basiskaart geladen is. Bij **Basiskaart niet actief** blijven de scenario-objecten zichtbaar op een neutrale achtergrond.
 5. Noteer bij **Toelichting en gemaakte afwegingen** de inhoudelijke onderbouwing van de keuze.
-6. Open **Dossierpaspoort** en controleer referentie, eigenaar, opsteller, besluitdatum, besluitstatus, alternatieven,
-   classificatie en bewaartermijn.
-7. Controleer de individuele selectie in **Onderdelen in dossier** en kies **Dossier maken**. Alleen de aangevinkte
-   records worden naar JSON, CSV, GeoJSON, GeoPackage, rapport en eventuele rasterexport geschreven.
+6. Open **Dossierpaspoort** en controleer referentie, eigenaar, opsteller, besluitdatum, besluitstatus, alternatieven, classificatie en bewaartermijn.
+7. Controleer de individuele selectie in **Onderdelen in dossier** en kies **Dossier maken**. Alleen de aangevinkte records worden naar JSON, CSV, GeoJSON, GeoPackage, rapport en eventuele rasterexport geschreven.
 8. Download het ZIP-bestand en draag het over aan de aangewezen dossierlocatie.
 
 ### Lokale OpenMapTiles-basiskaart installeren

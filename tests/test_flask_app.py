@@ -167,6 +167,18 @@ class ApplicationTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         call.assert_called_once_with('my-domain')
 
+    def test_login_key_has_its_own_page_and_legacy_url_still_works(self):
+        for url in ('/login-key', '/workflow?mode=legacy'):
+            with self.subTest(url=url):
+                page = self.client.get(url)
+                self.assertEqual(page.status_code, 200)
+                for field in ('loginKeyForm', 'loginKey', 'showLoginKey', 'liveProject', 'liveScenario', 'step3', 'step4'):
+                    self.assertIn(f'id="{field}"', page.text)
+                for unrelated in ('source-tabs', 'activeSessionForm', 'demoFields'):
+                    self.assertNotIn(unrelated, page.text)
+        for url in ('/login', '/projecten?mode=demo'):
+            self.assertIn('href="/login-key"', self.client.get(url).text)
+
     def test_active_session_uses_existing_connection_and_raster_fetcher(self):
         with patch('scenario_dossier.services.tygron_service.TygronService.active_connection', return_value=TygronConnection(ScenarioData(measures=[{'id': 7}]))):
             response = self.client.post('/api/inspect', json={'source': 'tygron', 'base_url': 'https://engine.tygron.com', 'token': 'secret', 'project_name': 'P', 'scenario_name': 'S'})

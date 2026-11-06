@@ -1,0 +1,37 @@
+{% extends 'session-source.html' %}
+{% from 'components/controls.html' import secret_toggle %}
+{% set source_title = t('Login key gebruiken') %}
+{% set source_heading = t('Kies een project met je login key.') %}
+{% set source_intro = t('Haal je Tygron-projecten op en kies welk project je wilt exporteren.') %}
+{% set source_description = t('Vul je Tygron-gegevens in en laad je projecten.') %}
+{% block title %}{{ source_title }} · ScenarioDossier{% endblock %}
+
+{% block source_form %}
+<form id="loginKeyForm" method="post">
+    <fieldset id="loginKeyCredentials" class="session-credentials">
+        <legend class="sr-only">{{ t('Verbindingsinstellingen') }}</legend>
+        <label for="rootBaseUrl">{{ t('Tygron-URL') }}</label>
+        <input id="rootBaseUrl" type="url" value="https://engine.tygron.com" autocomplete="url" required>
+        <div class="session-name-fields">
+            <div><label for="username">{{ t('Gebruikersnaam') }}</label><input id="username" autocomplete="username" required></div>
+            <div><label for="domain">{{ t('Domein (optioneel)') }}</label><input id="domain" autocomplete="organization" placeholder="{{ t('Wordt anders uit het account gelezen') }}"></div>
+        </div>
+        <label for="loginKey">{{ t('Login key') }}</label>
+        <div class="password-field">
+            <input id="loginKey" type="password" autocomplete="off" placeholder="{{ t('Gebruik een login key, geen wachtwoord') }}" required>
+            {{ secret_toggle('showLoginKey', 'loginKey', t('Login key tonen')) }}
+        </div>
+    </fieldset>
+    <div class="project-loader">
+        <button class="secondary" id="loadProjects" type="button" disabled>{{ t('Projecten laden') }}</button>
+        <span id="projectLoadStatus" role="status"></span>
+    </div>
+    <div class="session-name-fields">
+        <div><label for="liveProject">{{ t('Project') }}</label><select class="select-chevron" id="liveProject" required disabled></select></div>
+        <div><label for="liveScenario">{{ t('Scenario of projectversie') }}</label><select class="select-chevron" id="liveScenario" disabled></select></div>
+    </div>
+    <p class="hint">{{ t('De toepassing start het gekozen project tijdelijk, exporteert de actieve versie en sluit de sessie daarna automatisch. Accountgegevens worden niet opgeslagen.') }}</p>
+    <p class="form-error" id="sessionConnectionStatus" role="alert"></p>
+    <button class="primary" id="inspect" type="submit" disabled>{{ t('Verbinding controleren') }}</button>
+</form>
+{% endblock %}

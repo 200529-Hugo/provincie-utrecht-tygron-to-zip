@@ -2,54 +2,47 @@ import {t} from '../i18n.js';
 import {getDemoProjects, getAccountProjects, getLegacyProjects} from '../api/projects.js';
 
 const $ = selector => document.querySelector(selector);
-const $$ = selector => [...document.querySelectorAll(selector)];
 
-// Alleen de bronkeuze en verbindingsvelden horen in dit onderdeel.
-export function createSourceForm({mode, parameters, onScenarioChanged, onError}) {
-    let source = mode === 'tygron' ? 'tygron' : 'demo';
-    let projects = [];
-    let liveProjects = [];
+function fillSelect(select, items, value, label) {
+    select.replaceChildren(...items.map((item, index) => {
+        const option = new Option(label(item, index), value(item));
+        option.dataset.sourceContent = 'true';
+        return option;
+    }));
+}
+
+// Dit onderdeel beheert de brongegevens voor controle en export.
+export function createSourceForm({mode, parameters, onScenarioChanged, onConnectionChanged}) {
+    let project;
     const accountMode = mode === 'account';
-    function fillSelect(select, items, valueKey, labelKey) {
-        select.replaceChildren(...items.map(item => {
-            const option = document.createElement('option');
+    const demoMode = mode === 'demo';
+    const reviewScenario = $('#reviewScenario');
+    const legacyForm = $('#loginKeyForm');
 
-            if (select.id === 'project' || select.id === 'scenario' || select.id === 'liveProject') option.dataset.sourceContent = 'true';
-            option.value = typeof valueKey === 'function' ? valueKey(item) : item[valueKey];
-            option.textContent = t(typeof labelKey === 'function' ? labelKey(item) : item[labelKey]);
-            return option;
-        }));
+    function legacyCredentials() {
+        return {
+            base_url: $('#rootBaseUrl').value.trim(),
+            domain: $('#domain').value.trim(),
+            username: $('#username').value.trim(),
+            login_key: $('#loginKey').value.trim()
+        };
     }
 
     function payload() {
-        if (source === 'demo') {
+        if (demoMode) return {source: 'demo', project_id: project.id, scenario_id: reviewScenario.value};
+        if (accountMode || legacyForm) {
+            const activeVersion = project.versions[project.active_version] ?? project.versions[0] ?? '';
             return {
-                source,
-                project_id: $('#project').value,
-                scenario_id: $('#scenario').value
-            };
-        }
-
-        if (source === 'tygron_project') {
-            const project = liveProjects.find(
-                item => item.file_name === $('#liveProject').value
-            );
-
-            return {
-                source,
+                ...(legacyForm ? legacyCredentials() : {}),
+                source: 'tygron_project',
                 authenticated: accountMode,
-                base_url: $('#rootBaseUrl').value.trim(),
-                domain: $('#domain').value.trim(),
-                username: $('#username').value.trim(),
-                login_key: $('#loginKey').value.trim(),
-                project_file: $('#liveProject').value,
-                project_name: project ? project.name : '',
-                scenario_name: $('#liveScenario').value
+                project_file: project.file_name,
+                project_name: project.name,
+                scenario_name: accountMode ? activeVersion : $('#liveScenario').value
             };
         }
-
         return {
-            source,
+            source: 'tygron',
             base_url: $('#baseUrl').value.trim(),
             token: $('#token').value.trim(),
             project_name: $('#projectName').value.trim(),
@@ -57,141 +50,82 @@ export function createSourceForm({mode, parameters, onScenarioChanged, onError})
         };
     }
 
-    function updateLiveScenarios() {
-        const project = liveProjects.find(
-            item => item.file_name === $('#liveProject').value
-        );
-        const scenarios = project ? project.versions : [];
-
-        fillSelect(
-            $('#liveScenario'),
-            scenarios.map((name, index) => ({
-                name,
-                label: name + (index === project.active_version ? ' (actief)' : '')
-            })),
-            'name',
-            'label'
-        );
-        $('#liveScenario').disabled = !scenarios.length;
-
-        if (project && scenarios[project.active_version]) {
-            $('#liveScenario').value = scenarios[project.active_version];
-        }
-    }
-
-    async function loadTygronProjects() {
-        const button = $('#loadProjects');
-        const status = $('#projectLoadStatus');
-
-        button.disabled = true;
-        status.textContent = t('Projecten ophalen…');
-
-        try {
-            const data = await getLegacyProjects({
-                base_url: $('#rootBaseUrl').value.trim(),
-                domain: $('#domain').value.trim(),
-                username: $('#username').value.trim(),
-                login_key: $('#loginKey').value.trim()
-            });
-
-            liveProjects = data.projects;
-            fillSelect($('#liveProject'), liveProjects, 'file_name', 'name');
-            $('#liveProject').disabled = !liveProjects.length;
-            status.textContent = t('{count} projecten gevonden', {count: liveProjects.length});
-            updateLiveScenarios();
-        } catch (error) {
-            liveProjects = [];
-            $('#liveProject').innerHTML = '';
-            $('#liveProject').disabled = true;
-            $('#liveScenario').innerHTML = '';
-            $('#liveScenario').disabled = true;
-            status.textContent = '';
-            onError(error.message);
-        } finally {
-            button.disabled = false;
-        }
-    }
-
-    function updateScenarios() {
-        const project = projects.find(item => item.id === $('#project').value);
-
-        if (!project) return;
-        fillSelect($('#scenario'), project.scenarios, 'id', 'name');
-        updateNote();
-    }
-
-    function updateNote() {
-        const project = projects.find(item => item.id === $('#project').value);
-        if (!project) return;
-        const scenario = project.scenarios.find(item => item.id === $('#scenario').value);
-
-        $('#scenarioNote').textContent = t(scenario?.description || '');
-    }
-
     async function initialize() {
-        if (mode === 'tygron') return false;
         if (accountMode) {
-            liveProjects = (await getAccountProjects()).projects;
-            const selected = sessionStorage.getItem('selectedProject');
-            const project = liveProjects.find(item => item.file_name === selected);
-            if (!project) { location.assign('/projecten'); return false; }
-            source = 'tygron_project';
-            fillSelect($('#liveProject'), liveProjects, 'file_name', 'name');
-            $('#liveProject').value = selected;
-            updateLiveScenarios();
-            $('#demoFields').classList.add('hidden');
-            $('.source-tabs').classList.add('hidden');
-            return true;
+            const {projects} = await getAccountProjects();
+            project = projects.find(item => item.file_name === sessionStorage.getItem('selectedProject'));
+            if (!project) location.assign('/projecten');
+            return Boolean(project);
         }
-        projects = await getDemoProjects();
-        fillSelect($('#project'), projects, 'id', 'name');
-        updateScenarios();
-        if (mode === 'demo' && parameters.has('project_id')) {
-            const project = projects.find(item => item.id === parameters.get('project_id'));
-            if (!project) { location.assign('/projecten?mode=demo'); return false; }
-            $('#project').value = project.id;
-            updateScenarios();
-            const scenario = project.scenarios.find(item => item.id === parameters.get('scenario_id')) || project.scenarios[0];
-            if (!scenario) { location.assign('/projecten?mode=demo'); return false; }
-            $('#scenario').value = scenario.id;
-            fillSelect($('#reviewScenario'), project.scenarios, 'id', 'name');
-            $('#reviewScenario').value = scenario.id;
+        if (demoMode) {
+            const projects = await getDemoProjects();
+            project = projects.find(item => item.id === parameters.get('project_id'));
+            if (!project?.scenarios.length) {
+                location.assign('/projecten?mode=demo');
+                return false;
+            }
+            fillSelect(reviewScenario, project.scenarios, item => item.id, item => item.name);
+            if (project.scenarios.some(item => item.id === parameters.get('scenario_id'))) {
+                reviewScenario.value = parameters.get('scenario_id');
+            }
             $('#reviewScenarioField').classList.remove('hidden');
-            return true;
         }
-        if (mode === 'legacy') $('[data-source="tygron_project"]').click();
-        return false;
+        return demoMode;
     }
-    $$('.source-tabs button').forEach(button => {
-        button.onclick = () => {
-            $$('.source-tabs button').forEach(item => item.classList.remove('active'));
-            button.classList.add('active');
-            source = button.dataset.source;
-            $('#demoFields').classList.toggle('hidden', source !== 'demo');
-            $('#tygronFields').classList.toggle('hidden', source !== 'tygron');
-            $('#tygronProjectFields').classList.toggle(
-                'hidden',
-                source !== 'tygron_project'
-            );
-        };
-    });
 
-    $('#project')?.addEventListener('change', updateScenarios);
-    $('#scenario')?.addEventListener('change', updateNote);
-    $('#loadProjects')?.addEventListener('click', loadTygronProjects);
-    $('#liveProject')?.addEventListener('change', updateLiveScenarios);
-    $('#reviewScenario').onchange = () => {
-        $('#scenario').value = $('#reviewScenario').value;
-        updateNote();
-        onScenarioChanged();
-    };
-    if ($('#showSessionToken')) {
-        $('#showSessionToken').onclick = event => {
-            const visible = $('#token').type === 'password';
-            $('#token').type = visible ? 'text' : 'password';
-            event.currentTarget.setAttribute('aria-pressed', String(visible));
-            event.currentTarget.textContent = t(visible ? 'Verbergen' : 'Tonen');
+    if (legacyForm) {
+        const credentials = $('#loginKeyCredentials');
+        const load = $('#loadProjects');
+        const status = $('#projectLoadStatus');
+        const errorMessage = $('#sessionConnectionStatus');
+        const projectSelect = $('#liveProject');
+        const scenarioSelect = $('#liveScenario');
+        const inspect = $('#inspect');
+        let projects = [];
+
+        function updateProject() {
+            project = projects.find(item => item.file_name === projectSelect.value);
+            const versions = project?.versions || [];
+            fillSelect(scenarioSelect, versions, name => name,
+                (name, index) => name + (index === project.active_version ? ' ' + t('(actief)') : ''));
+            if (versions[project?.active_version]) scenarioSelect.value = versions[project.active_version];
+            scenarioSelect.disabled = !versions.length;
+            inspect.disabled = !project;
+        }
+
+        function clearProjects() {
+            projects = [];
+            projectSelect.replaceChildren();
+            projectSelect.disabled = true;
+            updateProject();
+            status.textContent = '';
+        }
+
+        credentials.addEventListener('input', clearProjects);
+        projectSelect.onchange = updateProject;
+        load.onclick = async () => {
+            if (!Array.from(credentials.querySelectorAll('input')).every(input => input.reportValidity())) return;
+            const values = legacyCredentials();
+            clearProjects();
+            onConnectionChanged();
+            status.textContent = t('Projecten ophalen…');
+            credentials.disabled = load.disabled = true;
+            try {
+                ({projects} = await getLegacyProjects(values));
+                fillSelect(projectSelect, projects, item => item.file_name, item => item.name);
+                projectSelect.disabled = !projects.length;
+                status.textContent = t('{count} projecten gevonden', {count: projects.length});
+                updateProject();
+            } catch (error) {
+                status.textContent = '';
+                errorMessage.textContent = error.message;
+            } finally {
+                credentials.disabled = load.disabled = false;
+            }
         };
+        load.disabled = false;
     }
+
+    reviewScenario.onchange = onScenarioChanged;
     return {initialize, payload};
 }

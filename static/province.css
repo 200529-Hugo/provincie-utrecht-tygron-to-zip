@@ -262,31 +262,6 @@ main {
     opacity: .88;
 }
 
-#step2 .source-tabs {
-    grid-column: 2;
-    grid-row: 1;
-    margin: 0;
-    padding: 22px 28px 0;
-    border: 0;
-    border-bottom: 1px solid var(--black);
-    background: #fff;
-}
-
-.source-tabs button {
-    min-height: 46px;
-    padding: 12px 18px;
-    border: 0;
-    border-right: 1px solid #fff;
-    background: #efeded;
-    color: var(--ink);
-    font-family: inherit;
-}
-
-.source-tabs button.active {
-    background: var(--black);
-    color: #fff;
-}
-
 #step2 > .fields {
     grid-column: 2;
     grid-row: 2;
@@ -665,18 +640,6 @@ fieldset {
         font-size: 14px;
     }
 
-    #step2 .source-tabs {
-        display: flex;
-        margin-top: 12px;
-        padding: 12px 12px 0;
-    }
-
-    .source-tabs button {
-        flex: 1;
-        padding: 10px 6px;
-        font-size: 12px;
-    }
-
     #step2 > .fields {
         padding: 22px 18px;
     }
@@ -841,15 +804,6 @@ fieldset {
     flex-direction: column;
 }
 
-#step2 .source-tabs {
-    flex: 0 0 auto;
-    margin: 0;
-    padding: 22px 28px 0;
-    border: 0;
-    border-bottom: 1px solid var(--black);
-    background: #fff;
-}
-
 #step2 .panel-work > .fields {
     align-content: start;
     padding: 28px;
@@ -954,10 +908,6 @@ fieldset {
     .panel-work {
         min-height: 0;
         margin-top: 12px;
-    }
-
-    #step2 .source-tabs {
-        margin: 0;
     }
 
     #step2 .panel-work > .fields {

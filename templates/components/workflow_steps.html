@@ -1,8 +1,19 @@
 {% macro workflow_steps(active_step) %}
+{% set projects_title = 'Projecten' %}
+{% set projects_detail = 'Kies je project' %}
+{% set projects_href = '/projecten?mode=demo' if demo_mode|default(false) or not account else '/projecten' %}
+{% if active_session_mode|default(false) %}
+    {% set projects_title = 'Actieve sessie' %}
+    {% set projects_detail = 'Verbind met je sessie' %}
+    {% set projects_href = '/workflow?mode=tygron' %}
+{% elif login_key_mode|default(false) %}
+    {% set projects_title = 'Login key' %}
+    {% set projects_href = url_for('pages.login_key_page') %}
+{% endif %}
 <nav class="steps workflow-steps" aria-label="{{ t('Voortgang') }}">
     {% for number, label, detail in [
         (1, 'Inloggen', 'Verbind met Tygron'),
-        (2, 'Actieve sessie' if active_session_mode|default(false) else 'Projecten', 'Verbind met je sessie' if active_session_mode|default(false) else 'Kies je project'),
+        (2, projects_title, projects_detail),
         (3, 'Kaart en selectie', 'Kies wat je wilt exporteren'),
         (4, 'Succes', 'Download je dossier')
     ] %}
@@ -10,7 +21,7 @@
             class="{{ 'active' if number == active_step else 'completed' if number < active_step else '' }}"
             {% if number == active_step %}aria-current="step"{% endif %}
             {% if number == 1 %}data-step-href="/login"{% if account %} disabled{% endif %}
-            {% elif number == 2 %}data-step-href="{{ '/workflow?mode=tygron' if active_session_mode|default(false) else '/projecten?mode=demo' if demo_mode|default(false) else '/projecten' if account else '/projecten?mode=demo' }}"{% if active_step < 2 %} disabled{% endif %}
+            {% elif number == 2 %}data-step-href="{{ projects_href }}"{% if active_step < 2 %} disabled{% endif %}
             {% elif number > active_step %}disabled{% endif %}>
         <b>{{ number }}</b>
         <span>{{ t(label) }}<small>{{ t(detail) }}</small></span>

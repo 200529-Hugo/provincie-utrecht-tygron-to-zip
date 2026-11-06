@@ -1,0 +1,13 @@
+{% macro chevron(direction='right') -%}
+<span class="chevron chevron--{{ direction }}" aria-hidden="true"></span>
+{%- endmacro %}
+
+{% macro secret_toggle(id, field, label) -%}
+<button id="{{ id }}" type="button" class="secret-toggle" aria-controls="{{ field }}" aria-label="{{ label }}" aria-pressed="false" disabled>
+    <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6Z"/>
+        <circle cx="12" cy="12" r="2.5"/>
+        <path class="eye-slash" d="M4 4l16 16"/>
+    </svg>
+</button>
+{%- endmacro %}

@@ -13,7 +13,7 @@ export function getAccountProjects(payload = {}) {
  * @returns {Promise<import('./models/responses.js').ProjectsResponse>}
  */
 export function getLegacyProjects(payload) {
-    return jsonRequest('/api/tygron/projects', payload);
+    return jsonRequest('/api/tygron/projects', payload, {redirectOnUnauthorized: false});
 }
 
 /**

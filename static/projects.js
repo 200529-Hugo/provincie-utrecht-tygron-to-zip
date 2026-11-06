@@ -5,6 +5,8 @@ import {ThumbnailQueue} from './thumbnail-queue.js';
 
 const list = document.querySelector('#projectList');
 if (list) {
+    const pageSize = 10;
+    let page = 1;
     let projects = [];
     let loadState = 'loading';
     const demoMode = list.dataset.source === 'demo';
@@ -87,6 +89,9 @@ if (list) {
     const status = document.querySelector('#projectsStatus');
     const search = document.querySelector('#projectSearch');
     const refresh = document.querySelector('#refreshProjects');
+    const pagination = document.querySelector('#projectPagination');
+    const previous = document.querySelector('#previousProjects');
+    const next = document.querySelector('#nextProjects');
     function render() {
         if (loadState !== 'ready') return;
         const matches = filterProjects(projects, search.value);
@@ -94,7 +99,14 @@ if (list) {
         thumbnailQueue.clearQueued();
         list.replaceChildren();
         status.textContent = !projects.length ? t('Er zijn geen beschikbare projecten.') : !matches.length ? t('Geen projecten gevonden voor deze zoekopdracht.') : (matches.length === 1 ? t('1 project') : t('{count} projecten', {count: matches.length}));
-        matches.forEach((project, index) => {
+        const pageCount = Math.max(1, Math.ceil(matches.length / pageSize));
+        page = Math.min(page, pageCount);
+        const offset = (page - 1) * pageSize;
+        pagination.hidden = pageCount === 1;
+        previous.disabled = page === 1;
+        next.disabled = page === pageCount;
+        document.querySelector('#projectPage').textContent = t('Pagina {page} van {total}', {page, total: pageCount});
+        matches.slice(offset, offset + pageSize).forEach((project, index) => {
             const row = document.createElement('button');
             row.className = 'project-row';
             const visual = document.createElement('span');
@@ -117,11 +129,10 @@ if (list) {
             version.className = 'project-version';
             version.textContent = demoMode ? t('Offline beschikbaar') : t('Projectversie: {version}', {version: t(project.versions[0])});
             copy.append(title, detail, version);
-            const arrow = document.createElement('span');
-            arrow.className = 'project-arrow';
-            arrow.setAttribute('aria-hidden', 'true');
-            arrow.textContent = '→';
-            row.append(visual, copy, arrow);
+            const chevron = document.createElement('span');
+            chevron.className = 'chevron project-chevron';
+            chevron.setAttribute('aria-hidden', 'true');
+            row.append(visual, copy, chevron);
             row.setAttribute('aria-label', t('{name} selecteren', {name: project.name}));
             row.onclick = () => {
                 if (!demoMode) sessionStorage.setItem('selectedProject', project.file_name);
@@ -139,6 +150,9 @@ if (list) {
         list.setAttribute('aria-busy', 'true');
         status.setAttribute('role', 'status');
         status.textContent = t('Projecten ophalen…');
+        pagination.hidden = true;
+        thumbnailObserver.disconnect();
+        thumbnailQueue.clearQueued();
         list.replaceChildren();
         try {
             const response = demoMode ? await getDemoProjects() : await getAccountProjects();
@@ -157,7 +171,17 @@ if (list) {
         }
     }
     document.addEventListener('languagechange', render);
-    search.oninput = render;
+    function changePage(offset) {
+        page += offset;
+        render();
+        list.firstElementChild?.focus();
+    }
+    previous.onclick = () => changePage(-1);
+    next.onclick = () => changePage(1);
+    search.oninput = () => {
+        page = 1;
+        render();
+    };
     refresh.onclick = () => {
         thumbnailCache.forEach((url, file) => { if (!url) thumbnailCache.delete(file); });
         load();

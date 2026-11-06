@@ -12,7 +12,9 @@ export function createSelectionPanel({onChange, onShowOnMap}) {
         get measures() { return t('maatregelen'); },
         get alerts() { return t('alerts'); }
     };
+    const bulkButton = $('#toggleResults');
     let componentFilter = 'all';
+    let allResultsSelected = false;
     function itemCheckboxes() {
         return $$('#itemGroups input[data-item-key]');
     }
@@ -41,10 +43,16 @@ export function createSelectionPanel({onChange, onShowOnMap}) {
         filterItems();
     }
 
-    function filterItems() {
+    function setGroupExpanded(group, expanded) {
+        group.querySelector('.item-list').hidden = !expanded;
+        group.querySelector('.group-disclosure').setAttribute('aria-expanded', String(expanded));
+    }
+
+    function filterItems(expandMatches = false) {
         const filters = {query: $('#itemSearch').value, component: componentFilter,
             selection: $('#selectionFilter').value, spatialOnly: $('#spatialOnly').checked};
         let totalVisible = 0;
+        let totalSelected = 0;
         $$('.item-group').forEach(group => {
             const visible = [];
             group.querySelectorAll('.item-row').forEach(row => {
@@ -59,18 +67,17 @@ export function createSelectionPanel({onChange, onShowOnMap}) {
             totalVisible += visible.length;
             const check = group.querySelector('input[data-group]');
             const selected = visible.filter(input => input.checked).length;
+            totalSelected += selected;
             check.checked = visible.length > 0 && selected === visible.length;
             check.indeterminate = selected > 0 && selected < visible.length;
             group.querySelector('[data-group-count]').textContent = `${selected}/${visible.length}`;
-            // Zoekresultaten blijven zichtbaar als de groep eerder was ingeklapt.
-            if (filters.query.trim() || componentFilter !== 'all' || filters.selection !== 'all' || filters.spatialOnly) {
-                group.querySelector('.item-list').hidden = false;
-                group.querySelector('.group-disclosure').setAttribute('aria-expanded', 'true');
-            }
+            if (expandMatches && visible.length) setGroupExpanded(group, true);
         });
         $('#filterResultCount').textContent = t('{count} resultaten', {count: totalVisible});
         $('#noItemResults').classList.toggle('hidden', totalVisible !== 0);
-        $('#selectAll').disabled = $('#selectNone').disabled = totalVisible === 0;
+        allResultsSelected = totalVisible > 0 && totalSelected === totalVisible;
+        bulkButton.disabled = totalVisible === 0;
+        bulkButton.textContent = t(allResultsSelected ? 'Resultaten deselecteren' : 'Resultaten selecteren');
         $$('[data-component-filter]').forEach(button => {
             button.setAttribute('aria-pressed', String(button.dataset.componentFilter === componentFilter));
         });
@@ -103,7 +110,7 @@ export function createSelectionPanel({onChange, onShowOnMap}) {
             const count = document.createElement('b');
             count.textContent = filter.count;
             button.append(name, count);
-            button.onclick = () => { componentFilter = filter.key; filterItems(); };
+            button.onclick = () => { componentFilter = filter.key; filterItems(true); };
             return button;
         }));
     }
@@ -129,12 +136,14 @@ export function createSelectionPanel({onChange, onShowOnMap}) {
             title.textContent = labels[component];
             const count = document.createElement('small');
             count.dataset.groupCount = component;
-            groupLabel.append(groupCheck, title, count);
+            groupLabel.append(groupCheck);
             const collapse = document.createElement('button');
             collapse.type = 'button';
             collapse.className = 'group-disclosure';
-            collapse.textContent = '⌄';
-            collapse.setAttribute('aria-label', t('Groep in- of uitklappen'));
+            const chevron = document.createElement('span');
+            chevron.className = 'chevron chevron--down';
+            chevron.setAttribute('aria-hidden', 'true');
+            collapse.append(title, count, chevron);
             collapse.setAttribute('aria-expanded', 'true');
             collapse.setAttribute('aria-controls', `items-${component}`);
             heading.append(groupLabel, collapse);
@@ -142,10 +151,7 @@ export function createSelectionPanel({onChange, onShowOnMap}) {
             const list = document.createElement('div');
             list.className = 'item-list';
             list.id = `items-${component}`;
-            collapse.onclick = () => {
-                list.hidden = !list.hidden;
-                collapse.setAttribute('aria-expanded', String(!list.hidden));
-            };
+            collapse.onclick = () => setGroupExpanded(group, list.hidden);
             componentItems.forEach(item => {
                 const row = document.createElement('div');
                 row.className = 'item-row';
@@ -194,11 +200,10 @@ export function createSelectionPanel({onChange, onShowOnMap}) {
         updateItemSelection();
     }
 
-    $('#itemSearch').oninput = filterItems;
-    $('#selectAll').onclick = () => selectResults(true);
-    $('#selectNone').onclick = () => selectResults(false);
-    $('#selectionFilter').onchange = filterItems;
-    $('#spatialOnly').onchange = filterItems;
+    $('#itemSearch').oninput = () => filterItems(true);
+    bulkButton.onclick = () => selectResults(!allResultsSelected);
+    $('#selectionFilter').onchange = () => filterItems(true);
+    $('#spatialOnly').onchange = () => filterItems(true);
     $('#clearFilters').onclick = clearFilters;
     $('#resetItemSearch').onclick = clearFilters;
     return {

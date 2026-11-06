@@ -1,36 +1,27 @@
-{% extends 'index-new.html' %}
-{% from 'components/workflow_hero.html' import workflow_hero %}
-{% block title %}{{ t('Actieve sessie') }} · ScenarioDossier{% endblock %}
-{% block extra_styles %}{{ super() }}<link rel="stylesheet" href="/static/active-session.css">{% endblock %}
+{% extends 'session-source.html' %}
+{% from 'components/controls.html' import secret_toggle %}
+{% set source_title = t('Actieve sessie') %}
+{% set source_heading = t('Verbind met je actieve sessie.') %}
+{% set source_intro = t('Gebruik het project dat al in Tygron is geopend. Bekijk daarna de kaart en kies wat je wilt bewaren.') %}
+{% set source_description = t('Vul de sessiegegevens uit Tygron in om verder te gaan.') %}
+{% block title %}{{ source_title }} · ScenarioDossier{% endblock %}
 
-{% block source_panel %}
-<div class="panel session-panel{{ ' active' if current_step == 2 else '' }}" id="step2">
-    <aside class="session-intro">
-        {% call workflow_hero('login', t('Stap 2 · Actieve sessie'), t('Verbind met je actieve sessie.')) %}
-            <p>{{ t('Gebruik het project dat al in Tygron is geopend. Bekijk daarna de kaart en kies wat je wilt bewaren.') }}</p>
-        {% endcall %}
-    </aside>
-    <section class="entry-card session-card" aria-labelledby="sessionTitle">
-        <h2 id="sessionTitle">{{ t('Actieve sessie') }}</h2>
-        <p>{{ t('Vul de sessiegegevens uit Tygron in om verder te gaan.') }}</p>
-        <form id="activeSessionForm">
-            <label for="baseUrl">{{ t('Sessie-URL') }}</label>
-            <input id="baseUrl" name="base_url" type="url" value="https://engine.tygron.com" autocomplete="url" required>
-            <label for="token">{{ t('API-token') }}</label>
-            <div class="password-field">
-                <input id="token" name="token" type="password" placeholder="{{ t('Uit Tools > API Overview') }}" autocomplete="off" aria-describedby="sessionTokenHelp" required>
-                <button id="showSessionToken" type="button" aria-pressed="false">{{ t('Tonen') }}</button>
-            </div>
-            <p class="session-field-help" id="sessionTokenHelp">{{ t('Open in Tygron Tools > API Overview en kopieer het token van je actieve sessie.') }}</p>
-            <div class="session-name-fields">
-                <div><label for="projectName">{{ t('Projectnaam') }}</label><input id="projectName" name="project_name" placeholder="{{ t('Bijv. Stationsgebied') }}" required></div>
-                <div><label for="scenarioName">{{ t('Scenarionaam') }}</label><input id="scenarioName" name="scenario_name" placeholder="{{ t('Bijv. Groen 2040') }}" required></div>
-            </div>
-            <p class="hint">{{ t('De koppeling leest alleen de actieve sessie. Het token wordt uitsluitend in het werkgeheugen gebruikt.') }}</p>
-            <p class="form-error" id="sessionConnectionStatus" role="alert"></p>
-            <button class="primary" id="inspect" type="submit">{{ t('Verbinding controleren') }}</button>
-        </form>
-        <a class="session-back" href="/login">← {{ t('Terug naar inloggen') }}</a>
-    </section>
-</div>
+{% block source_form %}
+<form id="activeSessionForm" method="post">
+    <label for="baseUrl">{{ t('Sessie-URL') }}</label>
+    <input id="baseUrl" name="base_url" type="url" value="https://engine.tygron.com" autocomplete="url" required>
+    <label for="token">{{ t('API-token') }}</label>
+    <div class="password-field">
+        <input id="token" name="token" type="password" placeholder="{{ t('Uit Tools > API Overview') }}" autocomplete="off" aria-describedby="sessionTokenHelp" required>
+        {{ secret_toggle('showSessionToken', 'token', t('API-token tonen')) }}
+    </div>
+    <p class="session-field-help" id="sessionTokenHelp">{{ t('Open in Tygron Tools > API Overview en kopieer het token van je actieve sessie.') }}</p>
+    <div class="session-name-fields">
+        <div><label for="projectName">{{ t('Projectnaam') }}</label><input id="projectName" name="project_name" placeholder="{{ t('Bijv. Stationsgebied') }}" required></div>
+        <div><label for="scenarioName">{{ t('Scenarionaam') }}</label><input id="scenarioName" name="scenario_name" placeholder="{{ t('Bijv. Groen 2040') }}" required></div>
+    </div>
+    <p class="hint">{{ t('De koppeling leest alleen de actieve sessie. Het token wordt uitsluitend in het werkgeheugen gebruikt.') }}</p>
+    <p class="form-error" id="sessionConnectionStatus" role="alert"></p>
+    <button class="primary" id="inspect" type="submit">{{ t('Verbinding controleren') }}</button>
+</form>
 {% endblock %}

@@ -327,26 +327,6 @@ main {
     border-left-color: #2c8645
 }
 
-.source-tabs {
-    display: flex;
-    border-bottom: 3px solid var(--black);
-    margin-bottom: 26px
-}
-
-.source-tabs button {
-    border: 0;
-    background: #eee;
-    padding: 12px 19px;
-    font: 700 14px Arial;
-    color: #333;
-    border-right: 2px solid #fff
-}
-
-.source-tabs button.active {
-    color: #fff;
-    background: var(--red)
-}
-
 .fields {
     display: grid;
     gap: 20px

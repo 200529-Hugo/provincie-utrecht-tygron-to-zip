@@ -20,3 +20,8 @@
     .session-card { padding: 24px 20px; }
     .session-name-fields { grid-template-columns: minmax(0, 1fr); gap: 0; }
 }
+.session-card select { width: 100%; min-width: 0; padding: 13px; border: 1px solid #bdb7b4; font-size: 15px; background: white; }
+.session-credentials { min-width: 0; border: 0; margin: 0; padding: 0; }
+.session-card .project-loader { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 18px; font-size: 13px; }
+.session-card .project-loader button { padding: 11px 14px; }
+.session-card #inspect:disabled, .session-card .project-loader button:disabled { opacity: .45; cursor: default; }

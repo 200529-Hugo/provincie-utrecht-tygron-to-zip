@@ -1,4 +1,5 @@
 import {t} from './i18n.js';
+import {bindSecretToggles} from './secret-toggle.js';
 import {createSourceForm} from './workflow/source-form.js';
 import {inspectScenario, exportDossier} from './api/workflow.js';
 import {createSelectionPanel} from './workflow/selection-panel.js';
@@ -15,8 +16,12 @@ const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
 
 const parameters = new URLSearchParams(location.search);
-const mode = parameters.get('mode');
-const activeSessionMode = mode === 'tygron';
+const mode = $('#content').dataset.workflowMode;
+const connectionForm = $('#step2 form');
+const connectionButton = $('#inspect');
+const connectionStatus = $('#sessionConnectionStatus');
+const reviewNext = $('#reviewNext');
+const exportButton = $('#export');
 const accountMode = mode === 'account';
 const demoSelection = mode === 'demo' && parameters.has('project_id');
 const overviewSelection = accountMode || demoSelection;
@@ -33,7 +38,7 @@ if (window.matchMedia('(max-width: 1000px)').matches) reviewMap.open = false;
 const selectionPanel = createSelectionPanel({
     onChange: (count, keys) => {
         setScenarioSelection(keys);
-        $('#export').disabled = exporting || !inspected || count === 0;
+        exportButton.disabled = exporting || !inspected || count === 0;
     },
     onShowOnMap: async key => {
         reviewMap.open = true;
@@ -43,7 +48,7 @@ const selectionPanel = createSelectionPanel({
     }
 });
 const updateItemSelection = () => selectionPanel.refresh();
-const sourceForm = createSourceForm({mode, parameters, onScenarioChanged: inspect, onError: toast});
+const sourceForm = createSourceForm({mode, parameters, onScenarioChanged: inspect, onConnectionChanged: invalidateConnection});
 
 function setReviewTab(name, scroll = false) {
     reviewTab = name;
@@ -54,8 +59,13 @@ function setReviewTab(name, scroll = false) {
     });
     $('#selectionPanel').hidden = name !== 'selection';
     $('#detailsPanel').hidden = name !== 'details';
-    $('#reviewNext').textContent = t(name === 'selection' ? 'Verder: dossiergegevens' : 'Terug naar selectie');
-    if (scroll) $('.review-tabs').scrollIntoView({behavior: 'smooth', block: 'start'});
+    reviewNext.firstElementChild.textContent = t(name === 'selection' ? 'Naar dossiergegevens' : 'Terug naar selectie');
+    reviewNext.lastElementChild.classList.toggle('chevron--left', name === 'details');
+    if (scroll) {
+        const tab = $(`[data-review-tab="${name}"]`);
+        tab.focus({preventScroll: true});
+        tab.scrollIntoView({block: 'start'});
+    }
 }
 
 async function ensureScenarioMap() {
@@ -100,23 +110,24 @@ function step(number) {
 }
 
 async function inspect() {
-    const button = $('#inspect');
-    const sessionForm = $('#activeSessionForm');
-
-    sessionForm?.setAttribute('aria-busy', 'true');
-    if (sessionForm) $('#sessionConnectionStatus').textContent = '';
-    button.disabled = true;
-    button.textContent = t('Controleren…');
+    if (connectionForm?.getAttribute('aria-busy') === 'true') return;
+    if (connectionForm) {
+        invalidateConnection();
+        connectionForm.setAttribute('aria-busy', 'true');
+        connectionForm.inert = true;
+        connectionButton.disabled = true;
+        connectionButton.textContent = t('Controleren…');
+    }
     $('#reviewScenario').disabled = true;
     inspected = undefined;
     hasExport = false;
-    $('#export').disabled = true;
+    exportButton.disabled = true;
     $('#step3').setAttribute('aria-busy', 'true');
     $('#inspectionStatus').textContent = t('Scenario laden…');
     $('#retryInspect').classList.add('hidden');
 
     try {
-        inspected = await inspectScenario(sourceForm.payload(), {redirectOnUnauthorized: !activeSessionMode});
+        inspected = await inspectScenario(sourceForm.payload(), {redirectOnUnauthorized: accountMode});
         $('#inspectionStatus').textContent = '';
         $('#selectionTitle').textContent = `${inspected.project} · ${inspected.scenario}`;
         setDefaultReference(inspected.project, inspected.scenario);
@@ -132,24 +143,25 @@ async function inspect() {
         await ensureScenarioMap();
         updateItemSelection();
     } catch (error) {
-        if (sessionForm) $('#sessionConnectionStatus').textContent = error.message;
+        if (connectionForm) connectionStatus.textContent = error.message;
         $('#inspectionStatus').textContent = error.message;
         $('#retryInspect').classList.remove('hidden');
         toast(error.message);
     } finally {
-        sessionForm?.setAttribute('aria-busy', 'false');
         $('#step3').setAttribute('aria-busy', 'false');
         $('#reviewScenario').disabled = false;
-        button.disabled = false;
-        button.innerHTML = t('Verbinding controleren');
+        if (connectionForm) {
+            connectionForm.inert = false;
+            connectionForm.setAttribute('aria-busy', 'false');
+            connectionButton.disabled = $('#liveProject')?.disabled ?? false;
+            connectionButton.textContent = t('Verbinding controleren');
+        }
     }
 }
 
 async function doExport() {
-    const button = $('#export');
-
-    button.disabled = true;
-    button.textContent = t('Dossier opbouwen…');
+    exportButton.disabled = true;
+    exportButton.firstElementChild.textContent = t('Dossier opbouwen…');
     exporting = true;
 
     try {
@@ -161,7 +173,7 @@ async function doExport() {
             selected_items: selectionPanel.selectedItems(),
             rasters: true
         };
-        const data = await exportDossier(exportPayload, {redirectOnUnauthorized: !activeSessionMode});
+        const data = await exportDossier(exportPayload, {redirectOnUnauthorized: accountMode});
 
         renderExportResult(data);
 
@@ -176,14 +188,13 @@ async function doExport() {
     } finally {
         exporting = false;
         updateItemSelection();
-        button.innerHTML = t('Dossier maken');
+        exportButton.firstElementChild.textContent = t('Dossier maken');
     }
 }
 
 async function init() {
     $('#decisionDate').value = new Intl.DateTimeFormat('sv-SE').format(new Date());
-    // De sessiepagina heeft geen projectlijst of demonstratiegegevens nodig.
-    if (activeSessionMode) return;
+    if (connectionForm) return;
     if (overviewSelection) step(3);
     try {
         if (await sourceForm.initialize()) await inspect();
@@ -196,21 +207,26 @@ async function init() {
     }
 }
 
-const activeSessionForm = $('#activeSessionForm');
-if (activeSessionForm) {
-    activeSessionForm.onsubmit = event => { event.preventDefault(); inspect(); };
-    activeSessionForm.addEventListener('input', () => {
-        $('#sessionConnectionStatus').textContent = '';
-        // Controleer gewijzigde sessiegegevens opnieuw voordat export mogelijk is.
-        inspected = undefined;
-        hasExport = false;
-        $('#export').disabled = true;
-        $$('.workflow-steps button').filter(button => Number(button.dataset.step) > 2)
-            .forEach(button => { button.disabled = true; });
-    });
-} else $('#inspect').onclick = inspect;
-$('#export').onclick = doExport;
-$('#reviewNext').onclick = () => setReviewTab(reviewTab === 'selection' ? 'details' : 'selection', true);
+function invalidateConnection() {
+    connectionStatus.textContent = '';
+    // Controleer gewijzigde brongegevens opnieuw voordat export mogelijk is.
+    inspected = undefined;
+    hasExport = false;
+    exportButton.disabled = true;
+    $$('.workflow-steps button').filter(button => Number(button.dataset.step) > 2)
+        .forEach(button => { button.disabled = true; });
+}
+
+bindSecretToggles();
+if (connectionForm) {
+    connectionForm.onsubmit = event => {
+        event.preventDefault();
+        if (!connectionButton.disabled) inspect();
+    };
+    connectionForm.addEventListener('input', invalidateConnection);
+}
+exportButton.onclick = doExport;
+reviewNext.onclick = () => setReviewTab(reviewTab === 'selection' ? 'details' : 'selection', true);
 $$('[data-review-tab]').forEach(button => {
     button.onclick = () => setReviewTab(button.dataset.reviewTab);
     button.onkeydown = event => {

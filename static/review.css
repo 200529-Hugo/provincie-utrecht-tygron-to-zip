@@ -1,7 +1,7 @@
 /* Step 3 uses document scrolling, generous controls and a compact map sidebar. */
 #content:has(#step3.active) { height: auto; min-height: 0; }
 .workspace:has(#step3.active) { display: block; height: auto; min-height: 0; }
-#step3.active { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, .85fr); grid-template-rows: auto auto; gap: 28px; width: min(1440px, 100%); height: auto; min-height: 0; max-height: none; margin: 0 auto; padding: 36px 32px 130px; overflow: visible; background: transparent; }
+#step3.active { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, .85fr); grid-template-rows: auto auto; gap: 28px; width: min(1440px, 100%); height: auto; min-height: 0; max-height: none; margin: 0 auto; padding: 36px 32px 120px; overflow: visible; background: transparent; }
 #step3 > .review-heading { grid-column: 1 / -1; grid-row: 1; min-width: 0; }
 #step3 #selectionTitle { font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
 #step3 .review-intro { color: var(--muted); font-size: 14px; line-height: 1.6; margin: 14px 0 0; }
@@ -45,12 +45,12 @@
 #step3 .item-groups { display: block; height: auto; min-height: 0; max-height: none; overflow: visible; }
 #step3 .item-group { border: 1px solid var(--line); margin: 0 0 16px; }
 #step3 .item-group[hidden], #step3 .item-row[hidden], #step3 .item-list[hidden] { display: none !important; }
-#step3 .item-group-head { position: static; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 11px 12px; background: var(--soft); }
-.item-group-toggle { flex: 1; display: flex; align-items: center; gap: 10px; min-width: 0; cursor: pointer; }
-.item-group-toggle strong { text-transform: capitalize; font-size: 13px; }
-.item-group-toggle small { margin-left: auto; color: var(--muted); font-size: 12px; }
-.group-disclosure { border: 0; background: none; min-width: 32px; min-height: 32px; padding: 3px 8px; color: var(--muted); font-size: 20px; cursor: pointer; }
-.group-disclosure[aria-expanded="false"] { transform: rotate(-90deg); }
+#step3 .item-group-head { position: static; display: flex; align-items: stretch; gap: 0; padding: 0; background: var(--soft); }
+.item-group-toggle { display: grid; place-items: center; padding-inline: 12px; border-inline-end: 1px solid var(--line); cursor: pointer; }
+.group-disclosure { flex: 1; display: flex; align-items: center; gap: 14px; min-height: 46px; min-width: 0; padding: 10px 14px; border: 0; background: none; color: var(--ink); text-align: left; cursor: pointer; }
+.group-disclosure:hover, .item-group-toggle:hover { background: var(--rose); }
+.group-disclosure strong { text-transform: capitalize; font-size: 13px; }
+.group-disclosure small { margin-inline-start: auto; font-size: 12px; }
 #step3 .item-list { height: auto; min-height: 0; max-height: none; overflow: visible; }
 #step3 .item-row { display: flex; align-items: stretch; gap: 0; padding: 0; min-height: 68px; background: white; border-top: 1px solid var(--line); }
 #step3 .item-row:hover { background: #fffafa; }
@@ -77,8 +77,6 @@
 #step3 .map-head::-webkit-details-marker { display: none; }
 #step3 .map-head b { display: block; font-size: 14px; }
 #step3 .map-head small { display: block; margin-top: 5px; font-size: 11px; color: var(--muted); }
-.map-disclosure { font-size: 22px; color: var(--muted); }
-#reviewMap:not([open]) .map-disclosure { transform: rotate(-90deg); }
 #step3 .map-frame { width: 100%; height: clamp(310px, 47vh, 480px); min-height: 0; max-height: none; }
 #step3 #map { height: 100%; min-height: 0; max-height: none; }
 #step3 .map-legend { padding: 8px 10px; }
@@ -87,12 +85,14 @@
 .review-map-note > small { display: block; color: var(--muted); font-size: 11px; }
 .review-map-note > small.available { color: var(--green); }
 .review-map-note p { font-size: 12px; color: var(--muted); line-height: 1.7; margin: 9px 0 0; }
-.review-actions { position: fixed; z-index: 20; bottom: 0; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: flex-end; gap: 14px; width: min(1440px, 100%); min-height: 85px; padding: 16px 32px max(16px, env(safe-area-inset-bottom)); background: white; border: 1px solid var(--line); border-bottom: 0; box-shadow: 0 -6px 24px #231b1b0b; }
-.review-actions > .back { margin-right: auto; }
-.review-actions button { min-height: 45px; padding: 12px 16px; font-size: 13px; white-space: nowrap; }
-.review-action-count { margin: 0 auto 0 0; min-width: 0; }
-.review-action-count b { display: block; font-size: 13px; }
-.review-action-count small { display: block; margin-top: 5px; color: var(--muted); font-size: 11px; }
+html:has(#step3.active) { scroll-padding-bottom: 120px; }
+.review-actions { position: fixed; z-index: 20; inset: auto 0 0; display: flex; align-items: center; gap: 12px; width: min(1440px, 100%); margin: 0 auto; padding: 12px 32px max(12px, env(safe-area-inset-bottom)); background: white; border: 1px solid var(--line); border-bottom: 0; box-shadow: 0 -6px 24px #231b1b12; }
+.review-actions button { justify-content: center; min-height: 44px; padding: 10px 14px; font-size: 13px; }
+.review-back { color: var(--ink); background: none; border: 0; text-align: left; cursor: pointer; }
+.review-back:hover { text-decoration: underline; text-underline-offset: 3px; }
+.review-action-count { margin-inline-start: auto; min-width: 0; padding-inline: 8px; color: var(--muted); font-size: 13px; }
+.review-actions #reviewNext > .chevron--left { order: -1; }
+.review-actions #export { gap: 12px; }
 .review-actions button:disabled { opacity: .45; cursor: default; }
 @media(min-width: 1001px) {
     #step3.active { padding-top: 24px; gap: 20px; }
@@ -116,13 +116,12 @@
     #selectionPanel .review-check-filter { grid-column: 2; grid-row: 3; align-self: start; min-height: 40px; }
     #selectionPanel .review-bulk { margin-top: 0; padding-top: 12px; border-top: 1px solid var(--line); }
 }
-@media(max-width: 1100px) { .review-action-count small { display: none; } .review-actions { gap: 9px; padding: 14px 24px; } .review-actions button { padding: 11px 12px; font-size: 12px; } }
 @media(max-width: 1000px) {
     #step3.active { grid-template-columns: minmax(0, 1fr); gap: 20px; padding: 25px 24px 145px; }
     #step3 > .map-card { grid-column: 1; grid-row: 2; position: static; }
     #step3 > .panel-work { grid-column: 1; grid-row: 3; }
     #step3 .map-frame { height: 310px; }
-    .review-action-count { display: none; }
+    .review-actions { padding-inline: 24px; }
 }
 @media(max-width: 560px) {
     #step3.active { padding: 23px 14px 160px; gap: 18px; }
@@ -138,10 +137,9 @@
     .review-bulk { gap: 10px; }
     #step3 .item-copy strong { font-size: 13px; }
     #step3 .item-copy small { font-size: 11px; }
-    .review-actions { padding: 12px 14px max(12px, env(safe-area-inset-bottom)); display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .review-actions > .back { grid-column: 1 / -1; justify-self: start; min-height: 30px; padding: 3px 0; background: none; border: 0; }
-    .review-actions #reviewNext { grid-column: 1; }
-    .review-actions #export { grid-column: 2; }
-    .review-actions button { font-size: 11px; padding: 10px 8px; }
+    .review-actions { padding: 8px 14px max(8px, env(safe-area-inset-bottom)); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 8px; }
+    .review-actions .review-back { justify-content: flex-start; padding-inline: 0; }
+    .review-action-count { margin: 0; padding: 0; text-align: right; font-size: 11px; }
+    .review-actions button { font-size: 12px; padding: 8px 9px; }
 }
 #step3 > .map-card { display: block; }
