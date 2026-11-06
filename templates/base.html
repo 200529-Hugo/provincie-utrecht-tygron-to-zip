@@ -31,7 +31,6 @@
                     </a>
                     <div class="utilities">
                         <a href="{{ '/projecten' if account else '/login' }}">{{ t("Dossier maken") }}</a>
-                        {% if account %}<a href="/projecten">{{ t("Projecten") }}</a>{% endif %}
                         <a href="/controle">{{ t("Dossier controleren") }}</a>
                         <a href="/werkinstructie">{{ t("Werkinstructie") }}</a>
                     <div class="language-switch" aria-label="{{ t('Taal') }}">
