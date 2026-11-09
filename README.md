@@ -37,13 +37,13 @@ python3 app.py
 
 **Windows (PowerShell):**
 
+Met de Windows-commando's hieronder hoeft de virtuele omgeving niet te worden geactiveerd; ze werken ook wanneer PowerShell het uitvoeren van activatiescripts blokkeert. Als Python 3.11 niet is geïnstalleerd maar een andere ondersteunde versie (3.12+) wel, gebruik dan bijvoorbeeld `py -3.12` in de eerste opdracht. Controleer met `py --list` welke versies beschikbaar zijn. Installeer Python inclusief de Python Launcher als het commando `py` ontbreekt.
+
 ```powershell
 py -3.11 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe app.py
 ```
-
-Met de Windows-commando's hierboven hoeft de virtuele omgeving niet te worden geactiveerd; ze werken ook wanneer PowerShell het uitvoeren van activatiescripts blokkeert. Als Python 3.11 niet is geïnstalleerd maar een andere ondersteunde versie (3.12+) wel, gebruik dan bijvoorbeeld `py -3.12` in de eerste opdracht. Controleer met `py --list` welke versies beschikbaar zijn. Installeer Python inclusief de Python Launcher als het commando `py` ontbreekt.
 
 Open daarna <http://127.0.0.1:8080>. Log in met je Tygron-account of kies **Demonstratie openen**, selecteer een project en scenario, controleer de samenvatting en maak het dossier. Een bestaand ZIP-dossier kan onafhankelijk worden gecontroleerd via <http://127.0.0.1:8080/controle>.
 
