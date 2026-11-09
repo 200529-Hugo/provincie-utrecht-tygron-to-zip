@@ -8,14 +8,25 @@ Begin bij [Zelf wijzigingen maken](docs/CODE_WIJZIGEN.md). Die handleiding legt 
 
 De code gebruikt MVC met services. Routes, controllers, services, modellen en bestandsproductie hebben aparte mappen. In de browser staan de API-aanroepen onder `static/api/` en de onderdelen van de exportworkflow onder `static/workflow/`. Python-modellen zijn de bron voor de gegenereerde browsertypes en API-documentatie:
 
+**macOS/Linux:**
+
 ```bash
 .venv/bin/python scripts/generate_api_models.py
 .venv/bin/python scripts/generate_api_models.py --check
 ```
 
+**Windows (PowerShell):**
+
+```powershell
+.\.venv\Scripts\python.exe scripts/generate_api_models.py
+.\.venv\Scripts\python.exe scripts/generate_api_models.py --check
+```
+
 ## Snel starten
 
-Python 3.11+ en Flask zijn nodig. Beide startbestanden gebruiken dezelfde Flask-app met MVC en services. Installeer de dependency in een virtuele omgeving:
+Python 3.11+ en Flask zijn nodig. Beide startbestanden gebruiken dezelfde Flask-app met MVC en services. Maak een virtuele omgeving en installeer de afhankelijkheden vanuit de projectmap.
+
+**macOS/Linux (terminal):**
 
 ```bash
 python3 -m venv .venv
@@ -24,12 +35,30 @@ python3 -m pip install -r requirements.txt
 python3 app.py
 ```
 
+**Windows (PowerShell):**
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe app.py
+```
+
+Met de Windows-commando's hierboven hoeft de virtuele omgeving niet te worden geactiveerd; ze werken ook wanneer PowerShell het uitvoeren van activatiescripts blokkeert. Als Python 3.11 niet is geïnstalleerd maar een andere ondersteunde versie (3.12+) wel, gebruik dan bijvoorbeeld `py -3.12` in de eerste opdracht. Controleer met `py --list` welke versies beschikbaar zijn. Installeer Python inclusief de Python Launcher als het commando `py` ontbreekt.
+
 Open daarna <http://127.0.0.1:8080>. Log in met je Tygron-account of kies **Demonstratie openen**, selecteer een project en scenario, controleer de samenvatting en maak het dossier. Een bestaand ZIP-dossier kan onafhankelijk worden gecontroleerd via <http://127.0.0.1:8080/controle>.
 
 Tests uitvoeren:
 
+**macOS/Linux:**
+
 ```bash
-python3 -m unittest discover -s tests -v
+.venv/bin/python -m unittest discover -s tests -v
+```
+
+**Windows (PowerShell):**
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
 ## Interactieve kaart en OpenMapTiles
@@ -38,7 +67,9 @@ Stap 3 toont een ruime onderdelenlijst naast een kaartpreview. Zoek op naam, typ
 
 De kaart en ZIP-export volgen dezelfde selectie. De kaart biedt afzonderlijke laagknoppen en toont broninformatie in een popup. MapLibre en alle bijbehorende browserbestanden staan lokaal in `static`; de scenario-objecten blijven daarom ook zonder internet of actieve basiskaart zichtbaar.
 
-OpenMapTiles is optioneel en wordt niet samen met ScenarioDossier geïnstalleerd. Voor een nieuwe installatie zijn Docker, Docker Compose, Git, Make en voldoende schijfruimte nodig. De volledige installatie vanaf een schone computer, inclusief een compacte Utrecht-extract, staat in [docs/WERKINSTRUCTIE.md](docs/WERKINSTRUCTIE.md#lokale-openmaptiles-basiskaart-installeren).
+OpenMapTiles is optioneel en wordt niet samen met ScenarioDossier geïnstalleerd. Voor een nieuwe installatie zijn Docker, Docker Compose, Git, Make en voldoende schijfruimte nodig. De uitgebreide installatie-instructie, inclusief een compacte Utrecht-extract, staat in [docs/WERKINSTRUCTIE.md](docs/WERKINSTRUCTIE.md#lokale-openmaptiles-basiskaart-installeren).
+
+**Windows:** draai ScenarioDossier rechtstreeks in PowerShell met de instructies hierboven. Voor de OpenMapTiles-tooling is **WSL2 (bijvoorbeeld Ubuntu) met Docker Desktop en ingeschakelde WSL-integratie** de aanbevolen route. Installeer Git en Make binnen WSL en voer de Linux-commando's uit in de WSL-terminal. Zorg dat de `openmaptiles`-map naast de ScenarioDossier-projectmap staat, bij voorkeur beide binnen het WSL-bestandssysteem wanneer je OpenMapTiles bouwt. Controleer met `docker compose version` en `make --version` of de benodigde tooling vanuit WSL beschikbaar is. Een kaartserver in Docker Desktop/WSL is doorgaans via `http://127.0.0.1:8081` bereikbaar vanuit de Windows-browser wanneer poort 8081 is gepubliceerd. De basiskaart is niet verplicht: de applicatie werkt ook zonder OpenMapTiles.
 
 Als OpenMapTiles al is ingericht, zoekt ScenarioDossier standaard naar deze stijl:
 
@@ -46,7 +77,7 @@ Als OpenMapTiles al is ingericht, zoekt ScenarioDossier standaard naar deze stij
 http://127.0.0.1:8081/styles/OSM%20OpenMapTiles/style.json
 ```
 
-De afwijkende poort voorkomt een conflict met ScenarioDossier op poort 8080. Vanuit een installatie naast de projectmap start je de tileserver in een tweede terminal:
+De afwijkende poort voorkomt een conflict met ScenarioDossier op poort 8080. Vanuit een installatie naast de projectmap start je de tileserver in een tweede terminal (Linux/macOS of Windows via WSL2):
 
 ```bash
 cd ../openmaptiles
@@ -55,9 +86,20 @@ TPORT=8081 make start-tileserver
 
 De tileserver leest `../openmaptiles/data/tiles.mbtiles`. Voor Nederlandse projecten zijn tegels nodig waarvan de begrenzing het projectgebied omvat. De kaart vergelijkt de scenario-geometrie met de `bounds` uit TileJSON en meldt **Basiskaart dekt gebied niet** als die niet overeenkomen. Genereer in dat geval een nieuwe tegelset voor het benodigde gebied. Een andere style-URL kan zonder codewijziging worden ingesteld:
 
+**macOS/Linux:**
+
 ```bash
 OPENMAPTILES_STYLE_URL="http://kaartserver:8081/styles/eigen-stijl/style.json" python3 app.py
 ```
+
+**Windows (PowerShell):**
+
+```powershell
+$env:OPENMAPTILES_STYLE_URL = "http://kaartserver:8081/styles/eigen-stijl/style.json"
+.\.venv\Scripts\python.exe app.py
+```
+
+De PowerShell-omgevingsvariabele geldt voor de huidige terminalsessie. Vervang `kaartserver` door `127.0.0.1` als de tileserver op dezelfde computer draait en poort 8081 bereikbaar is.
 
 Wanneer de server niet bereikbaar is, meldt de interface **Basiskaart niet actief** en gebruikt zij automatisch een neutrale achtergrond. Measures en alerts blijven dan raadpleegbaar.
 
