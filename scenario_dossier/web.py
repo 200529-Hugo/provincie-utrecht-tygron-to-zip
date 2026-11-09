@@ -165,9 +165,9 @@ class Handler(BaseHTTPRequestHandler):
             return self.wfile.write(body)
         # Redirect certain paths to their corresponding HTML files for the web application.
         if path in ("/werkinstructie", "/werkinstructie/"):
-            path = "/werkinstructie.html"
+            path = "/werkinstructie-old.html"
         if path in ("/controle", "/controle/"):
-            path = "/controle.html"
+            path = "/controle-old.html"
         # Handle the /api/demo endpoint, returning a simplified view of the demo projects and scenarios.
         if path == "/api/demo":
             demo = load_demo()
@@ -205,7 +205,7 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             return self.wfile.write(body)
         if path == "/":
-            path = "/index.html"
+            path = "/index-old.html"
         # Serve static files from the STATIC directory, ensuring that the requested file is within the allowed directory and exists.
         file = (STATIC / path.lstrip("/")).resolve()
         if STATIC.resolve() not in file.parents or not file.is_file():

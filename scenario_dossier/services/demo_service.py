@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-from http import HTTPStatus
 from pathlib import Path
 from typing import Any
 
