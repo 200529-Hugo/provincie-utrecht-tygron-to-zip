@@ -4,6 +4,7 @@ __pycache__/
 exports/*.zip
 .idea
 docs/output/
+docs/school/
 output/
 
 # Lokale kopieën van vervangen templates
