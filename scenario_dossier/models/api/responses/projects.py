@@ -41,11 +41,13 @@ class DemoProjectResponse(JsonModel):
     id: str
     name: str
     scenarios: list[DemoScenarioResponse]
+    source_crs: str
 
     @classmethod
     def from_project(cls, project) -> 'DemoProjectResponse':
         return cls(id=project.id, name=project.name,
-                   scenarios=[DemoScenarioResponse.from_scenario(item) for item in project.scenarios])
+                   scenarios=[DemoScenarioResponse.from_scenario(item) for item in project.scenarios],
+                   source_crs=project.source_crs)
 
 
 @dataclass(frozen=True)

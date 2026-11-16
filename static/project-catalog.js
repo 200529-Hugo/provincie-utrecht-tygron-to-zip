@@ -4,6 +4,7 @@ export function catalogProjects(projects, demoMode = false) {
         file_name: project.id,
         name: project.name,
         description: '',
+        source_crs: project.source_crs,
         scenarios: project.scenarios || []
     } : project);
 }

@@ -1,4 +1,5 @@
 import {t} from './i18n.js';
+import {sourceCrsLabel} from './coordinates.js';
 import {bindSecretToggles} from './secret-toggle.js';
 import {createSourceForm} from './workflow/source-form.js';
 import {inspectScenario, exportDossier} from './api/workflow.js';
@@ -22,6 +23,7 @@ const connectionButton = $('#inspect');
 const connectionStatus = $('#sessionConnectionStatus');
 const reviewNext = $('#reviewNext');
 const exportButton = $('#export');
+const sourceCrs = $('#selectionSourceCrs');
 const accountMode = mode === 'account';
 const demoSelection = mode === 'demo' && parameters.has('project_id');
 const overviewSelection = accountMode || demoSelection;
@@ -124,12 +126,15 @@ async function inspect() {
     exportButton.disabled = true;
     $('#step3').setAttribute('aria-busy', 'true');
     $('#inspectionStatus').textContent = t('Scenario laden…');
+    sourceCrs.hidden = true;
     $('#retryInspect').classList.add('hidden');
 
     try {
         inspected = await inspectScenario(sourceForm.payload(), {redirectOnUnauthorized: accountMode});
         $('#inspectionStatus').textContent = '';
         $('#selectionTitle').textContent = `${inspected.project} · ${inspected.scenario}`;
+        sourceCrs.textContent = `${sourceCrsLabel(inspected.source_crs)} · ${t('Kaartdata: WGS 84 (EPSG:4326)')}`;
+        sourceCrs.hidden = false;
         setDefaultReference(inspected.project, inspected.scenario);
         selectionPanel.renderCategories(inspected.counts);
         $('#spatialCount').textContent = t('{count} ruimtelijke objecten', {count: inspected.spatial});
@@ -169,6 +174,7 @@ async function doExport() {
             ...sourceForm.payload(),
             notes: $('#notes').value,
             dossier: readDossierFields(),
+            export_crs: $('#exportCrs').value,
             components: selectionPanel.selectedComponents(),
             selected_items: selectionPanel.selectedItems(),
             rasters: true

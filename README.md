@@ -115,6 +115,8 @@ De browser ontvangt alleen een willekeurige sessie-ID in een HttpOnly/SameSite-c
 
 Bij normaal inloggen en via **Demonstratie openen** is stap 2 het dashboard **Projecten**. Een projectrij selecteren opent stap 3 met de kaart en inhoudselectie; in de demo blijft het scenario daar wisselbaar. **Dossier maken** gaat voor ingelogde gebruikers naar het projectenoverzicht. De bestaande handmatige login-key-route blijft beschikbaar via **Een login key gebruiken** op het projectenoverzicht (`/workflow?mode=legacy`). De route voor een actieve sessie en de offline demo zijn ook zonder login beschikbaar.
 
+Kies **Merwedekanaalzone · RD New** in het demo-overzicht om een punt, lijn en vlak uit brondata in Amersfoort / RD New (EPSG:28992) te bekijken en te exporteren. Vergelijk de ligging met dezelfde maatregelen in **Merwedekanaalzone -> Groen & Gezond 2040**. Het bron-CRS staat bij het project en boven de scenariokaart. De demo leest de RD-meters uit `data/demo-rd-new.json` en zet ze bij het inlezen met pyproj om naar WGS 84 voor de kaart. [pyproj Transformer](https://pyproj4.github.io/pyproj/stable/api/transformer.html)
+
 **Een actieve sessie gebruiken** (`/workflow?mode=tygron`) heeft een eigen pagina met alleen sessie-URL, API-token, projectnaam en scenarionaam. Deze pagina laadt geen democatalogus en toont geen bronkeuzetabs. Na controle gebruikt hij dezelfde kaart, selectie en export als de overige routes. Teruggaan naar de sessie behoudt de ingevulde waarden. Een ongeldig sessietoken geeft een fout bij het formulier en meldt een eventueel ingelogd account niet af.
 
 ## 2D-projectthumbnails
@@ -177,7 +179,7 @@ project_scenario_YYYYMMDDTHHMMSSZ.zip
 └── rasters/                 # indien beschikbaar in Tygron
 ```
 
-Het GeoPackage bevat de tabellen `overlays`, `indicators`, `measures` en `alerts`. Ruimtelijke records krijgen geometrie in EPSG:4326; niet-ruimtelijke records blijven als gewone tabellen beschikbaar. GeoJSON is toegevoegd voor brede uitwisselbaarheid en CSV voor snelle inspectie. Het zelfstandige HTML-rapport toont het dossierpaspoort, de besluitvorming en de belangrijkste inhoud zonder GIS-software. Het validatierapport controleert structuur en aantallen vóór oplevering; het SHA-256-manifest maakt latere integriteitscontrole mogelijk.
+Het GeoPackage bevat de tabellen `overlays`, `indicators`, `measures` en `alerts`. Kies bij **Dossiergegevens -> GIS-uitvoer** WGS 84 (EPSG:4326, standaard) of RD New (EPSG:28992) voor de ruimtelijke lagen in het GeoPackage. GeoJSON gebruikt WGS 84 en GeoTIFF behoudt het ontvangen raster-CRS. In `metadata/dossier.json` staan het bron-CRS (`source_crs`), GeoPackage-CRS (`crs`) en GeoJSON-CRS (`geojson_crs`). Bij live Tygron-gegevens kan het oorspronkelijke project-CRS onbekend zijn. De app ontvangt de vectorgeometrie daar in WGS 84. Het HTML-rapport toont de CRS-keuzes en de validator controleert de vectorbestanden. [GeoJSON-specificatie](https://www.rfc-editor.org/rfc/rfc7946#section-4)
 
 ## Dossierpaspoort en controle
 

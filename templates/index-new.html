@@ -23,6 +23,7 @@
                         <p id="selectionTitle" data-source-content="true"></p>
                     {% endcall %}
                     <p class="review-intro">{{ t('Kies welke onderdelen je bewaart en vul eventueel de dossiergegevens aan.') }}</p>
+                    <p class="review-intro" id="selectionSourceCrs" hidden></p>
                     <p id="inspectionStatus" role="status" aria-live="polite"></p>
                     <button class="secondary hidden" id="retryInspect" type="button">{{ t('Opnieuw proberen') }}</button>
                 </div>
@@ -66,6 +67,15 @@
 
                     <section id="detailsPanel" class="review-tab-panel" role="tabpanel" aria-labelledby="detailsTab" tabindex="0" hidden>
                         <div class="review-section-heading"><div><h3>{{ t('Dossiergegevens') }}</h3><p>{{ t('Voeg context toe voor de overdracht. Deze velden zijn optioneel.') }}</p></div></div>
+                        <fieldset class="review-fieldset"><legend>{{ t('GIS-uitvoer') }}</legend><div class="review-form-grid">
+                            <label class="review-wide" for="exportCrs"><span id="exportCrsLabel">{{ t('GeoPackage-CRS') }}</span>
+                                <select class="select-chevron" id="exportCrs" aria-labelledby="exportCrsLabel" aria-describedby="exportCrsHelp">
+                                    <option value="EPSG:4326">WGS 84 (EPSG:4326)</option>
+                                    <option value="EPSG:28992">RD New (EPSG:28992)</option>
+                                </select>
+                                <small id="exportCrsHelp">{{ t('GeoJSON gebruikt WGS 84. GeoTIFF behoudt het CRS van het ontvangen raster.') }}</small>
+                            </label>
+                        </div></fieldset>
                         <fieldset class="review-fieldset"><legend>{{ t('Dossierpaspoort') }}</legend><div class="review-form-grid">
                             <label for="recordReference">{{ t('Zaak- of projectreferentie') }}<input id="recordReference" placeholder="{{ t('Bijv. PU-2026-0142') }}"><small>{{ t('Een herkenbare referentie voor dit dossier.') }}</small></label>
                             <label for="recordOwner">{{ t('Dossiereigenaar') }}<input id="recordOwner" placeholder="{{ t('Team of organisatieonderdeel') }}"></label>

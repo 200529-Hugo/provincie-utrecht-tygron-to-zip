@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 
+from ....coordinates import EXPORT_CRS, WGS84
 from ...dossier import DossierDetails
 from ..base import JsonModel, boolean, object_value, string_list, text
 
@@ -40,6 +41,7 @@ class ExportRequest(InspectRequest):
     components: list[str] | None = None
     selected_items: dict[str, list[str]] | None = None
     rasters: bool = True
+    export_crs: str = WGS84
 
     @classmethod
     def from_dict(cls, value: dict) -> 'ExportRequest':
@@ -55,7 +57,10 @@ class ExportRequest(InspectRequest):
         dossier = data.get('dossier')
         if dossier is None:
             dossier = {}
+        export_crs = text(data, 'export_crs', WGS84)
+        if export_crs not in EXPORT_CRS:
+            raise ValueError('Kies WGS 84 of RD New als export-CRS.')
         return cls(**source.to_dict(), notes=text(data, 'notes')[:4000],
                    dossier=DossierDetails.from_dict(object_value(dossier)),
                    components=components, selected_items=selected,
-                   rasters=boolean(data, 'rasters', True))
+                   rasters=boolean(data, 'rasters', True), export_crs=export_crs)

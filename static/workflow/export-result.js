@@ -1,4 +1,5 @@
 import {t} from '../i18n.js';
+import {crsLabel} from '../coordinates.js';
 
 const escapeHtml = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;'}[c]));
 const $ = selector => document.querySelector(selector);
@@ -20,6 +21,10 @@ export function renderExportResult(data) {
         <span>${(data.summary.size / 1024).toFixed(1)} KB</span>
         <span>${t('Bestandsformaat')}</span>
         <b>${t('ZIP + GeoPackage + HTML-rapport')}</b>
+        <span>${t('GeoPackage-CRS')}</span>
+        <b>${escapeHtml(crsLabel(data.summary.crs))}</b>
+        <span>GeoJSON</span>
+        <b>${escapeHtml(crsLabel(data.summary.geojson_crs))}</b>
         <span>${t('Integriteitscontrole')}</span>
         <b>SHA-256</b>
         ${validationRow}

@@ -42,6 +42,7 @@ class InspectResponse(JsonModel):
     warnings: list[str]
     preview: list[PreviewFeatureResponse]
     items: list[ScenarioItemResponse]
+    source_crs: str | None
 
 
 @dataclass(frozen=True)
@@ -70,6 +71,8 @@ class ArchiveSummaryResponse(JsonModel):
     exported_at: str
     source: str
     crs: str
+    geojson_crs: str
+    source_crs: str | None
     components: ComponentCountsResponse
     notes: str
     record: RecordMetadataResponse

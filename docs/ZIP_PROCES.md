@@ -84,7 +84,7 @@ daardoor gebaseerd op dezelfde selectie.
 Bij aanvang wordt een UTC-tijdstip vastgelegd. De ZIP-naam krijgt dit patroon:
 
 ```text
-<project>_<scenario>_YYYYMMDDTHHMMSSZ.zip
+<project>_<scenario>_YYYYMMDDTHHMMSS.ffffffZ_epsg<code>.zip
 ```
 
 Project en scenarionaam worden door `slug()` omgezet naar kleine letters. Tekens buiten letters, cijfers, `_` en `-`
@@ -93,11 +93,11 @@ worden vervangen door een koppelteken. Iedere slug is maximaal 60 tekens en een 
 Voorbeeld:
 
 ```text
-merwedekanaalzone_groen-gezond-2040_20260907T121530Z.zip
+merwedekanaalzone_groen-gezond-2040_20260907T121530.000000Z_epsg28992.zip
 ```
 
-De definitieve ZIP wordt in `exports/` geplaatst. De inhoud wordt eerst opgebouwd in een willekeurig aangemaakte
-tijdelijke map met prefix `scenario-dossier-`.
+De definitieve ZIP wordt in `exports/` geplaatst nadat het pakket is geschreven. De inhoud wordt eerst opgebouwd
+in een tijdelijke map met prefix `.scenario-dossier-` in dezelfde uitvoermap.
 
 Daarin worden de volgende mappen aangemaakt:
 
@@ -289,7 +289,7 @@ accepteert uitsluitend bestaande `.zip`-bestanden uit `exports/` en levert die a
 ## 12. Verwachte ZIP-structuur
 
 ```text
-project_scenario_YYYYMMDDTHHMMSSZ.zip
+project_scenario_YYYYMMDDTHHMMSS.ffffffZ_epsg4326.zip
 ├── README.txt
 ├── metadata/
 │   ├── dossier.json

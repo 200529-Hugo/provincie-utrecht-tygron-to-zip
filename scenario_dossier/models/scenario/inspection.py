@@ -11,3 +11,4 @@ class ScenarioInspection:
     data: ScenarioData
     items: list[ScenarioItem]
     warnings: list[str]
+    source_crs: str | None = None

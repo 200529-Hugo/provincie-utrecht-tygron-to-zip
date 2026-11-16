@@ -1,4 +1,5 @@
 import {t} from './i18n.js';
+import {sourceCrsLabel} from './coordinates.js';
 import {getDemoProjects, getAccountProjects, getDemoThumbnail, getProjectThumbnail} from './api/projects.js';
 import {catalogProjects, filterProjects, projectWorkflowUrl} from './project-catalog.js';
 import {ThumbnailQueue} from './thumbnail-queue.js';
@@ -128,12 +129,16 @@ if (list) {
             const version = document.createElement('small');
             version.className = 'project-version';
             version.textContent = demoMode ? t('Offline beschikbaar') : t('Projectversie: {version}', {version: t(project.versions[0])});
-            copy.append(title, detail, version);
+            const crs = document.createElement('small');
+            crs.id = `project-crs-${offset + index}`;
+            crs.textContent = sourceCrsLabel(project.source_crs);
+            copy.append(title, detail, version, crs);
             const chevron = document.createElement('span');
             chevron.className = 'chevron project-chevron';
             chevron.setAttribute('aria-hidden', 'true');
             row.append(visual, copy, chevron);
             row.setAttribute('aria-label', t('{name} selecteren', {name: project.name}));
+            row.setAttribute('aria-describedby', crs.id);
             row.onclick = () => {
                 if (!demoMode) sessionStorage.setItem('selectedProject', project.file_name);
                 location.assign(projectWorkflowUrl(project, demoMode));

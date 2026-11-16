@@ -13,3 +13,4 @@ class ScenarioContext:
     data: ScenarioData
     warnings: list[str] = field(default_factory=list)
     raster_fetcher: Callable[[int], bytes] | None = field(default=None, repr=False)
+    source_crs: str | None = None

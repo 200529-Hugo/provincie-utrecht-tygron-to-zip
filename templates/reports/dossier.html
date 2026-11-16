@@ -25,7 +25,8 @@ h2{margin:0 0 18px;font-size:22px}dl{display:grid;grid-template-columns:220px 1f
 <dt>Referentie</dt><dd>{{ record['reference'] | display_value }}</dd><dt>Dossiereigenaar</dt><dd>{{ record['owner'] | display_value }}</dd>
 <dt>Opsteller</dt><dd>{{ record['author'] | display_value }}</dd><dt>Classificatie</dt><dd>{{ record['classification'] | display_value }}</dd>
 <dt>Bewaartermijn</dt><dd>{{ record['retention_period'] | display_value }}</dd><dt>Exportmoment</dt><dd>{{ metadata['exported_at'] | display_value }}</dd>
-<dt>Bron</dt><dd>{{ metadata['source'] | display_value }}</dd><dt>Coördinatenstelsel</dt><dd>{{ metadata['crs'] | display_value }}</dd>
+<dt>Bron</dt><dd>{{ metadata['source'] | display_value }}</dd><dt>Bron-CRS</dt><dd>{{ metadata.get('source_crs') | display_value }}</dd>
+<dt>GeoPackage-CRS</dt><dd>{{ metadata['crs'] | display_value }}</dd><dt>GeoJSON-CRS</dt><dd>{{ metadata.get('geojson_crs', 'EPSG:4326') | display_value }}</dd>
 </dl></section>
 <section><h2>Besluit en afweging</h2><dl>
 <dt>Besluitdatum</dt><dd>{{ decision['date'] | display_value }}</dd><dt>Status</dt><dd>{{ decision['status'] | display_value }}</dd>

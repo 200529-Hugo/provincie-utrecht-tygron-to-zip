@@ -1,10 +1,14 @@
 import base64
 import io
 import json
+import math
+import sqlite3
+import struct
 import tempfile
 import unittest
 import urllib.error
 import zipfile
+from contextlib import closing
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -233,6 +237,118 @@ class ApplicationTests(unittest.TestCase):
             for secret in (b'should-not-export', b'do-not-export', b'neither-this'):
                 self.assertNotIn(secret, contents)
         validated = self.client.post('/api/validate', data=download.data, content_type='application/zip')
+        self.assertEqual(validated.status_code, 200)
+        self.assertEqual(validated.json['status'], 'goedgekeurd')
+
+    def test_rd_new_demo_projects_and_exports_the_same_geometries_in_wgs84(self):
+        projects = self.client.get('/api/demo/projects').json
+        rd_project = next(project for project in projects if project['id'] == 'merwedekanaalzone-rd-new')
+        self.assertEqual(rd_project['source_crs'], 'EPSG:28992')
+        request_data = {
+            'source': 'demo',
+            'project_id': rd_project['id'],
+            'scenario_id': rd_project['scenarios'][0]['id'],
+        }
+        converted = self.client.post('/api/inspect', json=request_data)
+        self.assertEqual(converted.status_code, 200)
+        self.assertEqual(converted.json['source_crs'], 'EPSG:28992')
+        baseline = self.client.post('/api/inspect', json={
+            'source': 'demo', 'project_id': 'merwedekanaalzone', 'scenario_id': 'groen-gezond-2040',
+        })
+        self.assertEqual(baseline.status_code, 200)
+        self.assertEqual(baseline.json['source_crs'], 'EPSG:4326')
+        original = {
+            entry['key']: entry['feature']['geometry']
+            for entry in baseline.json['preview'] if entry['component'] == 'measures'
+        }
+        geometries = {entry['key']: entry['feature']['geometry'] for entry in converted.json['preview']}
+        self.assertEqual(set(geometries), {'id:31', 'id:32', 'id:33'})
+
+        for key, geometry in geometries.items():
+            with self.subTest(key=key):
+                expected = original[key]
+                self.assertEqual(geometry['type'], expected['type'])
+                if geometry['type'] == 'Point':
+                    actual_positions, expected_positions = [geometry['coordinates']], [expected['coordinates']]
+                elif geometry['type'] == 'Polygon':
+                    actual_positions, expected_positions = geometry['coordinates'][0], expected['coordinates'][0]
+                else:
+                    actual_positions, expected_positions = geometry['coordinates'], expected['coordinates']
+                for (lon, lat), (expected_lon, expected_lat) in zip(actual_positions, expected_positions, strict=True):
+                    dx = (lon - expected_lon) * 111_320 * math.cos(math.radians(expected_lat))
+                    dy = (lat - expected_lat) * 111_320
+                    self.assertLess(math.hypot(dx, dy), 1.0)
+
+        request_data.update(components=['measures'], selected_items={'measures': ['id:33']})
+        exported = self.client.post('/api/export', json=request_data)
+        self.assertEqual(exported.status_code, 200)
+        with self.client.get(exported.json['download']) as download:
+            self.assertEqual(download.status_code, 200)
+            archive_bytes = download.data
+        with zipfile.ZipFile(io.BytesIO(archive_bytes)) as archive:
+            features = json.loads(archive.read('gis/measures.geojson'))['features']
+            self.assertEqual([feature['properties']['id'] for feature in features], [33])
+            self.assertEqual(features[0]['geometry'], geometries['id:33'])
+            self.assertEqual(json.loads(archive.read('metadata/dossier.json'))['crs'], 'EPSG:4326')
+            gpkg = Path(self.directory.name) / 'scenario.gpkg'
+            gpkg.write_bytes(archive.read('gis/scenario.gpkg'))
+        with closing(sqlite3.connect(gpkg)) as db:
+            self.assertEqual(db.execute('SELECT table_name, srs_id FROM gpkg_geometry_columns').fetchall(),
+                             [('measures', 4326)])
+            self.assertEqual(db.execute('SELECT item_id FROM measures').fetchall(), [('33',)])
+        validated = self.client.post('/api/validate', data=archive_bytes, content_type='application/zip')
+        self.assertEqual(validated.status_code, 200)
+        self.assertEqual(validated.json['status'], 'goedgekeurd')
+
+    def test_rd_new_export_has_projected_geometries_and_wgs84_geojson(self):
+        payload = {
+            'source': 'demo', 'project_id': 'merwedekanaalzone-rd-new', 'scenario_id': 'rd-new-proef',
+        }
+        rejected = self.client.post('/api/export', json=payload | {'export_crs': 'EPSG:3857'})
+        self.assertEqual(rejected.status_code, 400)
+        self.assertEqual(list(Path(self.directory.name).glob('*.zip')), [])
+
+        rd = self.client.post('/api/export', json=payload | {'export_crs': 'EPSG:28992'})
+        self.assertEqual(rd.status_code, 200)
+        wgs = self.client.post('/api/export', json=payload)
+        self.assertEqual(wgs.status_code, 200)
+        self.assertNotEqual(rd.json['download'], wgs.json['download'])
+        self.assertEqual(rd.json['summary']['crs'], 'EPSG:28992')
+        self.assertEqual(wgs.json['summary']['crs'], 'EPSG:4326')
+        self.assertEqual(rd.json['summary']['geojson_crs'], 'EPSG:4326')
+
+        with self.client.get(rd.json['download']) as download:
+            self.assertEqual(download.status_code, 200)
+            archive_bytes = download.data
+        with self.client.get(wgs.json['download']) as download:
+            self.assertEqual(download.status_code, 200)
+            wgs_bytes = download.data
+        gpkg = Path(self.directory.name) / 'projected.gpkg'
+        with zipfile.ZipFile(io.BytesIO(archive_bytes)) as archive, zipfile.ZipFile(io.BytesIO(wgs_bytes)) as baseline:
+            metadata = json.loads(archive.read('metadata/dossier.json'))
+            self.assertEqual(metadata['source_crs'], 'EPSG:28992')
+            self.assertEqual(metadata['crs'], 'EPSG:28992')
+            self.assertEqual(metadata['geojson_crs'], 'EPSG:4326')
+            self.assertEqual(archive.read('gis/measures.geojson'), baseline.read('gis/measures.geojson'))
+            gpkg.write_bytes(archive.read('gis/scenario.gpkg'))
+
+        positions = {
+            '31': (3, 21, (135505.663, 455008.277)),
+            '32': (2, 17, (135299.502, 454875.576)),
+            '33': (1, 13, (135808.245, 455263.000)),
+        }
+        with closing(sqlite3.connect(gpkg)) as db:
+            self.assertEqual(db.execute("SELECT srs_id FROM gpkg_contents WHERE table_name='measures'").fetchone(), (28992,))
+            self.assertEqual(db.execute('SELECT srs_id FROM gpkg_geometry_columns').fetchall(), [(28992,)])
+            rows = db.execute('SELECT item_id, geom FROM measures').fetchall()
+            self.assertEqual({key for key, _ in rows}, positions.keys())
+            for key, geometry in rows:
+                geometry_type, offset, expected = positions[key]
+                self.assertEqual(struct.unpack_from('<i', geometry, 4)[0], 28992)
+                self.assertEqual(struct.unpack_from('<I', geometry, 9)[0], geometry_type)
+                self.assertLess(math.dist(struct.unpack_from('<2d', geometry, offset), expected), 1.0)
+
+        validated = self.client.post('/api/validate', data=archive_bytes, content_type='application/zip')
         self.assertEqual(validated.status_code, 200)
         self.assertEqual(validated.json['status'], 'goedgekeurd')
 

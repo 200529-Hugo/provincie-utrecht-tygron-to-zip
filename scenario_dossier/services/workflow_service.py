@@ -25,7 +25,7 @@ class WorkflowService:
         if payload.source == 'demo':
             project = self.demo.get_project(payload.project_id)
             scenario = project.get_scenario(payload.scenario_id)
-            yield ScenarioContext(project.name, scenario.name, scenario.data)
+            yield ScenarioContext(project.name, scenario.name, scenario.data, source_crs=project.source_crs)
             return
         if not payload.project_name or not payload.scenario_name:
             raise ValueError('Selecteer een project en scenario.')
@@ -46,7 +46,7 @@ class WorkflowService:
     def inspect(self, payload: InspectRequest) -> ScenarioInspection:
         with self.resolve(payload) as context:
             return ScenarioInspection(context.project, context.scenario, context.data,
-                                      self.scenarios.inventory(context.data), context.warnings)
+                                      self.scenarios.inventory(context.data), context.warnings, context.source_crs)
 
     def export(self, payload: ExportRequest) -> ArchiveResult:
         with self.resolve(payload) as context:
@@ -56,4 +56,5 @@ class WorkflowService:
                 notes=payload.notes, source=payload.source, warnings=context.warnings,
                 details=payload.dossier,
                 raster_fetcher=context.raster_fetcher if payload.rasters else None,
+                export_crs=payload.export_crs, source_crs=context.source_crs,
             )

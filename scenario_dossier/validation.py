@@ -16,10 +16,50 @@ from typing import Any
 
 
 
+from .coordinates import EXPORT_CRS, WGS84, has_wgs84_coordinates
 from .models.scenario.component_type import ComponentType
 
 COMPONENTS = tuple(ComponentType.values())
 
+_WGS84_GEOJSON_NAMES = {WGS84, "urn:ogc:def:crs:OGC:1.3:CRS84"}
+
+
+def _has_geopackage_crs(connection: sqlite3.Connection, expected: int) -> bool:
+    definition = connection.execute(
+        "SELECT organization, organization_coordsys_id FROM gpkg_spatial_ref_sys WHERE srs_id=?",
+        (expected,),
+    ).fetchone()
+    contents = dict(connection.execute(
+        "SELECT table_name, srs_id FROM gpkg_contents WHERE data_type='features'"
+    ))
+    geometry_columns = {
+        table: (column, srs_id) for table, column, srs_id in connection.execute(
+            "SELECT table_name, column_name, srs_id FROM gpkg_geometry_columns"
+        )
+    }
+    if definition != ("EPSG", expected) or contents.keys() != geometry_columns.keys():
+        return False
+    for table, srs_id in contents.items():
+        if table not in COMPONENTS or srs_id != expected or geometry_columns[table] != ("geom", expected):
+            return False
+        headers = connection.execute(f'SELECT DISTINCT substr(geom, 1, 8) FROM "{table}" WHERE geom IS NOT NULL')
+        for (header,) in headers:
+            if not isinstance(header, bytes) or len(header) != 8 or header[:2] != b"GP":
+                return False
+            endianness = "little" if header[3] & 1 else "big"
+            if int.from_bytes(header[4:8], endianness, signed=True) != expected:
+                return False
+    return True
+
+
+def _is_wgs84_geojson(collection: dict) -> bool:
+    # Eerdere dossiers bevatten een expliciet CRS84-label.
+    declared_crs = collection.get("crs")
+    if declared_crs is not None and declared_crs.get("properties", {}).get("name") not in _WGS84_GEOJSON_NAMES:
+        return False
+    return collection.get("type") == "FeatureCollection" and isinstance(collection.get("features"), list) and all(
+        has_wgs84_coordinates(item["geometry"]) for item in collection["features"]
+    )
 
 
 def _manifest_status(root: Path) -> tuple[bool, str]:
@@ -90,6 +130,10 @@ def validate_dossier_directory(root: Path, check_manifest: bool = True) -> dict[
         record("metadata", not missing,
                "verplichte velden aanwezig" if not missing else f"ontbreekt: {', '.join(missing)}")
 
+        declared_export_crs = metadata.get("crs")
+        record("Vector-CRS", declared_export_crs in EXPORT_CRS and metadata.get("geojson_crs", WGS84) == WGS84,
+               f"GeoPackage: {declared_export_crs}, GeoJSON: {metadata.get('geojson_crs', WGS84)}")
+
         passport = metadata.get("record")
         decision = metadata.get("decision")
 
@@ -126,9 +170,9 @@ def validate_dossier_directory(root: Path, check_manifest: bool = True) -> dict[
         if geojson_path.exists():
             try:
                 collection = json.loads(geojson_path.read_text(encoding="utf-8"))
-                valid = collection.get("type") == "FeatureCollection" and isinstance(collection.get("features"), list)
-
-                record(f"gis/{component}.geojson", valid, f"{len(collection.get('features', []))} features")
+                valid = _is_wgs84_geojson(collection)
+                detail = f"{len(collection['features'])} features, WGS 84" if valid else "ongeldige WGS 84-geometrie"
+                record(f"gis/{component}.geojson", valid, detail)
 
 
             except Exception as exc:
@@ -138,7 +182,7 @@ def validate_dossier_directory(root: Path, check_manifest: bool = True) -> dict[
 
     try:
 
-        with closing(sqlite3.connect(gpkg_path)) as connection:
+        with closing(sqlite3.connect(gpkg_path.resolve().as_uri() + "?mode=ro", uri=True)) as connection:
 
             application_id = connection.execute("PRAGMA application_id").fetchone()[0]
 
@@ -147,6 +191,11 @@ def validate_dossier_directory(root: Path, check_manifest: bool = True) -> dict[
             tables = {row[0] for row in connection.execute("SELECT table_name FROM gpkg_contents")}
 
             record("GeoPackage-tabellen", set(COMPONENTS).issubset(tables), ", ".join(sorted(tables)))
+
+            expected_srs = EXPORT_CRS.get(metadata.get("crs"))
+            valid_crs = expected_srs is not None and _has_geopackage_crs(connection, expected_srs)
+            record("GeoPackage-CRS", valid_crs,
+                   f"EPSG:{expected_srs}" if valid_crs else "GeoPackage-CRS wijkt af van de dossiermetadata")
 
             for component in COMPONENTS:
                 count = connection.execute(f'SELECT COUNT(*) FROM "{component}"').fetchone()[0]

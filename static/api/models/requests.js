@@ -59,6 +59,7 @@
  * @property {(Array<string>|null)} [components]
  * @property {(Object<string, Array<string>>|null)} [selected_items]
  * @property {boolean} [rasters]
+ * @property {string} [export_crs]
  */
 
 /**

@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from ..coordinates import EXPORT_CRS, WGS84, has_wgs84_coordinates
 from ..validation import validate_dossier_directory
 from .data import COMPONENTS, feature, geometry, properties, slug, _dossier_fields, _write_csv, _write_json
 from .geopackage import create_geopackage
@@ -25,14 +26,19 @@ def build_archive(
         source: str = "demo",
         warnings: list[str] | None = None,
         raster_fetcher=None,
-        dossier_fields: dict[str, Any] | None = None
+        dossier_fields: dict[str, Any] | None = None,
+        *,
+        export_crs: str = WGS84,
+        source_crs: str | None = None,
 ) -> tuple[Path, dict[str, Any]]:
     """Bouw het dossier, controleer het en verpak alle bestanden in een ZIP."""
+    if export_crs not in EXPORT_CRS:
+        raise ValueError("Kies WGS 84 of RD New als export-CRS.")
     now = datetime.now(timezone.utc)
-    stamp = now.strftime("%Y%m%dT%H%M%SZ")
-    archive_name = f"{slug(project)}_{slug(scenario)}_{stamp}.zip"
+    stamp = now.strftime("%Y%m%dT%H%M%S.%fZ")
+    archive_name = f"{slug(project)}_{slug(scenario)}_{stamp}_epsg{EXPORT_CRS[export_crs]}.zip"
     output_dir.mkdir(parents=True, exist_ok=True)
-    work = Path(tempfile.mkdtemp(prefix="scenario-dossier-"))
+    work = Path(tempfile.mkdtemp(prefix=".scenario-dossier-", dir=output_dir))
     try:
 
         for folder in ("metadata", "bron", "gis", "tabellen", "rasters", "rapport"):
@@ -45,7 +51,9 @@ def build_archive(
             "scenario": scenario,
             "exported_at": now.isoformat(),
             "source": source,
-            "crs": "EPSG:4326",
+            "source_crs": source_crs,
+            "crs": export_crs,
+            "geojson_crs": WGS84,
             "components": {name: len(selected[name]) for name in COMPONENTS},
             "notes": notes,
             "record": {
@@ -72,13 +80,16 @@ def build_archive(
         for name, items in selected.items():
             _write_json(work / "bron" / f"{name}.json", items)
             _write_csv(work / "tabellen" / f"{name}.csv", items)
-            spatial = [feature(i) for i in items if geometry(i)]
+            spatial = []
+            for item in items:
+                if geom := geometry(item):
+                    if not has_wgs84_coordinates(geom):
+                        raise ValueError("Het scenario bevat ongeldige WGS 84-coördinaten.")
+                    spatial.append({key: value for key, value in feature(item).items() if key != "crs"})
             if spatial:
                 _write_json(work / "gis" / f"{name}.geojson", {"type": "FeatureCollection", "name": name,
-                                                               "crs": {"type": "name", "properties": {
-                                                                   "name": "urn:ogc:def:crs:OGC:1.3:CRS84"}},
                                                                "features": spatial})
-        create_geopackage(work / "gis" / "scenario.gpkg", selected)
+        create_geopackage(work / "gis" / "scenario.gpkg", selected, export_crs)
 
 
         if raster_fetcher:
@@ -103,7 +114,13 @@ def build_archive(
             encoding="utf-8",
         )
         (work / "README.txt").write_text(
-            f"SCENARIODOSSIER\n\nProject: {project}\nScenario: {scenario}\nExportmoment (UTC): {now.isoformat()}\n\nOpen rapport/dossierrapport.html voor een leesbaar overzicht. Open gis/scenario.gpkg in QGIS of ArcGIS Pro. Zie de projectdocumentatie voor de volledige werkinstructie. Controleer metadata/manifest-sha256.txt om bestandsintegriteit vast te stellen.\n",
+            f"SCENARIODOSSIER\n\nProject: {project}\nScenario: {scenario}\nExportmoment (UTC): {now.isoformat()}\n"
+            f"Bron-CRS: {source_crs or 'onbekend'}\nGeoPackage: {export_crs}\n"
+            f"GeoJSON en vectorgeometrie in bron/: {WGS84} (lengtegraad, breedtegraad)\n"
+            "GeoTIFF: coördinatenstelsel van het ontvangen raster.\n\n"
+            "Open rapport/dossierrapport.html voor een leesbaar overzicht. "
+            "Open gis/scenario.gpkg in QGIS of ArcGIS Pro. Zie de projectdocumentatie voor de volledige "
+            "werkinstructie. Controleer metadata/manifest-sha256.txt om bestandsintegriteit vast te stellen.\n",
             encoding="utf-8",
         )
 
@@ -117,9 +134,12 @@ def build_archive(
                 f"{hashlib.sha256(file.read_bytes()).hexdigest()}  {file.relative_to(work).as_posix()}")
         (work / "metadata" / "manifest-sha256.txt").write_text("\n".join(manifest_lines) + "\n", encoding="utf-8")
         archive = output_dir / archive_name
-        with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as zf:
-            for file in sorted(p for p in work.rglob("*") if p.is_file()):
+        files = sorted(p for p in work.rglob("*") if p.is_file())
+        staged_archive = work / archive_name
+        with zipfile.ZipFile(staged_archive, "w", zipfile.ZIP_DEFLATED) as zf:
+            for file in files:
                 zf.write(file, file.relative_to(work))
+        staged_archive.replace(archive)
         return archive, metadata | {
             "warnings": export_warnings,
             "validation": validation["status"],

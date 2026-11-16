@@ -116,6 +116,7 @@ Bron: [ExportRequest](../scenario_dossier/models/api/requests/workflow.py).
 | `components`     | `(Array<string>                 | null)`             | `None` |
 | `selected_items` | `(Object<string, Array<string>> | null)`             | `None` |
 | `rasters`        | `boolean`                       | `True`             |
+| `export_crs`     | `string`                        | `'EPSG:4326'`      |
 
 ### InspectRequest
 
@@ -226,6 +227,8 @@ Bron: [ArchiveSummaryResponse](../scenario_dossier/models/api/responses/workflow
 | `exported_at`    | `string`                   | `verplicht`     |
 | `source`         | `string`                   | `verplicht`     |
 | `crs`            | `string`                   | `verplicht`     |
+| `geojson_crs`    | `string`                   | `verplicht`     |
+| `source_crs`     | `(string                   | null)`          | `verplicht` |
 | `components`     | `ComponentCountsResponse`  | `verplicht`     |
 | `notes`          | `string`                   | `verplicht`     |
 | `record`         | `RecordMetadataResponse`   | `verplicht`     |
@@ -271,11 +274,12 @@ Bron: [DemoCatalogResponse](../scenario_dossier/models/api/responses/projects.py
 
 Bron: [DemoProjectResponse](../scenario_dossier/models/api/responses/projects.py).
 
-| Veld        | Type                          | Standaardwaarde |
-|-------------|-------------------------------|-----------------|
-| `id`        | `string`                      | `verplicht`     |
-| `name`      | `string`                      | `verplicht`     |
-| `scenarios` | `Array<DemoScenarioResponse>` | `verplicht`     |
+| Veld         | Type                          | Standaardwaarde |
+|--------------|-------------------------------|-----------------|
+| `id`         | `string`                      | `verplicht`     |
+| `name`       | `string`                      | `verplicht`     |
+| `scenarios`  | `Array<DemoScenarioResponse>` | `verplicht`     |
+| `source_crs` | `string`                      | `verplicht`     |
 
 ### DemoProjectsResponse
 
@@ -334,15 +338,16 @@ Bron: [ExportResponse](../scenario_dossier/models/api/responses/workflow.py).
 
 Bron: [InspectResponse](../scenario_dossier/models/api/responses/workflow.py).
 
-| Veld       | Type                            | Standaardwaarde |
-|------------|---------------------------------|-----------------|
-| `project`  | `string`                        | `verplicht`     |
-| `scenario` | `string`                        | `verplicht`     |
-| `counts`   | `ComponentCountsResponse`       | `verplicht`     |
-| `spatial`  | `number`                        | `verplicht`     |
-| `warnings` | `Array<string>`                 | `verplicht`     |
-| `preview`  | `Array<PreviewFeatureResponse>` | `verplicht`     |
-| `items`    | `Array<ScenarioItemResponse>`   | `verplicht`     |
+| Veld         | Type                            | Standaardwaarde |
+|--------------|---------------------------------|-----------------|
+| `project`    | `string`                        | `verplicht`     |
+| `scenario`   | `string`                        | `verplicht`     |
+| `counts`     | `ComponentCountsResponse`       | `verplicht`     |
+| `spatial`    | `number`                        | `verplicht`     |
+| `warnings`   | `Array<string>`                 | `verplicht`     |
+| `preview`    | `Array<PreviewFeatureResponse>` | `verplicht`     |
+| `items`      | `Array<ScenarioItemResponse>`   | `verplicht`     |
+| `source_crs` | `(string                        | null)`          | `verplicht` |
 
 ### LoginResponse
 

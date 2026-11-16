@@ -276,8 +276,8 @@ Getest conceptueel voor QGIS 3.x:
    bronbestanden in het dossier niet.
 8. Vergelijk bij een steekproef het aantal objecten met `metadata/validatierapport.json`.
 
-Alternatief: voeg de losse bestanden uit `gis/*.geojson` toe. Alle door het prototype gemaakte vectorgeometrie gebruikt
-WGS 84 (`EPSG:4326`).
+Het GeoPackage gebruikt het CRS dat je bij **Dossiergegevens -> GIS-uitvoer** hebt gekozen. De losse bestanden uit
+`gis/*.geojson` gebruiken WGS 84. Elk ontvangen GeoTIFF behoudt zijn eigen CRS.
 
 ## 3. Openen in ArcGIS Pro
 

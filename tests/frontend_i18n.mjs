@@ -5,7 +5,7 @@ const root = new URL('../', import.meta.url);
 const nl = JSON.parse(await readFile(new URL('translations/nl.json', root), 'utf8'));
 const en = JSON.parse(await readFile(new URL('translations/en.json', root), 'utf8'));
 const node = (text, source = false) => ({textContent: text, parentElement: {closest: () => source}});
-const nodes = [node('  Review the scenario  '), node('0 of 8 spatial objects'), node('1 of 21 selected'), node('Inloggen', true), node('Use an active session →'), node('14.4 KB · ready for validation'), node('← Back to login')];
+const nodes = [node('  Review the scenario  '), node('0 of 8 spatial objects'), node('1 of 21 selected'), node('Inloggen', true), node('Use an active session ->'), node('14.4 KB · ready for validation'), node('← Back to login')];
 const input = {value: 'my untouched notes', attributes: {placeholder: 'Search by project name…'}, closest: () => false,
     hasAttribute(name) { return name in this.attributes; }, getAttribute(name) { return this.attributes[name]; },
     setAttribute(name, value) { this.attributes[name] = value; }};
@@ -23,7 +23,7 @@ globalThis.document = {
 const source = await readFile(new URL('static/i18n.js', root), 'utf8');
 const i18n = await import('data:text/javascript;base64,' + Buffer.from(source).toString('base64'));
 i18n.changeLanguage('nl', nl);
-assert.deepEqual(nodes.map(node => node.textContent), ['  Controleer het scenario  ', '0 van 8 ruimtelijke objecten', '1 van 21 geselecteerd', 'Inloggen', 'Een actieve sessie gebruiken →', '14.4 KB · gereed voor controle', '← Terug naar inloggen']);
+assert.deepEqual(nodes.map(node => node.textContent), ['  Controleer het scenario  ', '0 van 8 ruimtelijke objecten', '1 van 21 geselecteerd', 'Inloggen', 'Een actieve sessie gebruiken ->', '14.4 KB · gereed voor controle', '← Terug naar inloggen']);
 assert.equal(input.attributes.placeholder, 'Zoek op projectnaam…');
 assert.equal(input.value, 'my untouched notes');
 assert.equal(document.title, 'Inloggen · ScenarioDossier');

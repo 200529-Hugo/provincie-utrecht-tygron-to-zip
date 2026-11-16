@@ -9,6 +9,8 @@
  * @property {string} exported_at
  * @property {string} source
  * @property {string} crs
+ * @property {string} geojson_crs
+ * @property {(string|null)} source_crs
  * @property {ComponentCountsResponse} components
  * @property {string} notes
  * @property {RecordMetadataResponse} record
@@ -47,6 +49,7 @@
  * @property {string} id
  * @property {string} name
  * @property {Array<DemoScenarioResponse>} scenarios
+ * @property {string} source_crs
  */
 
 /**
@@ -94,6 +97,7 @@
  * @property {Array<string>} warnings
  * @property {Array<PreviewFeatureResponse>} preview
  * @property {Array<ScenarioItemResponse>} items
+ * @property {(string|null)} source_crs
  */
 
 /**

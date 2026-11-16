@@ -24,5 +24,5 @@ class ProjectPreviewService:
 
     def demo_project(self, project_id):
         project = self.demo.get_project(project_id)
-        key = ('demo', project.id, self.demo.data_path.stat().st_mtime_ns)
+        key = ('demo', project.id, self.demo.revision())
         return self.cache.get(key, lambda: ThumbnailService.demo(project))

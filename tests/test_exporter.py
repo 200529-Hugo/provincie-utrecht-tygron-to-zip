@@ -110,6 +110,33 @@ class ExporterTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "onveilig bestandspad"):
                 validate_archive(archive)
 
+    def test_validator_checks_vector_crs_and_accepts_legacy_metadata(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            archive, _ = build_archive(root, "Demo", "CRS", self.scenario["data"])
+            extracted = root / "dossier"
+            with zipfile.ZipFile(archive) as package:
+                package.extractall(extracted)
+            metadata_path = extracted / "metadata" / "dossier.json"
+            metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+            metadata.pop("source_crs")
+            metadata.pop("geojson_crs")
+            metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+            self.assertEqual(validate_dossier_directory(extracted, check_manifest=False)["status"], "goedgekeurd")
+
+            metadata_path.write_text(json.dumps(metadata | {"crs": "EPSG:28992"}), encoding="utf-8")
+            checks = validate_dossier_directory(extracted, check_manifest=False)["checks"]
+            self.assertIn("GeoPackage-CRS", [check["check"] for check in checks if check["status"] == "fout"])
+
+            metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+            geojson_path = extracted / "gis" / "measures.geojson"
+            geojson = json.loads(geojson_path.read_text(encoding="utf-8"))
+            point = next(item for item in geojson["features"] if item["geometry"]["type"] == "Point")
+            point["geometry"]["coordinates"] = [135808.245, 455263.000]
+            geojson_path.write_text(json.dumps(geojson), encoding="utf-8")
+            checks = validate_dossier_directory(extracted, check_manifest=False)["checks"]
+            self.assertIn("gis/measures.geojson", [check["check"] for check in checks if check["status"] == "fout"])
+
     def test_empty_components_still_create_tables(self):
         with tempfile.TemporaryDirectory() as tmp:
             archive, _ = build_archive(Path(tmp), "P", "S", {k: [] for k in ("overlays", "indicators", "measures", "alerts")})

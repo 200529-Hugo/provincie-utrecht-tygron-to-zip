@@ -42,6 +42,7 @@ class WorkflowController:
             spatial=result.data.get_spatial(),
             warnings=[translate_message(warning, language) for warning in result.warnings],
             preview=preview, items=[ScenarioItemResponse.from_item(item) for item in result.items],
+            source_crs=result.source_crs,
         )
 
     def export(self, payload: ExportRequest, account=None, language='nl') -> ExportResponse:

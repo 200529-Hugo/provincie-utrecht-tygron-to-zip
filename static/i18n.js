@@ -32,11 +32,11 @@ export function changeLanguage(nextLanguage, nextCatalog) {
             if (match) return text.replace(value, t(template.key, Object.fromEntries(template.names.map((name, i) => [name, match[i + 1]]))));
         }
         if (text.includes(' · ')) return text.split(' · ').map(translated).join(' · ');
-        if (/[→←]$/.test(value)) {
+        if (/[->←]$/.test(value)) {
             const arrow = value.slice(-1);
             return translated(text.slice(0, text.lastIndexOf(arrow))) + arrow;
         }
-        if (/^[→←]/.test(value)) {
+        if (/^[->←]/.test(value)) {
             const end = text.indexOf(value[0]) + 1;
             return text.slice(0, end) + translated(text.slice(end));
         }

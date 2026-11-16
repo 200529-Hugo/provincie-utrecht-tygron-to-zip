@@ -1,0 +1,101 @@
+{
+  "projects": [
+    {
+      "id": "merwedekanaalzone-rd-new",
+      "name": "Merwedekanaalzone · RD New",
+      "source_crs": "EPSG:28992",
+      "scenarios": [
+        {
+          "id": "rd-new-proef",
+          "name": "Punt, lijn en vlak",
+          "description": "Drie Utrechtse maatregelen met broncoördinaten in Amersfoort / RD New (EPSG:28992). Vergelijk ze op de kaart met Groen & Gezond 2040.",
+          "data": {
+            "measures": [
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "Polygon",
+                  "coordinates": [
+                    [
+                      [
+                        135505.663,
+                        455008.277
+                      ],
+                      [
+                        135862.094,
+                        455006.894
+                      ],
+                      [
+                        135863.42,
+                        455351.796
+                      ],
+                      [
+                        135507.014,
+                        455353.178
+                      ],
+                      [
+                        135505.663,
+                        455008.277
+                      ]
+                    ]
+                  ]
+                },
+                "properties": {
+                  "id": 31,
+                  "name": "Parklint langs kanaal",
+                  "status": "voorkeursmaatregel",
+                  "cost": 3200000,
+                  "description": "Aaneengesloten parkzone met bomen en verblijfsplekken."
+                }
+              },
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "LineString",
+                  "coordinates": [
+                    [
+                      135299.502,
+                      454875.576
+                    ],
+                    [
+                      135684.397,
+                      455141.093
+                    ],
+                    [
+                      136083.128,
+                      455451.09
+                    ]
+                  ]
+                },
+                "properties": {
+                  "id": 32,
+                  "name": "Doorfietsroute",
+                  "status": "voorkeursmaatregel",
+                  "cost": 1450000,
+                  "description": "Autovrije fietsverbinding door het plangebied."
+                }
+              },
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": [
+                    135808.245,
+                    455263.0
+                  ]
+                },
+                "properties": {
+                  "id": 33,
+                  "name": "Buurtzorgpunt",
+                  "status": "nader onderzoeken",
+                  "cost": 480000,
+                  "description": "Kleinschalige zorg- en ontmoetingsvoorziening."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -5,9 +5,13 @@ from __future__ import annotations
 import json
 import sqlite3
 import struct
+from contextlib import closing
 from pathlib import Path
 from typing import Any
 
+from pyproj import CRS
+
+from ..coordinates import EXPORT_CRS, WGS84, reproject_geometry
 from .data import COMPONENTS, geometry, properties, _simple
 
 
@@ -58,16 +62,19 @@ def _wkb(geom: dict[str, Any]) -> bytes:
     raise ValueError(f"Niet-ondersteund geometrietype: {kind}")
 
 
-def _gpkg_geometry(geom: dict[str, Any]) -> bytes:
+def _gpkg_geometry(geom: dict[str, Any], srs_id: int = 4326) -> bytes:
     """Voeg de GeoPackage-header toe aan de binaire geometrie."""
-    return b"GP" + bytes((0, 1)) + struct.pack("<i", 4326) + _wkb(geom)
+    return b"GP" + bytes((0, 1)) + struct.pack("<i", srs_id) + _wkb(geom)
 
 
-def create_geopackage(path: Path, data: dict[str, list[dict[str, Any]]]) -> None:
+def create_geopackage(path: Path, data: dict[str, list[dict[str, Any]]], export_crs: str = WGS84) -> None:
     """Schrijf alle componenten naar een GIS-bestand met vaste tabellen."""
-    con = sqlite3.connect(path)
+    with closing(sqlite3.connect(path)) as con, con:
+        _write_geopackage(con, data, export_crs)
 
 
+def _write_geopackage(con: sqlite3.Connection, data: dict, export_crs: str) -> None:
+    srs_id = EXPORT_CRS[export_crs]
     con.executescript("""
         PRAGMA application_id=1196437808;
         PRAGMA user_version=10300;
@@ -84,6 +91,10 @@ def create_geopackage(path: Path, data: dict[str, list[dict[str, Any]]]) -> None
          'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]]',
          "longitude/latitude coordinates in decimal degrees on WGS 84"),
     ])
+    if export_crs != WGS84:
+        crs = CRS.from_epsg(srs_id)
+        con.execute("INSERT INTO gpkg_spatial_ref_sys VALUES (?,?,?,?,?,?)",
+                    (crs.name, srs_id, "EPSG", srs_id, crs.to_wkt("WKT1_GDAL"), crs.name))
 
 
     for name in COMPONENTS:
@@ -106,12 +117,12 @@ def create_geopackage(path: Path, data: dict[str, list[dict[str, Any]]]) -> None
         con.execute(f'CREATE TABLE "{name}" ({", ".join(columns)})')
         con.execute(
             "INSERT INTO gpkg_contents(table_name,data_type,identifier,description,srs_id) VALUES (?,?,?,?,?)",
-            (name, "features" if spatial else "attributes", name, f"Tygron {name}", 4326 if spatial else None)
+            (name, "features" if spatial else "attributes", name, f"Tygron {name}", srs_id if spatial else None)
         )
         if spatial:
             con.execute(
                 "INSERT INTO gpkg_geometry_columns VALUES (?,?,?,?,?,?)",
-                (name, "geom", "GEOMETRY", 4326, 0, 0)
+                (name, "geom", "GEOMETRY", srs_id, 0, 0)
             )
 
 
@@ -127,7 +138,8 @@ def create_geopackage(path: Path, data: dict[str, list[dict[str, Any]]]) -> None
                 json.dumps(p, ensure_ascii=False, separators=(",", ":"))
             )
             if spatial:
-                blob = _gpkg_geometry(geometry(item)) if geometry(item) else None
+                geom = geometry(item)
+                blob = _gpkg_geometry(reproject_geometry(geom, WGS84, export_crs), srs_id) if geom else None
                 con.execute(
                     f'INSERT INTO "{name}"(item_id,name,status,value,unit,description,source_json,geom) VALUES (?,?,?,?,?,?,?,?)',
                     vals + (blob,)
@@ -137,5 +149,3 @@ def create_geopackage(path: Path, data: dict[str, list[dict[str, Any]]]) -> None
                     f'INSERT INTO "{name}"(item_id,name,status,value,unit,description,source_json) VALUES (?,?,?,?,?,?,?)',
                     vals
                 )
-    con.commit()
-    con.close()

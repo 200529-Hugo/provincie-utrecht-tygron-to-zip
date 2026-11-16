@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from pathlib import Path
 
+from ..coordinates import WGS84
 from ..exporter import build_archive
 from ..models import ArchiveResult, DossierDetails, ScenarioData
 
@@ -21,6 +22,8 @@ class DossierService:
         warnings: list[str] | None = None,
         details: DossierDetails | None = None,
         raster_fetcher: Callable[[int], bytes] | None = None,
+        export_crs: str = WGS84,
+        source_crs: str | None = None,
     ) -> ArchiveResult:
         if not project_name.strip() or not scenario_name.strip():
             raise ValueError("Projectnaam en scenarionaam zijn verplicht.")
@@ -34,5 +37,7 @@ class DossierService:
             warnings=warnings,
             raster_fetcher=raster_fetcher,
             dossier_fields=(details or DossierDetails()).to_dict(),
+            export_crs=export_crs,
+            source_crs=source_crs,
         )
         return ArchiveResult(archive, metadata)
